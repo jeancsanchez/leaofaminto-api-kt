@@ -41,7 +41,6 @@ import java.util.*
 @WebAppConfiguration
 @RunWith(SpringRunner::class)
 @TestExecutionListeners(DependencyInjectionTestExecutionListener::class)
-@TestPropertySource("classpath:application-test.properties")
 class MainControllerTest {
 
     @Autowired
