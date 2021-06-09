@@ -4,7 +4,7 @@ import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.domain.RelatorioService
 import com.github.jeancsanchez.investments.domain.model.Operacao
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
-import com.github.jeancsanchez.investments.view.services.CEIxlsImporterService
+import com.github.jeancsanchez.investments.view.services.CEIXLSImporterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.ResponseEntity
@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile
 class MainController(
     @Autowired val operacaoRepository: OperacaoRepository,
     @Autowired val relatorioService: RelatorioService,
-    @Autowired val ceiXLSImporterService: CEIxlsImporterService,
+    @Autowired val ceiXLSImporterImporterService: CEIXLSImporterService,
 ) {
     @GetMapping("/operacoes")
     fun listarOperacoes(): ResponseEntity<List<Operacao>> {
@@ -38,7 +38,7 @@ class MainController(
 
     @PostMapping("/sync")
     fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
-        val result = ceiXLSImporterService.run(arquivo)
+        val result = ceiXLSImporterImporterService.execute(arquivo)
         return ResponseEntity.ok(result)
     }
 }

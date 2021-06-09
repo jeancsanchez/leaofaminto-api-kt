@@ -17,5 +17,5 @@ interface ApplicationService<P, R> {
      * @param param necessário para a execução.
      * @return retorno da operação.
      */
-    fun run(param: P): R
+    fun execute(param: P): R
 }
