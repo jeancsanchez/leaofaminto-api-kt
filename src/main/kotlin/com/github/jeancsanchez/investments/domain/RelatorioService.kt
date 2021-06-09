@@ -33,10 +33,6 @@ class RelatorioService(
                     .filter { it.tipoDaOperacao == TipoOperacao.COMPRA }
                     .sumByDouble { it.valorTotal }
 
-                val valorVendas = map.value
-                    .filter { it.tipoDaOperacao == TipoOperacao.VENDA }
-                    .sumByDouble { it.valorTotal }
-
                 val quantidadeCompras = map.value
                     .filter { it.tipoDaOperacao == TipoOperacao.COMPRA }
                     .sumBy { it.quantidade }
