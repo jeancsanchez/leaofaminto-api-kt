@@ -10,6 +10,9 @@ import javax.persistence.*
 
 @Entity
 class Governo(
+    @Id
+    @GeneratedValue
+    var id: Long,
 
     @OneToMany
     var bolsas: List<Bolsa>,
@@ -17,7 +20,6 @@ class Governo(
     @OneToMany
     var corretoras: List<Corretora>,
 
-    @OneToOne
     @Enumerated(EnumType.STRING)
     var paisDeOrigem: Pais = Pais.BR
 ) {

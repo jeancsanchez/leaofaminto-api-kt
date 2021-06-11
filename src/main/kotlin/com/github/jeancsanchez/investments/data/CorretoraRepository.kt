@@ -1,6 +1,6 @@
 package com.github.jeancsanchez.investments.data
 
-import com.github.jeancsanchez.investments.domain.model.Corretora
+import com.github.jeancsanchez.investments.domain.model.TCorretora
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface CorretoraRepository : JpaRepository<Corretora, Long> {
+interface CorretoraRepository : JpaRepository<TCorretora, Long> {
 
-    fun findTop1ByNomeIgnoreCase(nome: String): Corretora?
+    fun findTop1ByNomeIgnoreCase(nome: String): TCorretora?
 }

@@ -2,7 +2,6 @@ package com.github.jeancsanchez.investments.domain
 
 import com.github.jeancsanchez.investments.domain.model.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 /**
  * @author @jeancsanchez
@@ -12,20 +11,20 @@ import java.time.LocalDateTime
 
 object FakeFactory {
 
-    fun createOperacao(): Operacao {
-        return Operacao(
+    fun createOperacao(): TOperacao {
+        return TOperacao(
             papel = Papel(codigo = "ITS4"),
             quantidade = 1,
             tipoDaOperacao = TipoOperacao.COMPRA,
             tipoDaAcao = TipoAcao.ORDINARIA,
-            corretora = Corretora(nome = "Clear"),
+            corretora = TCorretora(nome = "Clear"),
             tipoDeLote = TipoDeLote.LOTE_DE_100,
             data = LocalDate.now(),
             preco = 10.0
         )
     }
 
-    fun getOperacoes(): List<Operacao> {
+    fun getOperacoes(): List<TOperacao> {
         return listOf(
             createOperacao().copy(
                 papel = Papel(codigo = "JSLG3"),

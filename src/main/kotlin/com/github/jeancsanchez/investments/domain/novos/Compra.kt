@@ -1,10 +1,8 @@
 package com.github.jeancsanchez.investments.domain.novos
 
-import com.github.jeancsanchez.investments.domain.model.Corretora
+import com.github.jeancsanchez.investments.domain.model.TCorretora
 import java.time.LocalDate
 import javax.persistence.Entity
-import javax.persistence.OneToMany
-import javax.persistence.OneToOne
 
 /**
  * @author @jeancsanchez
@@ -15,7 +13,7 @@ import javax.persistence.OneToOne
 @Entity
 class Compra(
     ativo: Ativo,
-    corretora: Corretora,
+    corretora: TCorretora,
     data: LocalDate = LocalDate.now(),
     preco: Double,
     quantidade: Int

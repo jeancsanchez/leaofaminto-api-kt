@@ -12,14 +12,14 @@ import javax.persistence.*
  */
 
 @Entity
-data class Operacao(
+data class TOperacao(
     @Id @GeneratedValue var id: Long? = null,
 
     @ManyToOne
     var papel: Papel,
 
     @ManyToOne
-    var corretora: Corretora,
+    var corretora: TCorretora,
 
     @Enumerated(EnumType.STRING)
     var tipoDaOperacao: TipoOperacao,

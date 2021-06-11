@@ -3,7 +3,7 @@ package com.github.jeancsanchez.investments.domain
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.PapelRepository
-import com.github.jeancsanchez.investments.domain.model.Operacao
+import com.github.jeancsanchez.investments.domain.model.TOperacao
 import com.github.jeancsanchez.investments.domain.model.TipoOperacao
 import com.github.jeancsanchez.investments.view.extractPapelName
 import com.github.jeancsanchez.investments.domain.model.dto.OperacaoConsolidadaDTO
@@ -67,7 +67,7 @@ class RelatorioService(
      * O papel JSLG mudou o nome para SIMH. Esse método substitui as operações
      * de JSLG por SIMH. Apenas o nome.
      */
-    private fun MutableList<Operacao>.handleJSLG(): List<Operacao> {
+    private fun MutableList<TOperacao>.handleJSLG(): List<TOperacao> {
         replaceAll {
             if (it.papel.codigo == "JSLG3") {
                 it.copy(papel = it.papel.copy(codigo = "SIMH3"))

@@ -24,8 +24,8 @@ class CEIXLSImporterServiceImpl(
     @Autowired val papelRepository: PapelRepository
 ) : CEIXLSImporterService {
 
-    override fun execute(param: MultipartFile): List<Operacao> {
-        val resultList = mutableListOf<Operacao>()
+    override fun execute(param: MultipartFile): List<TOperacao> {
+        val resultList = mutableListOf<TOperacao>()
 
         val workbook = HSSFWorkbook(param.inputStream)
         val currentSheet = workbook.getSheetAt(0)
@@ -78,9 +78,9 @@ class CEIXLSImporterServiceImpl(
                     papelRepository.findTop1ByNomeIgnoreCase(papelCodename)
                         ?: papelRepository.save(Papel(codigo = papelCodename))
                 val corretora = corretoraRepository.findTop1ByNomeIgnoreCase(nomeDaCorretora)
-                    ?: corretoraRepository.save(Corretora(nome = nomeDaCorretora))
+                    ?: corretoraRepository.save(TCorretora(nome = nomeDaCorretora))
 
-                val newOperacao = Operacao(
+                val newOperacao = TOperacao(
                     data = dataOperacao!!,
                     papel = papel,
                     corretora = corretora,

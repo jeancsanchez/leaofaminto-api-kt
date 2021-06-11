@@ -2,6 +2,8 @@ package com.github.jeancsanchez.investments.domain.novos
 
 import java.time.LocalDate
 import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
 /**
  * @author @jeancsanchez
@@ -11,6 +13,10 @@ import javax.persistence.Entity
 
 @Entity
 class Imposto(
+    @Id
+    @GeneratedValue
+    var id: Long,
+    
     var dataReferencia: LocalDate,
     var valor: Double
 )

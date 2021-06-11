@@ -2,7 +2,7 @@ package com.github.jeancsanchez.investments.view
 
 import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.domain.RelatorioService
-import com.github.jeancsanchez.investments.domain.model.Operacao
+import com.github.jeancsanchez.investments.domain.model.TOperacao
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.investments.view.services.CEIXLSImporterService
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +27,7 @@ class MainController(
     @Autowired val ceiXLSImporterImporterService: CEIXLSImporterService,
 ) {
     @GetMapping("/operacoes")
-    fun listarOperacoes(): ResponseEntity<List<Operacao>> {
+    fun listarOperacoes(): ResponseEntity<List<TOperacao>> {
         return ResponseEntity.ok(operacaoRepository.findAll())
     }
 
@@ -37,7 +37,7 @@ class MainController(
     }
 
     @PostMapping("/sync")
-    fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
+    fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<TOperacao>> {
         val result = ceiXLSImporterImporterService.execute(arquivo)
         return ResponseEntity.ok(result)
     }

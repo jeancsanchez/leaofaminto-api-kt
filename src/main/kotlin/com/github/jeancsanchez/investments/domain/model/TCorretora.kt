@@ -11,7 +11,7 @@ import javax.persistence.Id
  */
 
 @Entity
-class Corretora(
+class TCorretora(
     @Id @GeneratedValue var id: Long? = null,
     var cnpj: String = "",
     var nome: String = ""

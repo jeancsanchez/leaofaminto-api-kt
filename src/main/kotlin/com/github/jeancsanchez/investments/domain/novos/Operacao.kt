@@ -1,9 +1,6 @@
 package com.github.jeancsanchez.investments.domain.novos
 
-import com.github.jeancsanchez.investments.domain.model.Corretora
-import com.github.jeancsanchez.investments.domain.model.Papel
-import com.github.jeancsanchez.investments.domain.model.TipoAcao
-import com.github.jeancsanchez.investments.domain.model.TipoOperacao
+import com.github.jeancsanchez.investments.domain.model.TCorretora
 import com.github.jeancsanchez.investments.view.formatToStringBR
 import com.github.jeancsanchez.investments.view.round
 import java.time.LocalDate
@@ -14,13 +11,15 @@ import javax.persistence.*
  * @created 10/06/2021
  * Jesus loves you.
  */
-
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 open class Operacao(
-    @OneToOne
+
+    @ManyToOne
     var ativo: Ativo,
 
-    @OneToMany
-    var corretora: Corretora,
+    @ManyToOne
+    var corretora: TCorretora,
 
     var data: LocalDate = LocalDate.now(),
     var preco: Double,
