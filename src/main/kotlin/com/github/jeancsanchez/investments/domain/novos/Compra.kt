@@ -1,6 +1,5 @@
 package com.github.jeancsanchez.investments.domain.novos
 
-import com.github.jeancsanchez.investments.domain.model.TCorretora
 import java.time.LocalDate
 import javax.persistence.Entity
 
@@ -13,7 +12,7 @@ import javax.persistence.Entity
 @Entity
 class Compra(
     ativo: Ativo,
-    corretora: TCorretora,
+    corretora: Corretora,
     data: LocalDate = LocalDate.now(),
     preco: Double,
     quantidade: Int

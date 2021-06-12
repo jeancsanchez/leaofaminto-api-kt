@@ -12,12 +12,12 @@ import javax.persistence.Id
  */
 
 @Entity
-class Ativo {
+data class Ativo(
     @Id
-    var codigo: String = ""
-    var nome: String = ""
-    var cnpj: String = ""
+    var codigo: String = "",
+    var nome: String = "",
+    var cnpj: String = "",
 
     @Enumerated(EnumType.STRING)
-    var classeDeAtivo: ClasseDeAtivo = ClasseDeAtivo.ACAO
-}
+    var tipoDeAtivo: TipoDeAtivo = TipoDeAtivo.ACAO
+)

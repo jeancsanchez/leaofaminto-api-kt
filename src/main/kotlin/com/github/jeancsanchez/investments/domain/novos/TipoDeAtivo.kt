@@ -6,7 +6,7 @@ package com.github.jeancsanchez.investments.domain.novos
  * Jesus loves you.
  */
 
-enum class ClasseDeAtivo {
+enum class TipoDeAtivo {
     ACAO,
     FII
 }

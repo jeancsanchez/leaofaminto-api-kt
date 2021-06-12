@@ -1,9 +1,9 @@
 package com.github.jeancsanchez.investments.view
 
-import com.github.jeancsanchez.investments.data.OperacaoRepository
+import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.RelatorioService
-import com.github.jeancsanchez.investments.domain.model.TOperacao
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
+import com.github.jeancsanchez.investments.domain.novos.Operacao
 import com.github.jeancsanchez.investments.view.services.CEIXLSImporterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -22,13 +22,13 @@ import org.springframework.web.multipart.MultipartFile
 @CrossOrigin(origins = ["http://localhost:3000"])
 @RequestMapping("/api")
 class MainController(
-    @Autowired val operacaoRepository: OperacaoRepository,
+    @Autowired val vendasRepository: VendasRepository,
     @Autowired val relatorioService: RelatorioService,
-    @Autowired val ceiXLSImporterImporterService: CEIXLSImporterService,
+    @Autowired val ceiXLSImporterService: CEIXLSImporterService,
 ) {
     @GetMapping("/operacoes")
-    fun listarOperacoes(): ResponseEntity<List<TOperacao>> {
-        return ResponseEntity.ok(operacaoRepository.findAll())
+    fun listarOperacoes(): ResponseEntity<List<Operacao>> {
+        return ResponseEntity.ok(vendasRepository.findAll())
     }
 
     @GetMapping("/operacoes/consolidadas")
@@ -37,8 +37,8 @@ class MainController(
     }
 
     @PostMapping("/sync")
-    fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<TOperacao>> {
-        val result = ceiXLSImporterImporterService.execute(arquivo)
+    fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
+        val result = ceiXLSImporterService.execute(arquivo)
         return ResponseEntity.ok(result)
     }
 }

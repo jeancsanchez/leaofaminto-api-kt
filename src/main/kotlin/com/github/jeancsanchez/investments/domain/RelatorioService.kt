@@ -1,11 +1,8 @@
 package com.github.jeancsanchez.investments.domain
 
+import com.github.jeancsanchez.investments.data.ComprasRepository
+import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
-import com.github.jeancsanchez.investments.data.OperacaoRepository
-import com.github.jeancsanchez.investments.data.PapelRepository
-import com.github.jeancsanchez.investments.domain.model.TOperacao
-import com.github.jeancsanchez.investments.domain.model.TipoOperacao
-import com.github.jeancsanchez.investments.view.extractPapelName
 import com.github.jeancsanchez.investments.domain.model.dto.OperacaoConsolidadaDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,25 +17,20 @@ import java.math.RoundingMode
 
 @Service
 class RelatorioService(
-    @Autowired private val operacaoRepository: OperacaoRepository,
-    @Autowired private val papelRepository: PapelRepository
+    @Autowired private val comprasRepository: ComprasRepository,
+    @Autowired private val vendasRepository: VendasRepository,
 ) {
     fun pegarOperacoesConsolidadas(): ConsolidadoDTO {
-        val items = operacaoRepository.findAll()
-            .toMutableList()
-            .handleJSLG()
-            .groupBy { it.papel.codigo.extractPapelName() }
+        val items = comprasRepository.findAll()
+            .groupBy { it.ativo.codigo }
             .map { map ->
                 val valorCompras = map.value
-                    .filter { it.tipoDaOperacao == TipoOperacao.COMPRA }
                     .sumByDouble { it.valorTotal }
 
                 val quantidadeCompras = map.value
-                    .filter { it.tipoDaOperacao == TipoOperacao.COMPRA }
                     .sumBy { it.quantidade }
 
-                val quantidadeVendas = map.value
-                    .filter { it.tipoDaOperacao == TipoOperacao.VENDA }
+                val quantidadeVendas = vendasRepository.findAllByAtivoCodigo(map.key)
                     .sumBy { it.quantidade }
 
                 val quantidade = quantidadeCompras - quantidadeVendas
@@ -50,12 +42,14 @@ class RelatorioService(
                 val precoTotal = quantidade * precoMedio
 
                 OperacaoConsolidadaDTO(
-                    papel = map.key,
+                    codigoAtivo = map.key,
                     quantidadeTotal = quantidade,
                     precoMedio = BigDecimal(precoMedio).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
                     totalInvestido = BigDecimal(precoTotal).setScale(2, RoundingMode.HALF_EVEN).toDouble()
                 )
             }
+            .toMutableList()
+            .handleJSLG()
 
         return ConsolidadoDTO(
             totalInvestido = items.sumByDouble { it.totalInvestido },
@@ -67,10 +61,10 @@ class RelatorioService(
      * O papel JSLG mudou o nome para SIMH. Esse método substitui as operações
      * de JSLG por SIMH. Apenas o nome.
      */
-    private fun MutableList<TOperacao>.handleJSLG(): List<TOperacao> {
+    private fun MutableList<OperacaoConsolidadaDTO>.handleJSLG(): List<OperacaoConsolidadaDTO> {
         replaceAll {
-            if (it.papel.codigo == "JSLG3") {
-                it.copy(papel = it.papel.copy(codigo = "SIMH3"))
+            if (it.codigoAtivo == "JSLG3") {
+                it.copy(codigoAtivo = "SIMH3")
             } else {
                 it
             }

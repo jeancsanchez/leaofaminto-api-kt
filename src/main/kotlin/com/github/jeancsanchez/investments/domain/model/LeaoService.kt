@@ -1,6 +1,11 @@
 package com.github.jeancsanchez.investments.domain.model
 
-import com.github.jeancsanchez.investments.data.OperacaoRepository
+import com.github.jeancsanchez.investments.data.ComprasRepository
+import com.github.jeancsanchez.investments.data.VendasRepository
+import com.github.jeancsanchez.investments.domain.novos.Compra
+import com.github.jeancsanchez.investments.domain.novos.Operacao
+import com.github.jeancsanchez.investments.domain.novos.TipoDeAtivo
+import com.github.jeancsanchez.investments.domain.novos.Venda
 import com.github.jeancsanchez.investments.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -19,25 +24,21 @@ import java.time.YearMonth
 
 @Service
 class LeaoService(
-    @Autowired private val operacaoRepository: OperacaoRepository
+    @Autowired private val comprasRepository: ComprasRepository,
+    @Autowired private val vendasRepository: VendasRepository
 ) {
     fun pegarLucroLiquidoNoMesComFIIs(mes: LocalDate): Double {
         val firstDay = YearMonth.from(mes).atDay(1)
         val lastDay = YearMonth.from(mes).atEndOfMonth()
 
-        val vendasNoMes = operacaoRepository.findAll()
+        val vendasNoMes = vendasRepository.findAll()
             .filter { it.data >= firstDay && it.data <= lastDay }
-            .filter { it.tipoDaAcao == TipoAcao.FUNDO_IMOBILIARIO }
-            .filter { it.tipoDaOperacao == TipoOperacao.VENDA }
+            .filter { it.ativo.tipoDeAtivo == TipoDeAtivo.FII }
 
         if (vendasNoMes.isNotEmpty()) {
-            val compras = vendasNoMes
-                .flatMap {
-                    operacaoRepository.findAllByPapelCodigoAndTipoDaOperacao(
-                        it.papel.codigo,
-                        TipoOperacao.COMPRA
-                    )
-                }
+            val compras = comprasRepository.findAll()
+                .filter { it.data >= firstDay && it.data <= lastDay }
+                .filter { it.ativo.tipoDeAtivo == TipoDeAtivo.FII }
 
             return vendasNoMes.sumByDouble { it.valorTotal } - compras.sumByDouble { it.valorTotal }
         }
@@ -58,29 +59,38 @@ class LeaoService(
         val lastDay = YearMonth.from(mes).atEndOfMonth()
         var impostoAPagar = 0.0
 
-        val operacoesDoMes = operacaoRepository.findAll()
+        val comprasNoMes = comprasRepository.findAll()
             .filter { it.data >= firstDay && it.data <= lastDay }
-            .filter { it.tipoDaAcao !== TipoAcao.FUNDO_IMOBILIARIO }
+            .filter { it.ativo.tipoDeAtivo !== TipoDeAtivo.ACAO }
 
-        if (operacoesDoMes.isNotEmpty()) {
-            operacoesDoMes
+        if (comprasNoMes.isNotEmpty()) {
+            val vendasNoMes = vendasRepository.findAll()
+                .filter { it.data >= firstDay && it.data <= lastDay }
+                .filter { it.ativo.tipoDeAtivo !== TipoDeAtivo.ACAO }
+
+            val operacoes = listOf<Operacao>()
+                .plus(comprasNoMes)
+                .plus(vendasNoMes)
+
+            operacoes
                 .groupBy { it.data }
-                .forEach { (_, operacoes) ->
-                    val compras = operacoes
-                        .filter { it.tipoDaOperacao == TipoOperacao.COMPRA }
-                        .groupBy { it.papel.codigo }
+                .forEach { (_, lista) ->
+                    val totalCompras = lista
+                        .filterIsInstance(Compra::class.java)
+                        .groupBy { it.ativo.codigo }
                         .mapValues { map ->
                             map.value.sumByDouble { it.valorTotal }
                         }
 
-                    val vendas = operacoes
-                        .filter { it.tipoDaOperacao == TipoOperacao.VENDA }
-                        .groupBy { it.papel.codigo }
+
+                    val totalVendas = lista
+                        .filterIsInstance(Venda::class.java)
+                        .groupBy { it.ativo.codigo }
                         .mapValues { map ->
                             map.value.sumByDouble { it.valorTotal }
                         }
 
-                    compras.entries.zip(vendas.entries) { compra, venda ->
+                    totalCompras.entries.zip(totalVendas.entries) { compra, venda ->
                         val resultado = venda.value - compra.value
                         if (resultado > 0) {
                             impostoAPagar += (resultado * 0.20) - 0.01
@@ -99,43 +109,33 @@ class LeaoService(
         var prejuizos = 0.0
         var totalDeVendas = 0.0
 
-        val operacoesDoMes = operacaoRepository.findAll()
+        vendasRepository.findAll()
             .filter { it.data >= firstDay && it.data <= lastDay }
-            .filter { it.tipoDaAcao !== TipoAcao.FUNDO_IMOBILIARIO }
+            .filter { it.ativo.tipoDeAtivo == TipoDeAtivo.ACAO }
+            .groupBy { it.ativo.codigo }
+            .flatMap { it.value }
+            .map { venda ->
+                comprasRepository.findAllByAtivoCodigo(venda.ativo.codigo)
+                    .forEach { compra ->
+                        if (compra.data.isBefore(venda.data)) {
+                            if (venda.valorTotal > 0) {
+                                totalDeVendas += venda.valorTotal
 
-        if (operacoesDoMes.isNotEmpty()) {
-            val compras = operacoesDoMes
-                .filter { it.tipoDaOperacao == TipoOperacao.COMPRA }
-                .groupBy { it.papel.codigo }
-                .mapValues { map ->
-                    map.value.sumByDouble { it.valorTotal }
-                }
-
-            val vendas = operacoesDoMes
-                .filter { it.tipoDaOperacao == TipoOperacao.VENDA }
-                .groupBy { it.papel.codigo }
-                .mapValues { map ->
-                    map.value.sumByDouble { it.valorTotal }
-                }
-
-            compras.entries.zip(vendas.entries) { compra, venda ->
-                if (venda.value > 0) {
-                    totalDeVendas += venda.value
-
-                    val resultado = venda.value - compra.value
-                    if (resultado > 0) {
-                        lucros += resultado
-                    } else if (resultado < 0) {
-                        prejuizos += resultado
+                                val resultado = venda.valorTotal - compra.valorTotal
+                                if (resultado > 0) {
+                                    lucros += resultado
+                                } else if (resultado < 0) {
+                                    prejuizos += resultado
+                                }
+                            }
+                        }
                     }
-                }
             }
-        }
 
         if (totalDeVendas > 20000) {
             if (prejuizos > 0) {
 //            Se vamos deduzir este prejuízo da base de cálculo do IR,
-//            ele passa ser OBRIGATÓRIO a informar na declaração,
+//            ele passa a ser OBRIGATÓRIO a informar na declaração,
 //            na ficha Renda variável/Operações comuns.
                 totalDeVendas -= prejuizos
             }

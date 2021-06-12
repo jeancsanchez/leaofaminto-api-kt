@@ -1,6 +1,5 @@
 package com.github.jeancsanchez.investments.domain.novos
 
-import com.github.jeancsanchez.investments.domain.model.TCorretora
 import com.github.jeancsanchez.investments.view.formatToStringBR
 import com.github.jeancsanchez.investments.view.round
 import java.time.LocalDate
@@ -19,7 +18,7 @@ open class Operacao(
     var ativo: Ativo,
 
     @ManyToOne
-    var corretora: TCorretora,
+    var corretora: Corretora,
 
     var data: LocalDate = LocalDate.now(),
     var preco: Double,
@@ -38,7 +37,7 @@ open class Operacao(
         get() = data.formatToStringBR()
             .plus(ativo.codigo)
             .plus(corretora.id)
-            .plus(ativo.classeDeAtivo.name)
+            .plus(ativo.tipoDeAtivo.name)
             .plus(preco.round())
             .plus(quantidade)
 

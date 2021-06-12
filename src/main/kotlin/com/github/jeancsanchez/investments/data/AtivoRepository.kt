@@ -1,6 +1,6 @@
 package com.github.jeancsanchez.investments.data
 
-import com.github.jeancsanchez.investments.domain.model.Papel
+import com.github.jeancsanchez.investments.domain.novos.Ativo
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -11,9 +11,7 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface PapelRepository : JpaRepository<Papel, String> {
+interface AtivoRepository : JpaRepository<Ativo, String> {
 
-    fun findTop1ByNomeIgnoreCase(nome: String): Papel?
-
-
+    fun findTop1ByNomeIgnoreCase(nome: String): Ativo?
 }

@@ -1,10 +1,12 @@
 package com.github.jeancsanchez.investments.domain
 
-import com.github.jeancsanchez.investments.data.OperacaoRepository
+import com.github.jeancsanchez.investments.data.ComprasRepository
+import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.LeaoService
 import com.github.jeancsanchez.investments.domain.model.Papel
 import com.github.jeancsanchez.investments.domain.model.TipoAcao
 import com.github.jeancsanchez.investments.domain.model.TipoOperacao
+import com.github.jeancsanchez.investments.domain.novos.*
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo
@@ -28,7 +30,10 @@ import java.time.LocalDate
 class LeaoServiceTest {
 
     @Mock
-    lateinit var operacaoRepository: OperacaoRepository
+    lateinit var comprasRepository: ComprasRepository
+
+    @Mock
+    lateinit var vendasRepository: VendasRepository
 
     @InjectMocks
     private lateinit var leaoService: LeaoService
@@ -42,24 +47,29 @@ class LeaoServiceTest {
     fun `Swing trade - operacoes de venda de ate R$ 20 mil no mes, nao gera imposto`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(operacaoRepository.findAll()).thenAnswer {
+
+        whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
                 // Compra: 10.000
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITSA4"),
+                Compra(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 200,
                     preco = 50.0,
                     data = today,
-                    tipoDaOperacao = TipoOperacao.COMPRA
                 ),
+            )
+        }
 
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
                 // Venda: 20000
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITSA4"),
+                Venda(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 200,
                     preco = 100.0,
                     data = tomorrow,
-                    tipoDaOperacao = TipoOperacao.VENDA
                 )
             )
         }
@@ -73,24 +83,28 @@ class LeaoServiceTest {
     fun `Swing trade - operacoes de venda acima de R$ 20 mil no mes, gera imposto de 15% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(operacaoRepository.findAll()).thenAnswer {
+        whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
                 // Compra: 10.000
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITSA4"),
+                Compra(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 200,
                     preco = 50.0,
-                    data = today,
-                    tipoDaOperacao = TipoOperacao.COMPRA
+                    data = today
                 ),
+            )
+        }
 
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
                 // Venda: 20.080
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITSA4"),
+                Venda(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 200,
                     preco = 100.40,
-                    data = tomorrow,
-                    tipoDaOperacao = TipoOperacao.VENDA
+                    data = tomorrow
                 )
             )
         }
@@ -104,35 +118,40 @@ class LeaoServiceTest {
     fun `Day trade - qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(operacaoRepository.findAll()).thenAnswer {
+        whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITSA4"),
+                Compra(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 10,
                     preco = 100.0,
                     data = today,
-                    tipoDaOperacao = TipoOperacao.COMPRA
                 ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITSA4"),
-                    quantidade = 10,
-                    preco = 200.0,
-                    data = today,
-                    tipoDaOperacao = TipoOperacao.VENDA
-                ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITUB3"),
+                Compra(
+                    ativo = Ativo(codigo = "ITUB3", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 10,
                     preco = 100.0,
                     data = tomorrow,
-                    tipoDaOperacao = TipoOperacao.COMPRA
                 ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "ITUB3"),
+            )
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
+                Venda(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
+                    quantidade = 10,
+                    preco = 200.0,
+                    data = today
+                ),
+                Venda(
+                    ativo = Ativo(codigo = "ITUB3", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 10,
                     preco = 200.0,
                     data = tomorrow,
-                    tipoDaOperacao = TipoOperacao.VENDA
                 )
             )
         }
@@ -145,40 +164,41 @@ class LeaoServiceTest {
     @Suppress("DANGEROUS_CHARACTERS")
     fun `FIIs - Day Trade ou nao, gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 2, 1)
-        whenever(operacaoRepository.findAll()).thenAnswer {
+        whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                Compra(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 10,
                     preco = 100.0,
                     data = today.minusMonths(1),
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.COMPRA
                 ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+            )
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
+                Venda(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 2,
                     preco = 200.0,
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
                     data = today.minusMonths(1),
-                    tipoDaOperacao = TipoOperacao.VENDA
                 ),
                 // Somente esse entra na contagem
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                Venda(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 4,
                     preco = 210.0,
                     data = today,
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.VENDA
                 ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                Venda(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 2,
                     preco = 230.0,
                     data = today.plusDays(30),
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.VENDA
                 ),
             )
         }
@@ -192,40 +212,41 @@ class LeaoServiceTest {
     @Suppress("DANGEROUS_CHARACTERS")
     fun `Trazer lucros com FIIs do mes`() {
         val today = LocalDate.of(2021, 2, 1)
-        whenever(operacaoRepository.findAll()).thenAnswer {
+        whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                Compra(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 10,
                     preco = 100.0,
                     data = today.minusMonths(1),
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.COMPRA
-                ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                )
+            )
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
+                Venda(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 2,
                     preco = 200.0,
-                    data = today.minusMonths(1),
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.VENDA
+                    data = today.minusMonths(1)
                 ),
                 // Somente esse entra na contagem
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                Venda(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 4,
                     preco = 210.0,
                     data = today,
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.VENDA
                 ),
-                FakeFactory.createOperacao().copy(
-                    papel = Papel(codigo = "XPLG11"),
+                Venda(
+                    ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
+                    corretora = Corretora(nome = "Clear"),
                     quantidade = 2,
                     preco = 230.0,
-                    data = today.plusDays(30),
-                    tipoDaAcao = TipoAcao.FUNDO_IMOBILIARIO,
-                    tipoDaOperacao = TipoOperacao.VENDA
+                    data = today.plusDays(30)
                 ),
             )
         }

@@ -1,7 +1,5 @@
 package com.github.jeancsanchez.investments.domain.novos
 
-import com.github.jeancsanchez.investments.domain.model.TCorretora
-import java.lang.IllegalStateException
 import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -16,7 +14,7 @@ import javax.persistence.Enumerated
 @Entity
 class Venda(
     ativo: Ativo,
-    corretora: TCorretora,
+    corretora: Corretora,
     data: LocalDate = LocalDate.now(),
     preco: Double,
     quantidade: Int
