@@ -38,7 +38,7 @@ object FakeFactory {
                 data = LocalDate.now(),
             ),
             Compra(
-                ativo = Ativo(codigo = "CEAB3F"),
+                ativo = Ativo(codigo = "CEAB3"),
                 quantidade = 75,
                 preco = 13.41,
                 corretora = Corretora(nome = "Clear"),

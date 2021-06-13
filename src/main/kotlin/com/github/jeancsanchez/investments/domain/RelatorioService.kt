@@ -4,6 +4,7 @@ import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.investments.domain.model.dto.OperacaoConsolidadaDTO
+import com.github.jeancsanchez.investments.domain.novos.Compra
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -22,6 +23,8 @@ class RelatorioService(
 ) {
     fun pegarOperacoesConsolidadas(): ConsolidadoDTO {
         val items = comprasRepository.findAll()
+            .toMutableList()
+            .handleJSLG()
             .groupBy { it.ativo.codigo }
             .map { map ->
                 val valorCompras = map.value
@@ -48,8 +51,6 @@ class RelatorioService(
                     totalInvestido = BigDecimal(precoTotal).setScale(2, RoundingMode.HALF_EVEN).toDouble()
                 )
             }
-            .toMutableList()
-            .handleJSLG()
 
         return ConsolidadoDTO(
             totalInvestido = items.sumByDouble { it.totalInvestido },
@@ -61,12 +62,13 @@ class RelatorioService(
      * O papel JSLG mudou o nome para SIMH. Esse método substitui as operações
      * de JSLG por SIMH. Apenas o nome.
      */
-    private fun MutableList<OperacaoConsolidadaDTO>.handleJSLG(): List<OperacaoConsolidadaDTO> {
-        replaceAll {
-            if (it.codigoAtivo == "JSLG3") {
-                it.copy(codigoAtivo = "SIMH3")
+    private fun MutableList<Compra>.handleJSLG(): List<Compra> {
+        replaceAll { compra ->
+            if (compra.ativo.codigo == "JSLG3") {
+                compra.ativo.codigo = "SIMH3"
+                compra
             } else {
-                it
+                compra
             }
         }
         return this

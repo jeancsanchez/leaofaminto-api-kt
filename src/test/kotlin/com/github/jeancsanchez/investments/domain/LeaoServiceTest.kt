@@ -3,9 +3,6 @@ package com.github.jeancsanchez.investments.domain
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.LeaoService
-import com.github.jeancsanchez.investments.domain.model.Papel
-import com.github.jeancsanchez.investments.domain.model.TipoAcao
-import com.github.jeancsanchez.investments.domain.model.TipoOperacao
 import com.github.jeancsanchez.investments.domain.novos.*
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,6 +14,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import java.time.LocalDate
 
@@ -83,7 +81,7 @@ class LeaoServiceTest {
     fun `Swing trade - operacoes de venda acima de R$ 20 mil no mes, gera imposto de 15% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(comprasRepository.findAll()).thenAnswer {
+        whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
             listOf(
                 // Compra: 10.000
                 Compra(
@@ -93,7 +91,7 @@ class LeaoServiceTest {
                     preco = 50.0,
                     data = today
                 ),
-            )
+            ).filter { it.ativo.codigo == invocation.arguments.first() }
         }
 
         whenever(vendasRepository.findAll()).thenAnswer {
