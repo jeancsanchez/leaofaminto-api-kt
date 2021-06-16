@@ -14,7 +14,7 @@ import java.time.LocalDate
 @Repository
 interface ImpostoRepository : JpaRepository<Imposto, Long> {
 
-    fun findTopByOrderByDataReferenciaAndValor(
+    fun findTop1ByDataReferenciaAndValor(
         dataReferencia: LocalDate,
         valor: Double
     ): Imposto?

@@ -65,7 +65,7 @@ class BuscarImpostosNoMesComAcoesSwingTrade(
 
             // TODO: Precisa remover os custos antes
             val totalImposto = ((lucros * 0.15) - 0.00005).round()
-            val impostoDoMes = impostoRepository.findTopByOrderByDataReferenciaAndValor(
+            val impostoDoMes = impostoRepository.findTop1ByDataReferenciaAndValor(
                 dataReferencia = date,
                 valor = totalImposto,
             )

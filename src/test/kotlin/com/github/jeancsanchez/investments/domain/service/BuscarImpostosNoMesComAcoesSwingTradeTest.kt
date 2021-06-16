@@ -117,7 +117,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeTest {
     fun `Swing trade - Imposto a recolher menor que 10 reais nao precisa gerar Imposto, mas acumula o valor`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(impostoRepository.findTopByOrderByDataReferenciaAndValor(any(), any())).thenAnswer {
+        whenever(impostoRepository.findTop1ByDataReferenciaAndValor(any(), any())).thenAnswer {
             null
         }
 
