@@ -15,8 +15,9 @@ import javax.persistence.Id
 class Imposto(
     @Id
     @GeneratedValue
-    var id: Long,
-    
+    var id: Long? = null,
+
     var dataReferencia: LocalDate,
-    var valor: Double
+    var valor: Double,
+    var estaPago: Boolean? = false
 )
