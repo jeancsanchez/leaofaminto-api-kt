@@ -1,6 +1,7 @@
 package com.github.jeancsanchez.investments.domain
 
 import com.github.jeancsanchez.investments.data.ComprasRepository
+import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.LeaoService
 import com.github.jeancsanchez.investments.domain.novos.*
@@ -26,6 +27,9 @@ import java.time.LocalDate
 
 @RunWith(MockitoJUnitRunner::class)
 class LeaoServiceTest {
+
+    @Mock
+    lateinit var operacaoRepository: OperacaoRepository
 
     @Mock
     lateinit var comprasRepository: ComprasRepository
@@ -116,7 +120,7 @@ class LeaoServiceTest {
     fun `Day trade - qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(comprasRepository.findAll()).thenAnswer {
+        whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
@@ -125,24 +129,19 @@ class LeaoServiceTest {
                     preco = 100.0,
                     data = today,
                 ),
-                Compra(
-                    ativo = Ativo(codigo = "ITUB3", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
-                    quantidade = 10,
-                    preco = 100.0,
-                    data = tomorrow,
-                ),
-            )
-        }
-
-        whenever(vendasRepository.findAll()).thenAnswer {
-            listOf(
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = Corretora(nome = "Clear"),
                     quantidade = 10,
                     preco = 200.0,
                     data = today
+                ),
+                Compra(
+                    ativo = Ativo(codigo = "ITUB3", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = Corretora(nome = "Clear"),
+                    quantidade = 10,
+                    preco = 100.0,
+                    data = tomorrow,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "ITUB3", tipoDeAtivo = TipoDeAtivo.ACAO),

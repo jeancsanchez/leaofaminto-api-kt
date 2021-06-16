@@ -1,9 +1,9 @@
 package com.github.jeancsanchez.investments.domain.model
 
 import com.github.jeancsanchez.investments.data.ComprasRepository
+import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.novos.Compra
-import com.github.jeancsanchez.investments.domain.novos.Operacao
 import com.github.jeancsanchez.investments.domain.novos.TipoDeAtivo
 import com.github.jeancsanchez.investments.domain.novos.Venda
 import com.github.jeancsanchez.investments.view.round
@@ -24,6 +24,7 @@ import java.time.YearMonth
 
 @Service
 class LeaoService(
+    @Autowired private val operacaoRepository: OperacaoRepository,
     @Autowired private val comprasRepository: ComprasRepository,
     @Autowired private val vendasRepository: VendasRepository
 ) {
@@ -59,20 +60,12 @@ class LeaoService(
         val lastDay = YearMonth.from(mes).atEndOfMonth()
         var impostoAPagar = 0.0
 
-        val comprasNoMes = comprasRepository.findAll()
+        val operacoesDoMes = operacaoRepository.findAll()
             .filter { it.data >= firstDay && it.data <= lastDay }
-            .filter { it.ativo.tipoDeAtivo !== TipoDeAtivo.ACAO }
+            .filter { it.ativo.tipoDeAtivo == TipoDeAtivo.ACAO }
 
-        if (comprasNoMes.isNotEmpty()) {
-            val vendasNoMes = vendasRepository.findAll()
-                .filter { it.data >= firstDay && it.data <= lastDay }
-                .filter { it.ativo.tipoDeAtivo !== TipoDeAtivo.ACAO }
-
-            val operacoes = listOf<Operacao>()
-                .plus(comprasNoMes)
-                .plus(vendasNoMes)
-
-            operacoes
+        if (operacoesDoMes.isNotEmpty()) {
+            operacoesDoMes
                 .groupBy { it.data }
                 .forEach { (_, lista) ->
                     val totalCompras = lista
@@ -81,7 +74,6 @@ class LeaoService(
                         .mapValues { map ->
                             map.value.sumByDouble { it.valorTotal }
                         }
-
 
                     val totalVendas = lista
                         .filterIsInstance(Venda::class.java)
