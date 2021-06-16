@@ -1,8 +1,10 @@
-package com.github.jeancsanchez.investments.domain
+package com.github.jeancsanchez.investments.domain.service
 
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
+import com.github.jeancsanchez.investments.domain.FakeFactory
+import com.github.jeancsanchez.investments.domain.GerarOperacoesConsolidadasService
 import junit.framework.TestCase.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +24,7 @@ import org.mockito.kotlin.whenever
  */
 
 @RunWith(MockitoJUnitRunner::class)
-class RelatorioServiceTest {
+internal class GerarOperacoesConsolidadasServiceTest {
 
     @Mock
     lateinit var operacaoRepository: OperacaoRepository
@@ -34,7 +36,7 @@ class RelatorioServiceTest {
     lateinit var vendasRepository: VendasRepository
 
     @InjectMocks
-    private lateinit var relatorioService: RelatorioService
+    private lateinit var relatorioService: GerarOperacoesConsolidadasService
 
     @BeforeEach
     fun setUp() {
@@ -42,7 +44,7 @@ class RelatorioServiceTest {
     }
 
     @Test
-    fun pegarPapeisConsolidados() {
+    fun gerarOperacoesConsolidadas() {
         whenever(comprasRepository.findAll()).thenAnswer {
             FakeFactory.getCompras()
         }
@@ -51,7 +53,7 @@ class RelatorioServiceTest {
             FakeFactory.getVendas().filter { it.ativo.codigo == invocation.arguments.first() }
         }
 
-        val result = relatorioService.pegarOperacoesConsolidadas()
+        val result = relatorioService.execute(Unit)
 
         // Deve retornar apenas um item consolidando as operações
         assertEquals(2, result.items.size)
@@ -84,7 +86,7 @@ class RelatorioServiceTest {
         whenever(comprasRepository.findAllByAtivoCodigo(anyString())).thenReturn(comprasList)
         whenever(vendasRepository.findAllByAtivoCodigo(anyString())).thenReturn(vendasList)
 
-        val result = relatorioService.pegarOperacoesConsolidadas()
+        val result = relatorioService.execute(Unit)
 
         // Deve retornar apenas um item consolidando as operações
         assertEquals(1, result.items.size)

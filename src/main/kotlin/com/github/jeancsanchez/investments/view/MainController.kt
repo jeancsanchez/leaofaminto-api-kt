@@ -1,7 +1,7 @@
 package com.github.jeancsanchez.investments.view
 
 import com.github.jeancsanchez.investments.data.VendasRepository
-import com.github.jeancsanchez.investments.domain.RelatorioService
+import com.github.jeancsanchez.investments.domain.GerarOperacoesConsolidadasService
 import com.github.jeancsanchez.investments.domain.model.Operacao
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.investments.view.services.CEIXLSImporterService
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api")
 class MainController(
     @Autowired val vendasRepository: VendasRepository,
-    @Autowired val relatorioService: RelatorioService,
+    @Autowired val gerarOperacoesConsolidadasService: GerarOperacoesConsolidadasService,
     @Autowired val ceiXLSImporterService: CEIXLSImporterService,
 ) {
     @GetMapping("/operacoes")
@@ -33,7 +33,7 @@ class MainController(
 
     @GetMapping("/operacoes/consolidadas")
     fun listarOperacoesConsolidadas(): ResponseEntity<ConsolidadoDTO> {
-        return ResponseEntity.ok(relatorioService.pegarOperacoesConsolidadas())
+        return ResponseEntity.ok(gerarOperacoesConsolidadasService.execute(Unit))
     }
 
     @PostMapping("/sync")
