@@ -7,31 +7,27 @@ import javax.persistence.*
 
 /**
  * @author @jeancsanchez
- * @created 15/05/2021
+ * @created 10/06/2021
  * Jesus loves you.
  */
-
 @Entity
-data class Operacao(
-    @Id @GeneratedValue var id: Long? = null,
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+open class Operacao(
 
     @ManyToOne
-    var papel: Papel,
+    var ativo: Ativo,
 
     @ManyToOne
     var corretora: Corretora,
 
-    @Enumerated(EnumType.STRING)
-    var tipoDaOperacao: TipoOperacao,
-
-    @Enumerated(EnumType.STRING)
-    var tipoDaAcao: TipoAcao,
-
-    var tipoDeLote: String,
     var data: LocalDate = LocalDate.now(),
     var preco: Double,
     var quantidade: Int
 ) {
+    @Id
+    @GeneratedValue
+    var id: Long? = null
+
     var valorTotal: Double = 0.0
         private set
         get() = quantidade * preco
@@ -39,15 +35,13 @@ data class Operacao(
     var hashId: String = ""
         private set
         get() = data.formatToStringBR()
-            .plus(papel.codigo)
+            .plus(ativo.codigo)
             .plus(corretora.id)
-            .plus(tipoDaOperacao.id)
-            .plus(tipoDaAcao.id)
-            .plus(tipoDeLote)
+            .plus(ativo.tipoDeAtivo.name)
             .plus(preco.round())
             .plus(quantidade)
 
     override fun toString(): String {
-        return "${data.formatToStringBR()} - ${tipoDaOperacao.id} - ${papel.codigo} - $quantidade - $preco"
+        return "${data.formatToStringBR()} - ${javaClass.simpleName} - ${ativo.codigo} - $quantidade - $preco"
     }
 }

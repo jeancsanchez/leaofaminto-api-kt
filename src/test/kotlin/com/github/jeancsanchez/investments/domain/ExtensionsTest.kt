@@ -1,9 +1,10 @@
 package com.github.jeancsanchez.investments.domain
 
-import com.github.jeancsanchez.investments.domain.model.TipoAcao
-import com.github.jeancsanchez.investments.domain.model.TipoDeLote
-import com.github.jeancsanchez.investments.domain.model.TipoOperacao
-import com.github.jeancsanchez.investments.view.*
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.investments.view.extractCodigoAtivo
+import com.github.jeancsanchez.investments.view.extractTipoDeAtivo
+import com.github.jeancsanchez.investments.view.formatStringBRToDate
+import com.github.jeancsanchez.investments.view.formatToStringBR
 import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -42,48 +43,27 @@ class ExtensionsTest {
     @Test
     fun extractTipoDeAcaoPN() {
         val string = "ITAUSA       PN  ED  N1"
-        assertEquals(TipoAcao.PREFERENCIAL, string.extractTipoAcao())
+        assertEquals(TipoDeAtivo.ACAO, string.extractTipoDeAtivo())
     }
 
     @Test
     fun extractTipoDeAcaoON() {
         val string = "MAGAZ LUIZA  ON      NM"
-        assertEquals(TipoAcao.ORDINARIA, string.extractTipoAcao())
+        assertEquals(TipoDeAtivo.ACAO, string.extractTipoDeAtivo())
     }
 
     @Test
     fun extractTipoDeAcaoFII() {
         val string = "FII XP LOG   CI"
-        assertEquals(TipoAcao.FUNDO_IMOBILIARIO, string.extractTipoAcao())
-    }
-
-    @Test
-    fun extractTipoOperacaoVenda() {
-        val string = "v"
-        assertEquals(TipoOperacao.VENDA, string.extractTipoOperacao())
-    }
-
-    @Test
-    fun extractTipoOperacaoCompra() {
-        val string = "c"
-        assertEquals(TipoOperacao.COMPRA, string.extractTipoOperacao())
+        assertEquals(TipoDeAtivo.FII, string.extractTipoDeAtivo())
     }
 
     @Test
     fun extractPapel() {
         val string = "itub3f"
-        assertEquals("ITUB3", string.extractPapelName())
+        assertEquals("ITUB3", string.extractCodigoAtivo())
 
         val string1 = "itub3"
-        assertEquals("ITUB3", string1.extractPapelName())
-    }
-
-    @Test
-    fun extractTipoDeLote() {
-        val string = "itub3f"
-        assertEquals(TipoDeLote.FRACIONARIO, string.extractTipoDeLote())
-
-        val string1 = "itub3"
-        assertEquals(TipoDeLote.LOTE_DE_100, string1.extractTipoDeLote())
+        assertEquals("ITUB3", string1.extractCodigoAtivo())
     }
 }

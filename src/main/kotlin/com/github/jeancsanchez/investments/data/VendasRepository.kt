@@ -1,6 +1,6 @@
 package com.github.jeancsanchez.investments.data
 
-import com.github.jeancsanchez.investments.domain.model.Operacao
+import com.github.jeancsanchez.investments.domain.model.Venda
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface OperacaoRepository : JpaRepository<Operacao, String> {
+interface VendasRepository : JpaRepository<Venda, String> {
 
-    fun findTopByOrderByIdDesc(): Operacao?
+    fun findTopByOrderByIdDesc(): Venda?
 
-    fun findAllByAtivoCodigo(codigo: String): List<Operacao>
+    fun findAllByAtivoCodigo(codigo: String): List<Venda>
 }

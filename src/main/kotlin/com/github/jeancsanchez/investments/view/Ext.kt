@@ -1,8 +1,6 @@
 package com.github.jeancsanchez.investments.view
 
-import com.github.jeancsanchez.investments.domain.model.TipoAcao
-import com.github.jeancsanchez.investments.domain.model.TipoDeLote
-import com.github.jeancsanchez.investments.domain.model.TipoOperacao
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -45,40 +43,20 @@ fun String.formatStringBRToDate(): LocalDate? {
     return null
 }
 
-fun String.extractTipoAcao(): TipoAcao {
+fun String.extractTipoDeAtivo(): TipoDeAtivo {
     if (trim().contains("FII", true)) {
-        return TipoAcao.FUNDO_IMOBILIARIO
+        return TipoDeAtivo.FII
     }
 
-    if (trim().contains("PN", true)) {
-        return TipoAcao.PREFERENCIAL
-    }
-
-    return TipoAcao.ORDINARIA
+    return TipoDeAtivo.ACAO
 }
 
-fun String.extractTipoOperacao(): TipoOperacao {
-    if (trim().equals("V", true)) {
-        return TipoOperacao.VENDA
-    }
-
-    return TipoOperacao.COMPRA
-}
-
-fun String.extractPapelName(): String {
+fun String.extractCodigoAtivo(): String {
     if (trim().last().equals('F', true)) {
         return this.toUpperCase().dropLast(1)
     }
 
     return this.toUpperCase()
-}
-
-fun String.extractTipoDeLote(): String {
-    if (trim().last().equals('F', true)) {
-        return TipoDeLote.FRACIONARIO
-    }
-
-    return TipoDeLote.LOTE_DE_100
 }
 
 fun Double.round(): Double {

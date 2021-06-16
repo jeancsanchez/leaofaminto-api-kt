@@ -7,7 +7,7 @@ package com.github.jeancsanchez.investments.domain.model.dto
  */
 
 data class OperacaoConsolidadaDTO(
-    val papel: String,
+    val codigoAtivo: String,
     val quantidadeTotal: Int,
     val precoMedio: Double,
     val totalInvestido: Double

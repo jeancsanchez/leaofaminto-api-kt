@@ -1,10 +1,10 @@
 package com.github.jeancsanchez.investments
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.OperacaoRepository
-import com.github.jeancsanchez.investments.domain.model.TipoAcao
-import com.github.jeancsanchez.investments.domain.model.TipoDeLote
-import com.github.jeancsanchez.investments.domain.model.TipoOperacao
+import com.github.jeancsanchez.investments.data.VendasRepository
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.investments.view.formatToStringBR
 import com.github.jeancsanchez.investments.view.round
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,7 +19,6 @@ import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.TestExecutionListeners
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
 import org.springframework.test.context.web.WebAppConfiguration
@@ -53,6 +52,12 @@ class MainControllerTest {
     @Autowired
     private lateinit var operacaoRepository: OperacaoRepository
 
+    @Autowired
+    private lateinit var comprasRepository: ComprasRepository
+
+    @Autowired
+    private lateinit var vendasRepository: VendasRepository
+
     protected val mapper = ObjectMapper()
 
     @Value("classpath:cei_2020.xls")
@@ -70,18 +75,16 @@ class MainControllerTest {
     }
 
     @Test
-    fun sincronizarOperacoesCEIExcel() {
-        fazerUploadDeArquivo(arquivo2021)
-        operacaoRepository.findAll().run {
-            assertEquals(19364.81, sumByDouble { it.valorTotal }.round())
+    fun sincronizarComprasAcoesCEIExcel() {
+        fazerUploadDeArquivo(arquivo2020)
+        comprasRepository.findAll().run {
+            assertEquals(12931.49, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Clear Corretora", true))
                 assertEquals("04/03/20", firstLine.data.formatToStringBR())
-                assertEquals(TipoOperacao.COMPRA, firstLine.tipoDaOperacao)
-                assertEquals("ITSA4", firstLine.papel.codigo)
-                assertEquals(TipoDeLote.LOTE_DE_100, firstLine.tipoDeLote)
-                assertEquals(TipoAcao.PREFERENCIAL, firstLine.tipoDaAcao)
+                assertEquals("ITSA4", firstLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
                 assertEquals(100, firstLine.quantidade)
                 assertEquals(12.20, firstLine.preco)
                 assertEquals(1220.0, firstLine.valorTotal)
@@ -89,14 +92,40 @@ class MainControllerTest {
 
             last().also { lastLine ->
                 assertTrue(lastLine.corretora.nome.contains("Clear Corretora", true))
-                assertEquals("20/05/21", lastLine.data.formatToStringBR())
-                assertEquals(TipoOperacao.COMPRA, lastLine.tipoDaOperacao)
-                assertEquals("XPML11", lastLine.papel.codigo)
-                assertEquals(TipoDeLote.LOTE_DE_100, lastLine.tipoDeLote)
-                assertEquals(TipoAcao.FUNDO_IMOBILIARIO, lastLine.tipoDaAcao)
-                assertEquals(1, lastLine.quantidade)
-                assertEquals(104.55, lastLine.preco)
-                assertEquals(104.55, lastLine.valorTotal)
+                assertEquals("23/10/20", lastLine.data.formatToStringBR())
+                assertEquals("WEGE3", lastLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
+                assertEquals(12, lastLine.quantidade)
+                assertEquals(81.08, lastLine.preco)
+                assertEquals(972.96, lastLine.valorTotal)
+            }
+        }
+    }
+
+    @Test
+    fun sincronizarVendasAcoesCEIExcel() {
+        fazerUploadDeArquivo(arquivo2020)
+        vendasRepository.findAll().run {
+            assertEquals(878.70, sumByDouble { it.valorTotal }.round())
+
+            first().also { firstLine ->
+                assertTrue(firstLine.corretora.nome.contains("Clear Corretora", true))
+                assertEquals("23/10/20", firstLine.data.formatToStringBR())
+                assertEquals("SIMH3", firstLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
+                assertEquals(13, firstLine.quantidade)
+                assertEquals(29.29, firstLine.preco)
+                assertEquals(380.77, firstLine.valorTotal)
+            }
+
+            last().also { lastLine ->
+                assertTrue(lastLine.corretora.nome.contains("Clear Corretora", true))
+                assertEquals("23/10/20", lastLine.data.formatToStringBR())
+                assertEquals("SIMH3", lastLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
+                assertEquals(17, lastLine.quantidade)
+                assertEquals(29.29, lastLine.preco)
+                assertEquals(497.93, lastLine.valorTotal)
             }
         }
     }
@@ -108,14 +137,12 @@ class MainControllerTest {
     @Test
     fun sincronizarOperacoesComNovoArquivoCEIExcel() {
         fazerUploadDeArquivo(arquivo2020)
-        assertEquals(22, operacaoRepository.count())
+        assertEquals(20, comprasRepository.count())
+        assertEquals(2, vendasRepository.count())
 
-        /**
-         * Arquivo 2020 -> 22 operações
-         * Arquivo 2021 -> 35 operações
-         */
         fazerUploadDeArquivo(arquivo2021)
-        assertEquals(35, operacaoRepository.count())
+        assertEquals(31, comprasRepository.count())
+        assertEquals(4, vendasRepository.count())
     }
 
     private fun fazerUploadDeArquivo(resource: Resource?) {

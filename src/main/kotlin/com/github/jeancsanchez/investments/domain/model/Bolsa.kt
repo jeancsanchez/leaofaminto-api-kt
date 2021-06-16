@@ -11,12 +11,15 @@ import javax.persistence.Id
  */
 
 @Entity
-class Corretora(
-    @Id @GeneratedValue var id: Long? = null,
-    var cnpj: String = "",
-    var nome: String = ""
+class Bolsa(
+    @Id
+    @GeneratedValue
+    var id: Long,
+
+    var nome: String
 ) {
-    override fun toString(): String {
-        return nome
+
+    fun registrarOperacao(operacao: Operacao) {
+
     }
 }

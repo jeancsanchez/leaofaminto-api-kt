@@ -1,13 +1,14 @@
-package com.github.jeancsanchez.investments.view.services
+package com.github.jeancsanchez.investments.domain.service
 
 /**
- * Essa classe representa um Application Service de acordo com a definição do DDD.
+ * Essa classe representa um Domain Service de acordo com a definição do DDD.
  *
  * @author @jeancsanchez
- * @created 09/06/2021
+ * @created 15/06/2021
  * Jesus loves you.
  */
-interface ApplicationService<P, R> {
+
+interface DomainService<P, R> {
 
     /**
      * Executa a operação do serviço.

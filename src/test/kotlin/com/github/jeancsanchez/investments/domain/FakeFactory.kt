@@ -2,7 +2,6 @@ package com.github.jeancsanchez.investments.domain
 
 import com.github.jeancsanchez.investments.domain.model.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 /**
  * @author @jeancsanchez
@@ -13,62 +12,77 @@ import java.time.LocalDateTime
 object FakeFactory {
 
     fun createOperacao(): Operacao {
-        return Operacao(
-            papel = Papel(codigo = "ITS4"),
+        return Compra(
+            ativo = Ativo(codigo = "ITS4"),
             quantidade = 1,
-            tipoDaOperacao = TipoOperacao.COMPRA,
-            tipoDaAcao = TipoAcao.ORDINARIA,
             corretora = Corretora(nome = "Clear"),
-            tipoDeLote = TipoDeLote.LOTE_DE_100,
             data = LocalDate.now(),
             preco = 10.0
         )
     }
 
-    fun getOperacoes(): List<Operacao> {
+    fun getCompras(): List<Compra> {
         return listOf(
-            createOperacao().copy(
-                papel = Papel(codigo = "JSLG3"),
+            Compra(
+                ativo = Ativo(codigo = "JSLG3"),
                 quantidade = 50,
                 preco = 18.50,
-                tipoDaOperacao = TipoOperacao.COMPRA
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
             ),
-            createOperacao().copy(
-                papel = Papel(codigo = "SIMH3"),
-                quantidade = 13,
-                preco = 29.29,
-                tipoDaOperacao = TipoOperacao.VENDA
-            ),
-            createOperacao().copy(
-                papel = Papel(codigo = "SIMH3"),
-                quantidade = 17,
-                preco = 29.29,
-                tipoDaOperacao = TipoOperacao.VENDA
-            ),
-            createOperacao().copy(
-                papel = Papel(codigo = "CEAB3"),
+            Compra(
+                ativo = Ativo(codigo = "CEAB3"),
                 quantidade = 40,
                 preco = 11.94,
-                tipoDaOperacao = TipoOperacao.COMPRA
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
             ),
-            createOperacao().copy(
-                papel = Papel(codigo = "CEAB3F"),
+            Compra(
+                ativo = Ativo(codigo = "CEAB3"),
                 quantidade = 75,
                 preco = 13.41,
-                tipoDaOperacao = TipoOperacao.COMPRA
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
             ),
-            createOperacao().copy(
-                papel = Papel(codigo = "CEAB3"),
+            Compra(
+                ativo = Ativo(codigo = "CEAB3"),
                 quantidade = 3,
                 preco = 11.99,
-                tipoDaOperacao = TipoOperacao.COMPRA
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
             ),
-            createOperacao().copy(
-                papel = Papel(codigo = "CEAB3"),
+        )
+    }
+
+    fun getVendas(): List<Venda> {
+        return listOf(
+            Venda(
+                ativo = Ativo(codigo = "SIMH3"),
+                quantidade = 13,
+                preco = 29.29,
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
+            ),
+            Venda(
+                ativo = Ativo(codigo = "SIMH3"),
+                quantidade = 17,
+                preco = 29.29,
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
+            ),
+            Venda(
+                ativo = Ativo(codigo = "CEAB3"),
                 quantidade = 68,
                 preco = 13.73,
-                tipoDaOperacao = TipoOperacao.VENDA
+                corretora = Corretora(nome = "Clear"),
+                data = LocalDate.now(),
             )
         )
+    }
+
+    fun getOperacoes(): List<Operacao> {
+        return listOf<Operacao>()
+            .plus(getCompras())
+            .plus(getVendas())
     }
 }

@@ -1,7 +1,10 @@
-package com.github.jeancsanchez.investments.domain
+package com.github.jeancsanchez.investments.domain.service
 
+import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.OperacaoRepository
-import com.github.jeancsanchez.investments.data.PapelRepository
+import com.github.jeancsanchez.investments.data.VendasRepository
+import com.github.jeancsanchez.investments.domain.FakeFactory
+import com.github.jeancsanchez.investments.domain.GerarOperacoesConsolidadasService
 import junit.framework.TestCase.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -9,9 +12,10 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 
 /**
  * @author @jeancsanchez
@@ -20,16 +24,19 @@ import org.mockito.junit.MockitoJUnitRunner
  */
 
 @RunWith(MockitoJUnitRunner::class)
-class RelatorioServiceTest {
+internal class GerarOperacoesConsolidadasServiceTest {
 
     @Mock
     lateinit var operacaoRepository: OperacaoRepository
 
     @Mock
-    lateinit var papelRepository: PapelRepository
+    lateinit var comprasRepository: ComprasRepository
+
+    @Mock
+    lateinit var vendasRepository: VendasRepository
 
     @InjectMocks
-    private lateinit var relatorioService: RelatorioService
+    private lateinit var relatorioService: GerarOperacoesConsolidadasService
 
     @BeforeEach
     fun setUp() {
@@ -37,18 +44,22 @@ class RelatorioServiceTest {
     }
 
     @Test
-    fun pegarPapeisConsolidados() {
-        Mockito.`when`(operacaoRepository.findAll()).thenAnswer {
-            FakeFactory.getOperacoes()
+    fun gerarOperacoesConsolidadas() {
+        whenever(comprasRepository.findAll()).thenAnswer {
+            FakeFactory.getCompras()
         }
 
-        val result = relatorioService.pegarOperacoesConsolidadas()
+        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
+            FakeFactory.getVendas().filter { it.ativo.codigo == invocation.arguments.first() }
+        }
+
+        val result = relatorioService.execute(Unit)
 
         // Deve retornar apenas um item consolidando as operações
         assertEquals(2, result.items.size)
 
-        val itemsSimpar = result.items.filter { it.papel == "SIMH3" }
-        val itemsCeA = result.items.filter { it.papel == "CEAB3" }
+        val itemsSimpar = result.items.filter { it.codigoAtivo == "SIMH3" }
+        val itemsCeA = result.items.filter { it.codigoAtivo == "CEAB3" }
 
         // Deve retornar a quantidade de ações considerando as operações
         assertEquals(20, itemsSimpar.sumBy { it.quantidadeTotal })
@@ -68,11 +79,14 @@ class RelatorioServiceTest {
 
     @Test
     fun quandoSIMH3OuJSLG3ConsiderarOMesmoPapel() {
-        val data = FakeFactory.getOperacoes().filter { it.papel.codigo == "SIMH3" || it.papel.codigo == "JSLG3" }
-        Mockito.`when`(operacaoRepository.findAll()).thenReturn(data)
-        Mockito.`when`(operacaoRepository.findAllByPapelCodigo(anyString())).thenReturn(data)
+        val comprasList = FakeFactory.getCompras().filter { it.ativo.codigo == "SIMH3" || it.ativo.codigo == "JSLG3" }
+        val vendasList = FakeFactory.getVendas().filter { it.ativo.codigo == "SIMH3" || it.ativo.codigo == "JSLG3" }
+        whenever(comprasRepository.findAll()).thenReturn(comprasList)
+        whenever(vendasRepository.findAll()).thenReturn(vendasList)
+        whenever(comprasRepository.findAllByAtivoCodigo(anyString())).thenReturn(comprasList)
+        whenever(vendasRepository.findAllByAtivoCodigo(anyString())).thenReturn(vendasList)
 
-        val result = relatorioService.pegarOperacoesConsolidadas()
+        val result = relatorioService.execute(Unit)
 
         // Deve retornar apenas um item consolidando as operações
         assertEquals(1, result.items.size)

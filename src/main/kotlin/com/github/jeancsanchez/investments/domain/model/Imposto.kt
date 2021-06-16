@@ -1,5 +1,6 @@
 package com.github.jeancsanchez.investments.domain.model
 
+import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -11,12 +12,12 @@ import javax.persistence.Id
  */
 
 @Entity
-class Corretora(
-    @Id @GeneratedValue var id: Long? = null,
-    var cnpj: String = "",
-    var nome: String = ""
-) {
-    override fun toString(): String {
-        return nome
-    }
-}
+class Imposto(
+    @Id
+    @GeneratedValue
+    var id: Long? = null,
+
+    var dataReferencia: LocalDate,
+    var valor: Double,
+    var estaPago: Boolean? = false
+)
