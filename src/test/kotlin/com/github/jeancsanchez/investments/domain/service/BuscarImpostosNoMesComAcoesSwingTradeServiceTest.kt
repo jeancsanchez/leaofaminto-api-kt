@@ -3,7 +3,7 @@ package com.github.jeancsanchez.investments.domain.service
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.ImpostoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
-import com.github.jeancsanchez.investments.domain.BuscarImpostosNoMesComAcoesSwingTrade
+import com.github.jeancsanchez.investments.domain.BuscarImpostosNoMesComAcoesSwingTradeService
 import com.github.jeancsanchez.investments.domain.model.*
 import junit.framework.TestCase
 import org.junit.jupiter.api.BeforeEach
@@ -23,7 +23,7 @@ import java.time.LocalDate
  * Jesus loves you.
  */
 
-internal class BuscarImpostosNoMesComAcoesSwingTradeTest {
+internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
 
     @Mock
     lateinit var comprasRepository: ComprasRepository
@@ -36,7 +36,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeTest {
 
 
     @InjectMocks
-    private lateinit var buscarImpostosNoMesComAcoesSwingTrade: BuscarImpostosNoMesComAcoesSwingTrade
+    private lateinit var buscarImpostosNoMesComAcoesSwingTradeService: BuscarImpostosNoMesComAcoesSwingTradeService
 
     @BeforeEach
     fun setUp() {
@@ -74,7 +74,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeTest {
             )
         }
 
-        val impostos = buscarImpostosNoMesComAcoesSwingTrade.execute(today)
+        val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
         TestCase.assertNull(impostos)
     }
 
@@ -109,7 +109,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeTest {
             )
         }
 
-        val impostos = buscarImpostosNoMesComAcoesSwingTrade.execute(today)
+        val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
         TestCase.assertEquals(12.0, impostos?.valor)
     }
 
@@ -147,7 +147,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeTest {
             )
         }
 
-        val imposto = buscarImpostosNoMesComAcoesSwingTrade.execute(today)
+        val imposto = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
         verify(impostoRepository).save(argThat {
             dataReferencia == today
                     && valor == 1.2

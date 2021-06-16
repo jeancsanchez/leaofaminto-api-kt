@@ -5,7 +5,6 @@ import com.github.jeancsanchez.investments.data.ImpostoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.Imposto
 import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
-import com.github.jeancsanchez.investments.domain.service.DomainService
 import com.github.jeancsanchez.investments.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -19,11 +18,11 @@ import java.time.YearMonth
  */
 
 @Service
-class BuscarImpostosNoMesComAcoesSwingTrade(
+class BuscarImpostosNoMesComAcoesSwingTradeService(
     @Autowired private val comprasRepository: ComprasRepository,
     @Autowired private val vendasRepository: VendasRepository,
     @Autowired private val impostoRepository: ImpostoRepository,
-) : DomainService<LocalDate, Imposto?> {
+) : IDomainService<LocalDate, Imposto?> {
 
     override fun execute(date: LocalDate): Imposto? {
         val firstDay = YearMonth.from(date).atDay(1)

@@ -1,6 +1,5 @@
 package com.github.jeancsanchez.investments.domain
 
-import com.github.jeancsanchez.investments.domain.service.DomainService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -14,7 +13,7 @@ import java.time.LocalDate
 @Service
 class BuscarImpostosNoMesComFIIsService(
     @Autowired private val buscarLucroLiquidoNoMesComFIIsServiceService: BuscarLucroLiquidoNoMesComFIIsService
-) : DomainService<LocalDate, Double> {
+) : IDomainService<LocalDate, Double> {
 
     override fun execute(param: LocalDate): Double {
         val lucroDoMes = buscarLucroLiquidoNoMesComFIIsServiceService.execute(param)

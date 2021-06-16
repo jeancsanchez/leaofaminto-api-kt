@@ -5,7 +5,6 @@ import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.model.Compra
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.investments.domain.model.dto.OperacaoConsolidadaDTO
-import com.github.jeancsanchez.investments.domain.service.DomainService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -21,7 +20,7 @@ import java.math.RoundingMode
 class GerarOperacoesConsolidadasService(
     @Autowired private val comprasRepository: ComprasRepository,
     @Autowired private val vendasRepository: VendasRepository,
-) : DomainService<Unit, ConsolidadoDTO> {
+) : IDomainService<Unit, ConsolidadoDTO> {
 
     override fun execute(param: Unit): ConsolidadoDTO {
         val items = comprasRepository.findAll()
