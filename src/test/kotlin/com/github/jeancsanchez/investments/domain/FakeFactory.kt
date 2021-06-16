@@ -1,6 +1,6 @@
 package com.github.jeancsanchez.investments.domain
 
-import com.github.jeancsanchez.investments.domain.novos.*
+import com.github.jeancsanchez.investments.domain.model.*
 import java.time.LocalDate
 
 /**

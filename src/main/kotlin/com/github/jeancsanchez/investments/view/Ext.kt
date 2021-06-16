@@ -1,7 +1,6 @@
 package com.github.jeancsanchez.investments.view
 
-import com.github.jeancsanchez.investments.domain.model.TipoDeLote
-import com.github.jeancsanchez.investments.domain.novos.TipoDeAtivo
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -58,14 +57,6 @@ fun String.extractCodigoAtivo(): String {
     }
 
     return this.toUpperCase()
-}
-
-fun String.extractTipoDeLote(): String {
-    if (trim().last().equals('F', true)) {
-        return TipoDeLote.FRACIONARIO
-    }
-
-    return TipoDeLote.LOTE_DE_100
 }
 
 fun Double.round(): Double {

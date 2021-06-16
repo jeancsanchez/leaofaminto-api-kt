@@ -1,6 +1,5 @@
-package com.github.jeancsanchez.investments.domain.novos
+package com.github.jeancsanchez.investments.domain.model
 
-import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -12,11 +11,15 @@ import javax.persistence.Id
  */
 
 @Entity
-class Imposto(
+class Bolsa(
     @Id
     @GeneratedValue
     var id: Long,
-    
-    var dataReferencia: LocalDate,
-    var valor: Double
-)
+
+    var nome: String
+) {
+
+    fun registrarOperacao(operacao: Operacao) {
+
+    }
+}

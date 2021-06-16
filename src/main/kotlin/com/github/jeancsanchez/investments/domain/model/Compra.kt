@@ -1,4 +1,4 @@
-package com.github.jeancsanchez.investments.domain.novos
+package com.github.jeancsanchez.investments.domain.model
 
 import java.time.LocalDate
 import javax.persistence.Entity

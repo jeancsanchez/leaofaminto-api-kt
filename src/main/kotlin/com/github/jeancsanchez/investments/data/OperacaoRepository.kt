@@ -1,7 +1,6 @@
 package com.github.jeancsanchez.investments.data
 
-import com.github.jeancsanchez.investments.domain.novos.Operacao
-import com.github.jeancsanchez.investments.domain.novos.Venda
+import com.github.jeancsanchez.investments.domain.model.Operacao
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

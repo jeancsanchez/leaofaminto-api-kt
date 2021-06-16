@@ -1,4 +1,4 @@
-package com.github.jeancsanchez.investments.domain.novos
+package com.github.jeancsanchez.investments.domain.model
 
 import com.github.jeancsanchez.investments.view.formatToStringBR
 import com.github.jeancsanchez.investments.view.round

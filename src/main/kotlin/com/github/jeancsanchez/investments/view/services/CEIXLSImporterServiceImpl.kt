@@ -1,7 +1,7 @@
 package com.github.jeancsanchez.investments.view.services
 
 import com.github.jeancsanchez.investments.data.*
-import com.github.jeancsanchez.investments.domain.novos.*
+import com.github.jeancsanchez.investments.domain.model.*
 import com.github.jeancsanchez.investments.view.extractCodigoAtivo
 import com.github.jeancsanchez.investments.view.extractTipoDeAtivo
 import com.github.jeancsanchez.investments.view.formatStringBRToDate

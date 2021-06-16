@@ -1,11 +1,11 @@
-package com.github.jeancsanchez.investments.domain.model
+package com.github.jeancsanchez.investments.domain
 
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
-import com.github.jeancsanchez.investments.domain.novos.Compra
-import com.github.jeancsanchez.investments.domain.novos.TipoDeAtivo
-import com.github.jeancsanchez.investments.domain.novos.Venda
+import com.github.jeancsanchez.investments.domain.model.Compra
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.investments.domain.model.Venda
 import com.github.jeancsanchez.investments.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

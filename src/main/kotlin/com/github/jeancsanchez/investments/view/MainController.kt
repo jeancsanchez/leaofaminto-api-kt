@@ -2,8 +2,8 @@ package com.github.jeancsanchez.investments.view
 
 import com.github.jeancsanchez.investments.data.VendasRepository
 import com.github.jeancsanchez.investments.domain.RelatorioService
+import com.github.jeancsanchez.investments.domain.model.Operacao
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
-import com.github.jeancsanchez.investments.domain.novos.Operacao
 import com.github.jeancsanchez.investments.view.services.CEIXLSImporterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration

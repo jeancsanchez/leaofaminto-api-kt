@@ -3,8 +3,7 @@ package com.github.jeancsanchez.investments.domain
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
-import com.github.jeancsanchez.investments.domain.model.LeaoService
-import com.github.jeancsanchez.investments.domain.novos.*
+import com.github.jeancsanchez.investments.domain.model.*
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo

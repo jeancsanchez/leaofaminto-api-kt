@@ -1,7 +1,5 @@
 package com.github.jeancsanchez.investments.view.services
 
-import org.springframework.stereotype.Service
-
 /**
  * Essa classe representa um Application Service de acordo com a definição do DDD.
  *

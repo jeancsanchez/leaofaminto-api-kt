@@ -1,9 +1,10 @@
 package com.github.jeancsanchez.investments.domain
 
-import com.github.jeancsanchez.investments.domain.model.TipoAcao
-import com.github.jeancsanchez.investments.domain.model.TipoDeLote
-import com.github.jeancsanchez.investments.domain.novos.TipoDeAtivo
-import com.github.jeancsanchez.investments.view.*
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.investments.view.extractCodigoAtivo
+import com.github.jeancsanchez.investments.view.extractTipoDeAtivo
+import com.github.jeancsanchez.investments.view.formatStringBRToDate
+import com.github.jeancsanchez.investments.view.formatToStringBR
 import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith

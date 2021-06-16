@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.OperacaoRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
-import com.github.jeancsanchez.investments.domain.novos.TipoDeAtivo
+import com.github.jeancsanchez.investments.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.investments.view.formatToStringBR
 import com.github.jeancsanchez.investments.view.round
 import org.junit.jupiter.api.Assertions.assertEquals

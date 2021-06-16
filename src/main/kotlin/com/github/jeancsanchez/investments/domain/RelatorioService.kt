@@ -2,9 +2,9 @@ package com.github.jeancsanchez.investments.domain
 
 import com.github.jeancsanchez.investments.data.ComprasRepository
 import com.github.jeancsanchez.investments.data.VendasRepository
+import com.github.jeancsanchez.investments.domain.model.Compra
 import com.github.jeancsanchez.investments.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.investments.domain.model.dto.OperacaoConsolidadaDTO
-import com.github.jeancsanchez.investments.domain.novos.Compra
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
