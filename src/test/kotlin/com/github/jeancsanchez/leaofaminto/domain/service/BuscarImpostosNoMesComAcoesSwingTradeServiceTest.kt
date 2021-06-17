@@ -11,10 +11,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argThat
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import java.time.LocalDate
 
 /**
@@ -34,13 +31,14 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     @Mock
     lateinit var impostoRepository: ImpostoRepository
 
-
     @InjectMocks
     private lateinit var buscarImpostosNoMesComAcoesSwingTradeService: BuscarImpostosNoMesComAcoesSwingTradeService
 
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
+
+        whenever(impostoRepository.save(any<Imposto>())).thenAnswer { it.arguments.first() }
     }
 
     @Test
@@ -75,7 +73,8 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         }
 
         val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        TestCase.assertNull(impostos)
+        TestCase.assertEquals(0, impostos.impostos?.size)
+        TestCase.assertEquals(0.0, impostos.total)
     }
 
     @Test
@@ -110,7 +109,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         }
 
         val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        TestCase.assertEquals(12.0, impostos?.valor)
+        TestCase.assertEquals(12.0, impostos.total)
     }
 
     @Test
@@ -147,13 +146,15 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
             )
         }
 
-        val imposto = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        verify(impostoRepository).save(argThat {
-            dataReferencia == today
+        val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
+        verify(impostoRepository, atLeast(1)).save(argThat {
+            operacoes.isNotEmpty()
                     && valor == 1.2
                     && estaPago == false
         })
-        TestCase.assertNull(imposto)
+
+        TestCase.assertEquals(0, impostos.impostos?.size)
+        TestCase.assertEquals(0.0, impostos.total)
     }
 
     @Test

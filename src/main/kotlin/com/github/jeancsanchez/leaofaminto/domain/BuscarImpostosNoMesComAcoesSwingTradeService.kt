@@ -4,7 +4,9 @@ import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.ImpostoRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.model.Imposto
+import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.leaofaminto.domain.model.dto.ImpostosDTO
 import com.github.jeancsanchez.leaofaminto.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,14 +24,15 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
     @Autowired private val comprasRepository: ComprasRepository,
     @Autowired private val vendasRepository: VendasRepository,
     @Autowired private val impostoRepository: ImpostoRepository,
-) : IDomainService<LocalDate, Imposto?> {
+) : IDomainService<LocalDate, ImpostosDTO> {
 
-    override fun execute(date: LocalDate): Imposto? {
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    override fun execute(date: LocalDate): ImpostosDTO {
         val firstDay = YearMonth.from(date).atDay(1)
         val lastDay = YearMonth.from(date).atEndOfMonth()
         var lucros = 0.0
         var prejuizos = 0.0
-        var totalDeVendas = 0.0
+        val operacoesDeVenda = mutableListOf<Operacao>()
 
         vendasRepository.findAll()
             .filter { it.data >= firstDay && it.data <= lastDay }
@@ -41,8 +44,7 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                     .forEach { compra ->
                         if (compra.data.isBefore(venda.data)) {
                             if (venda.valorTotal > 0) {
-                                totalDeVendas += venda.valorTotal
-
+                                operacoesDeVenda.add(venda)
                                 val resultado = venda.valorTotal - compra.valorTotal
                                 if (resultado > 0) {
                                     lucros += resultado
@@ -54,7 +56,8 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                     }
             }
 
-        if (totalDeVendas > 20000) {
+
+        if (operacoesDeVenda.sumByDouble { it.valorTotal } > 20000) {
             if (prejuizos > 0) {
 //            Se vamos deduzir este prejuízo da base de cálculo do IR,
 //            ele passa a ser OBRIGATÓRIO a informar na declaração,
@@ -63,30 +66,43 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
             }
 
             // TODO: Precisa remover os custos antes
-            val totalImposto = ((lucros * 0.15) - 0.00005).round()
-            val impostoDoMes = impostoRepository.findTop1ByDataReferenciaAndValor(
-                dataReferencia = date,
-                valor = totalImposto,
-            )
+            val valorImpostoDoMes = ((lucros * 0.15) - 0.00005).round()
 
-            if (impostoDoMes !== null && impostoDoMes.valor >= 10) {
-                return impostoDoMes
+            // Verifica se há impostos remanescentes não pagos
+            val impostosRemanescentes = impostoRepository.findAllByEstaPago(estaPago = false)
+
+            // Verifica se o valor de imposto do mês já foi registrado, se não registra
+            val impostoDoMes: Imposto = impostoRepository.findTop1ByDataReferenciaAndValor(
+                dataReferencia = date,
+                valor = valorImpostoDoMes
+            ) ?: let {
+                val novoImposto = Imposto(
+                    operacoes = operacoesDeVenda,
+                    valor = valorImpostoDoMes,
+                    estaPago = false
+                )
+                impostoRepository.save(novoImposto)
             }
 
-            val novoImposto = Imposto(
-                dataReferencia = date,
-                valor = totalImposto,
-                estaPago = false
-            )
+            // Se a soma dos impostos do mês com os remanescentes for maior que R$ 10,00, retorna esse imposto
+            val totalImpostos = impostosRemanescentes.sumByDouble { it.valor } + impostoDoMes.valor
+            if (totalImpostos >= 10) {
+                val impostosList = mutableListOf<Imposto>()
+                impostosList.addAll(impostosRemanescentes)
 
-            impostoRepository.save(novoImposto)
-            if (novoImposto.valor >= 10) {
-                return novoImposto
+                if (impostoDoMes.estaPago == false) {
+                    impostosList.add(impostoDoMes)
+                }
+
+                return ImpostosDTO(
+                    impostos = impostosList,
+                    total = impostosList.sumByDouble { it.valor }
+                )
             }
 
-            return null
+            return ImpostosDTO()
         }
 
-        return null
+        return ImpostosDTO()
     }
 }
