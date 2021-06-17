@@ -18,4 +18,6 @@ interface ImpostoRepository : JpaRepository<Imposto, Long> {
         dataReferencia: LocalDate,
         valor: Double
     ): Imposto?
+
+    fun findAllByEstaPago(estaPago: Boolean): List<Imposto>
 }
