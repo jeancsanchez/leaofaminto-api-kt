@@ -1,8 +1,7 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.OneToMany
 
 /**
  * @author @jeancsanchez
@@ -11,15 +10,19 @@ import javax.persistence.Id
  */
 
 @Entity
-class Bolsa(
-    @Id
-    @GeneratedValue
-    var id: Long,
-
+open class Bolsa(
     var nome: String
 ) {
+    @OneToMany
+    var corretoras: List<Corretora> = emptyList()
+        private set
 
-    fun registrarOperacao(operacao: Operacao) {
-
+    fun adicionarCorretora(corretora: Corretora) {
+        if (!corretoras.contains(corretora)) {
+            corretoras = corretoras
+                .toMutableList()
+                .also { it.add(corretora) }
+                .toList()
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.OneToMany
 
 /**
  * @author @jeancsanchez
@@ -9,26 +12,28 @@ import javax.persistence.*
  */
 
 @Entity
-class Governo(
+open class Governo(
+    val nomePais: String
+) : ITaxador {
     @Id
     @GeneratedValue
-    var id: Long,
+    var id: Long? = null
 
     @OneToMany
-    var bolsas: List<Bolsa>,
+    var bolsas: List<Bolsa> = emptyList()
+        private set
 
-    @OneToMany
-    var corretoras: List<Corretora>,
 
-    @Enumerated(EnumType.STRING)
-    var paisDeOrigem: Pais = Pais.BR
-) {
-
-    fun taxarOperacao(operacao: Operacao): Imposto? {
-        return null
+    fun adicionarBolsa(bolsa: Bolsa) {
+        if (!bolsas.contains(bolsa)) {
+            bolsas = bolsas
+                .toMutableList()
+                .also { it.add(bolsa) }
+                .toList()
+        }
     }
 
-    enum class Pais {
-        BR, EUA
+    override fun taxarOperacao(operacao: Operacao): Double? {
+        return null
     }
 }

@@ -41,6 +41,10 @@ open class Operacao(
             .plus(preco.round())
             .plus(quantidade)
 
+    fun aplicarTaxa(valor: Double) {
+        valorTotal -= valor
+    }
+
     override fun toString(): String {
         return "${data.formatToStringBR()} - ${javaClass.simpleName} - ${ativo.codigo} - $quantidade - $preco"
     }
