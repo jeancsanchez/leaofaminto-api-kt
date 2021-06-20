@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface GovernoRepository : JpaRepository<Governo, Long> {
 
-    fun findTop1ByNomeIgnoreCase(nome: String): Governo?
+    fun findTop1ByNomePaisIgnoreCase(nome: String): Governo?
 }

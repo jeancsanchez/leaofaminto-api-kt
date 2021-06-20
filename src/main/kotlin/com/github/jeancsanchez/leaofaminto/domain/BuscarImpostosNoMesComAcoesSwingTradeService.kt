@@ -77,6 +77,7 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                 valor = valorImpostoDoMes
             ) ?: let {
                 val novoImposto = Imposto(
+                    dataReferencia = operacoesDeVenda.first().data,
                     operacoes = operacoesDeVenda,
                     valor = valorImpostoDoMes,
                     estaPago = false

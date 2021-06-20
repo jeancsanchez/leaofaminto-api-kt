@@ -1,6 +1,7 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
 import javax.persistence.Entity
+import javax.persistence.Id
 import javax.persistence.OneToMany
 
 /**
@@ -11,9 +12,9 @@ import javax.persistence.OneToMany
 
 @Entity
 open class Bolsa(
-    var nome: String
+    @Id var nome: String
 ) {
-    @OneToMany
+    @OneToMany(targetEntity = Corretora::class)
     var corretoras: List<Corretora> = emptyList()
         private set
 

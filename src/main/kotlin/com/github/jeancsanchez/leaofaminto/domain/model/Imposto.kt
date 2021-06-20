@@ -1,5 +1,6 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
+import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -17,7 +18,11 @@ class Imposto(
     @GeneratedValue
     var id: Long? = null,
 
-    @OneToMany var operacoes: List<Operacao> = emptyList(),
+    var dataReferencia: LocalDate,
+
+    @OneToMany(targetEntity = Operacao::class)
+    var operacoes: List<Operacao> = emptyList(),
+
     var valor: Double,
     var estaPago: Boolean? = false
 )

@@ -19,7 +19,7 @@ open class Governo(
     @GeneratedValue
     var id: Long? = null
 
-    @OneToMany
+    @OneToMany(targetEntity = Bolsa::class)
     var bolsas: List<Bolsa> = emptyList()
         private set
 

@@ -106,6 +106,16 @@ class CEIXLSImporterServiceImpl(
             }
         }
 
+        return updateRepository(resultList)
+    }
+
+    /**
+     * Atualiza o [OperacaoRepository] considerando os objetos já existentes para evitar duplicidades.
+     *
+     * @param resultList Lista com novos registros
+     * @return Lista de operações atualizada.
+     */
+    private fun updateRepository(resultList: MutableList<Operacao>): List<Operacao> {
         if (resultList.isNotEmpty()) {
             if (operacaoRepository.count() == 0L) {
                 operacaoRepository.saveAll(resultList)
