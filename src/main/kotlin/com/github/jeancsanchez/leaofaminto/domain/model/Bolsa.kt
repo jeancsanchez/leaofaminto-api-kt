@@ -1,8 +1,6 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 /**
  * @author @jeancsanchez
@@ -11,6 +9,7 @@ import javax.persistence.OneToMany
  */
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 open class Bolsa(
     @Id var nome: String
 ) {

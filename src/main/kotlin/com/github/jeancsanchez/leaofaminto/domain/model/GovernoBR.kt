@@ -1,9 +1,13 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
+import javax.persistence.Entity
+
 /**
  * @author @jeancsanchez
  * @created 16/06/2021
  * Jesus loves you.
  */
-
-class GovernoBR : Governo(nomePais = "Brasil")
+@Entity
+class GovernoBR(
+    nomePais: String
+) : Governo(nomePais)

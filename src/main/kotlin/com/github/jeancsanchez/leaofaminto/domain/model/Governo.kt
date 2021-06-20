@@ -1,9 +1,6 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 /**
  * @author @jeancsanchez
@@ -12,6 +9,7 @@ import javax.persistence.OneToMany
  */
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 open class Governo(
     val nomePais: String
 ) : ITaxador {
@@ -35,5 +33,9 @@ open class Governo(
 
     override fun taxarOperacao(operacao: Operacao): Double? {
         return null
+    }
+
+    override fun toString(): String {
+        return nomePais
     }
 }
