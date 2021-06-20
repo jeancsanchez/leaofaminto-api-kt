@@ -10,4 +10,8 @@ import javax.persistence.Entity
 @Entity
 class GovernoBR(
     nomePais: String
-) : Governo(nomePais)
+) : Governo(nomePais) {
+    override fun taxarOperacao(operacao: Operacao): Double? {
+        return 0.0
+    }
+}

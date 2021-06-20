@@ -40,7 +40,8 @@ class CEIXLSImporterServiceImpl(
         val colunaPrecoOperacao = 9
 
         val corretora = currentSheet.getRow(9).getCell(1).stringCellValue.run {
-            corretoraRepository.findTop1ByNomeIgnoreCase(this) ?: corretoraRepository.save(Corretora(nome = this))
+            corretoraRepository.findTop1ByNomeIgnoreCase(this)
+                ?: throw IllegalStateException("Corretora não cadastrada")
         }
 
         var dataOperacao: LocalDate = LocalDate.now()

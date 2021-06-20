@@ -51,7 +51,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Compra: 10.000
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 200,
                     preco = 50.0,
                     data = today,
@@ -64,7 +64,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Venda: 20000
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 200,
                     preco = 100.0,
                     data = tomorrow,
@@ -87,7 +87,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Compra: 20000
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 200,
                     preco = 100.0,
                     data = today
@@ -100,7 +100,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Venda: 20.080 - Lucro de R$ 80,00
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 200,
                     preco = 100.40,
                     data = tomorrow
@@ -125,7 +125,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Compra: 20000
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 100,
                     preco = 200.0,
                     data = today
@@ -138,7 +138,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Venda: 20008 - Lucro de R$ 8,00
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 100,
                     preco = 200.08,
                     data = tomorrow

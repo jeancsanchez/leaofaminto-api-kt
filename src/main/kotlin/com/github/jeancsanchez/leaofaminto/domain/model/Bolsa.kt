@@ -10,9 +10,9 @@ import javax.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-open class Bolsa(
+abstract class Bolsa(
     @Id var nome: String
-) {
+) : ITaxador {
     @OneToMany(targetEntity = Corretora::class)
     var corretoras: List<Corretora> = emptyList()
         private set

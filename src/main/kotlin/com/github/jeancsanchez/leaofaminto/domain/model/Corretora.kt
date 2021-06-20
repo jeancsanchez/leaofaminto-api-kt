@@ -11,11 +11,11 @@ import javax.persistence.Id
  */
 
 @Entity
-open class Corretora(
+abstract class Corretora(
     @Id @GeneratedValue var id: Long? = null,
     var cnpj: String = "",
     var nome: String = ""
-) {
+) : ITaxador {
     override fun toString(): String {
         return nome
     }

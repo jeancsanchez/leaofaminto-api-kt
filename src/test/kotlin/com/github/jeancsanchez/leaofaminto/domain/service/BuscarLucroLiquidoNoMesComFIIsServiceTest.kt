@@ -45,7 +45,7 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
             listOf(
                 Compra(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 10,
                     preco = 100.0,
                     data = today.minusMonths(1),
@@ -57,7 +57,7 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
             listOf(
                 Venda(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 2,
                     preco = 200.0,
                     data = today.minusMonths(1)
@@ -65,14 +65,14 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
                 // Somente esse entra na contagem
                 Venda(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 4,
                     preco = 210.0,
                     data = today,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
-                    corretora = Corretora(nome = "Clear"),
+                    corretora = ClearCorretora(),
                     quantidade = 2,
                     preco = 230.0,
                     data = today.plusDays(30)

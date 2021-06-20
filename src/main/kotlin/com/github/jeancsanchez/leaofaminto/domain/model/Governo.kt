@@ -10,7 +10,7 @@ import javax.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-open class Governo(
+abstract class Governo(
     val nomePais: String
 ) : ITaxador {
     @Id
@@ -29,10 +29,6 @@ open class Governo(
                 .also { it.add(bolsa) }
                 .toList()
         }
-    }
-
-    override fun taxarOperacao(operacao: Operacao): Double? {
-        return null
     }
 
     override fun toString(): String {
