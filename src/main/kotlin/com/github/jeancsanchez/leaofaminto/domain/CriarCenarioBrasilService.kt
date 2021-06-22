@@ -23,17 +23,22 @@ class CriarCenarioBrasilService(
 ) : IDomainService<Unit, Unit> {
 
     override fun execute(param: Unit) {
-        val governoBR =
-            governoRepository.findTop1ByNomePaisIgnoreCase("Brasil") ?: governoRepository.save(GovernoBR("Brasil"))
-        val bolsaB3 = bolsaRepository.findTop1ByNomeIgnoreCase("b3") ?: bolsaRepository.save(B3("B3"))
-        val clearCorretora = corretoraRepository.findTop1ByNomeIgnoreCase("Clear") ?: corretoraRepository.save(
-            ClearCorretora()
-        )
+        val governoBR = GovernoBR().run {
+            governoRepository.findTop1ByNomePaisIgnoreCase(nomePais) ?: governoRepository.save(this)
+        }
 
-        governoBR.adicionarBolsa(bolsaB3)
-        bolsaB3.adicionarCorretora(clearCorretora)
+        val bolsaB3 = B3().also { b3 ->
+            bolsaRepository.findTop1ByNomeIgnoreCase(b3.nome) ?: let {
+                b3.governo = governoBR
+                bolsaRepository.save(b3)
+            }
+        }
 
-        governoRepository.save(governoBR)
-        bolsaRepository.save(bolsaB3)
+        ClearCorretora().also { clear ->
+            corretoraRepository.findTop1ByNomeIgnoreCase(clear.nome) ?: let {
+                clear.bolsa = bolsaB3
+                corretoraRepository.save(clear)
+            }
+        }
     }
 }
