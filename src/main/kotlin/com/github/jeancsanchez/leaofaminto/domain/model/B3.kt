@@ -9,16 +9,22 @@ import javax.persistence.Entity
  */
 
 @Entity
-class B3(
-    nome: String
-) : Bolsa(nome), ITaxador {
-    override fun taxarOperacao(operacao: Operacao): Double? {
+class B3 : Bolsa("B3", GovernoBR()), ITaxador {
+    override fun taxarOperacao(operacao: Operacao): Double {
         if (operacao is Venda) {
             val taxa = operacao.valorTotal * 0.000250
             operacao.aplicarTaxa(taxa)
             return taxa
         }
 
-        return null
+        return 0.0
+    }
+
+    override fun taxarLucroSwingTrade(lucro: Double): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroDayTrade(lucro: Double): Double {
+        return 0.0
     }
 }

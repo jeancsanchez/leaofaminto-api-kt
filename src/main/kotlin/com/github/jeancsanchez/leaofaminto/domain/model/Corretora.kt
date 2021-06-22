@@ -3,6 +3,7 @@ package com.github.jeancsanchez.leaofaminto.domain.model
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.ManyToOne
 
 /**
  * @author @jeancsanchez
@@ -14,8 +15,10 @@ import javax.persistence.Id
 abstract class Corretora(
     @Id @GeneratedValue var id: Long? = null,
     var cnpj: String = "",
-    var nome: String = ""
+    var nome: String = "",
+    @ManyToOne var bolsa: Bolsa
 ) : ITaxador {
+
     override fun toString(): String {
         return nome
     }

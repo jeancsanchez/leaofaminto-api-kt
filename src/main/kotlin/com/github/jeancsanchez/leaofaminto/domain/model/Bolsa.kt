@@ -11,18 +11,6 @@ import javax.persistence.*
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Bolsa(
-    @Id var nome: String
-) : ITaxador {
-    @OneToMany(targetEntity = Corretora::class)
-    var corretoras: List<Corretora> = emptyList()
-        private set
-
-    fun adicionarCorretora(corretora: Corretora) {
-        if (!corretoras.contains(corretora)) {
-            corretoras = corretoras
-                .toMutableList()
-                .also { it.add(corretora) }
-                .toList()
-        }
-    }
-}
+    @Id var nome: String,
+    @ManyToOne var governo: Governo
+) : ITaxador

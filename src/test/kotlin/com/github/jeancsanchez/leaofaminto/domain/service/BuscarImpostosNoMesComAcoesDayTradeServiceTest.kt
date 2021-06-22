@@ -53,18 +53,19 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     fun `Day trade - qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
         val governo = mock<Governo>()
-        val bolsa = mock<Bolsa>()
-        val corretora = mock<Corretora>()
+        val bolsa = mock<Bolsa>().also { it.governo = governo }
+        val corretora = mock<Corretora>().also { it.bolsa = bolsa }
 
-        whenever(governo.taxarOperacao(any())).thenAnswer { 9.98 }
-        whenever(bolsa.taxarOperacao(any())).thenAnswer { 0.10 }
-        whenever(corretora.taxarOperacao(any())).thenAnswer { 1.0 }
+        whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
+        whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
+        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.10 }
+        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 10000,
+                    quantidade = 1000,
                     preco = 25.0,
                     data = today,
                 ),
