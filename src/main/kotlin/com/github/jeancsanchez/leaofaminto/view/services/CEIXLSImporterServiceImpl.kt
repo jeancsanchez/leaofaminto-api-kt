@@ -3,6 +3,7 @@ package com.github.jeancsanchez.leaofaminto.view.services
 import com.github.jeancsanchez.leaofaminto.data.*
 import com.github.jeancsanchez.leaofaminto.domain.model.*
 import com.github.jeancsanchez.leaofaminto.view.extractCodigoAtivo
+import com.github.jeancsanchez.leaofaminto.view.extractNomeCorretora
 import com.github.jeancsanchez.leaofaminto.view.extractTipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.view.formatStringBRToDate
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
@@ -40,7 +41,7 @@ class CEIXLSImporterServiceImpl(
         val colunaPrecoOperacao = 9
 
         val corretora = currentSheet.getRow(9).getCell(1).stringCellValue.run {
-            corretoraRepository.findTop1ByNomeIgnoreCase(this)
+            corretoraRepository.findTop1ByNomeIgnoreCase(extractNomeCorretora())
                 ?: throw IllegalStateException("Corretora não cadastrada")
         }
 

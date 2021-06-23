@@ -59,6 +59,14 @@ fun String.extractCodigoAtivo(): String {
     return this.toUpperCase()
 }
 
+fun String.extractNomeCorretora(): String {
+    if (contains("Clear", true)) {
+        return "Clear"
+    }
+
+    return this
+}
+
 fun Double.round(): Double {
     return BigDecimal(this)
         .setScale(2, RoundingMode.HALF_EVEN)
