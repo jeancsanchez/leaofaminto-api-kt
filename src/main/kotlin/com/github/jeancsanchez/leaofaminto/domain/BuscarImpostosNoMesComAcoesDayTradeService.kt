@@ -5,6 +5,7 @@ import com.github.jeancsanchez.leaofaminto.domain.model.Compra
 import com.github.jeancsanchez.leaofaminto.domain.model.Corretora
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -60,7 +61,7 @@ class BuscarImpostosNoMesComAcoesDayTradeService(
                 }
         }
 
-        return impostoAPagar
+        return impostoAPagar.round()
     }
 
     private data class OperacaoAggregate(val codigoAtivo: String, val corretora: Corretora, val valor: Double)
