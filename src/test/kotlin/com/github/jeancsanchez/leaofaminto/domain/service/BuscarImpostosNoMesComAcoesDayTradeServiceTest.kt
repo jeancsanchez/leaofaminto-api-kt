@@ -28,6 +28,10 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     @InjectMocks
     private lateinit var buscarImpostosNoMesComAcoesDayTradeService: BuscarImpostosNoMesComAcoesDayTradeService
 
+    private val governo = mock<Governo>()
+    private val bolsa = mock<Bolsa>().also { it.governo = governo }
+    private val corretora = mock<Corretora>().also { it.bolsa = bolsa }
+
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
@@ -50,9 +54,6 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     @Suppress("DANGEROUS_CHARACTERS")
     fun `Day trade (Caso 1)- qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
-        val governo = mock<Governo>()
-        val bolsa = mock<Bolsa>().also { it.governo = governo }
-        val corretora = mock<Corretora>().also { it.bolsa = bolsa }
 
         whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
         whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
@@ -100,9 +101,6 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     @Suppress("DANGEROUS_CHARACTERS")
     fun `Day trade (Caso 2) - qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
-        val governo = mock<Governo>()
-        val bolsa = mock<Bolsa>().also { it.governo = governo }
-        val corretora = mock<Corretora>().also { it.bolsa = bolsa }
 
         whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 2.0 }
         whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 40.0 }
@@ -160,9 +158,6 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     fun `Day trade (Caso 3) - qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 2, 5)
         val yesterday = today.minusDays(1)
-        val governo = mock<Governo>()
-        val bolsa = mock<Bolsa>().also { it.governo = governo }
-        val corretora1 = mock<Corretora>().also { it.bolsa = bolsa }
         val corretora2 = mock<Corretora>().also { it.bolsa = bolsa }
 
         whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 0.60 }
@@ -170,20 +165,20 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
         whenever(bolsa.taxarOperacao(any<Compra>())).thenAnswer { 0.161 }
         whenever(bolsa.taxarOperacao(any<Venda>())).thenAnswer { 0.1748 }
         whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora1.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
         whenever(corretora2.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = corretora1,
+                    corretora = corretora,
                     quantidade = 10,
                     preco = 70.0,
                     data = yesterday,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = corretora1,
+                    corretora = corretora,
                     quantidade = 10,
                     preco = 76.0,
                     data = yesterday
@@ -213,21 +208,18 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     @Suppress("DANGEROUS_CHARACTERS")
     fun `Day trade em corretoras diferentes nao eh considerado para fins de impostos`() {
         val today = LocalDate.of(2021, 1, 5)
-        val governo = mock<Governo>()
-        val bolsa = mock<Bolsa>().also { it.governo = governo }
-        val corretora1 = mock<Corretora>().also { it.bolsa = bolsa }
         val corretora2 = mock<Corretora>().also { it.bolsa = bolsa }
 
         whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
         whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
         whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.10 }
-        whenever(corretora1.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
+        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
         whenever(corretora2.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = corretora1,
+                    corretora = corretora,
                     quantidade = 1000,
                     preco = 25.0,
                     data = today,
@@ -251,9 +243,6 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     fun `Operacoes em diferentes dias nao eh considerado Day Trade`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        val governo = mock<Governo>()
-        val bolsa = mock<Bolsa>().also { it.governo = governo }
-        val corretora = mock<Corretora>().also { it.bolsa = bolsa }
 
         whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
         whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
