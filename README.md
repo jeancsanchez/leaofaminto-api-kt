@@ -9,8 +9,8 @@ API que visa consolidar dados referetes às operações na bolsa para ajudar na 
 
 Todo ano o investidor tem que fazer a declaração anual de imposto de renda.
 Lá, ele precisa declarar suas ações, lucros e dividendos. O investidor também precisa pagar imposto todo mês que obtiver lucro (em certas operações) e ele fica responsável por fazer o calculo do imposto, gerar o boleto (Darf) e pagar.
-O que geralmente acontece é que todo o ano o investidor tem que correr atrás nas corretoras de baixar as notas de corretagem ou pegar essas informações de planilhas próprias e colocar essas infomações manualmente.
-Existem no mercado plataformas como Bastter e Trade Map que consolida todas essas informações, porém são plataformas pagas. A ideia é fazer um sistema open-source pra que todo investidor possa ter todas essas informações mínimas de forma gratuita.
+O que geralmente acontece é que todo o ano o investidor tem que correr atrás nas corretoras de baixar as notas de corretagem ou pegar essas informações de planilhas próprias e colocá-las manualmente no programa da Receita Federal.
+Existem no mercado plataformas como Bastter e Trade Map que consolida todas essas informações, porém são plataformas pagas. A ideia do **Leão Faminto API** é fazer um sistema open-source pra que todo investidor possa ter acesso a essas informações mínimas de forma gratuita.
 
 ### Operações suportadas:
 - [x] Ações Day trade/Swing trade
