@@ -20,6 +20,7 @@ import java.time.LocalDate
  * Jesus loves you.
  */
 
+@Suppress("DANGEROUS_CHARACTERS")
 internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
 
     @Mock
@@ -34,6 +35,10 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     @InjectMocks
     private lateinit var buscarImpostosNoMesComAcoesSwingTradeService: BuscarImpostosNoMesComAcoesSwingTradeService
 
+    private val governo = mock<Governo>()
+    private val bolsa = mock<Bolsa>().also { it.governo = governo }
+    private val corretora = mock<Corretora>().also { it.bolsa = bolsa }
+
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
@@ -41,19 +46,32 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         whenever(impostoRepository.save(any<Imposto>())).thenAnswer { it.arguments.first() }
     }
 
+    /**
+     * Exemplo retirado de: https://www.btgpactualdigital.com/blog/coluna-do-assessor/o-que-e-darf-como-gerar-e-calcular
+     * O investidor comprou 500 ações/units do BTG Pactual (BPAC11) a R$ 85,00 e vendeu 15 dias depois a R$ 90,00.
+     * Compra 500 x R$ 85,00 = R$ 42.500,00
+     * Venda 500 x R$ 90,00 = R$ 45.000,00
+     * Lucro da operação = (Valor de Venda – Valor de compra) – Taxas operacionais
+     * Lucro = R$ 2.500,00
+     * IRRF (0,005%) sobre o valor da venda = R$ 2,25
+     * DARF (15%) sobre lucro – IRRF = R$ 375,00 – R$ 2,25 = R$ 372,75
+     */
     @Test
-    fun `Swing trade - operacoes de venda de ate R$ 20 mil no mes, nao gera imposto`() {
+    fun `Swing trade (Caso 1) - operacoes de venda acima de R$ 20 mil no mes, geram imposto de 15% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
-        val tomorrow = today.plusDays(1)
-
-        whenever(comprasRepository.findAll()).thenAnswer {
+        val someDaysAfter = today.plusDays(15)
+        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 2.25 }
+        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 375.0 }
+        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer {
             listOf(
-                // Compra: 10.000
+                // Compra: 42.500
                 Compra(
-                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = ClearCorretora(),
-                    quantidade = 200,
-                    preco = 50.0,
+                    ativo = Ativo(codigo = "BPAC11", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 500,
+                    preco = 85.0,
                     data = today,
                 ),
             )
@@ -61,20 +79,20 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
 
         whenever(vendasRepository.findAll()).thenAnswer {
             listOf(
-                // Venda: 20000
+                // Venda: 45.000
                 Venda(
-                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = ClearCorretora(),
-                    quantidade = 200,
-                    preco = 100.0,
-                    data = tomorrow,
+                    ativo = Ativo(codigo = "BPAC11", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 500,
+                    preco = 90.0,
+                    data = someDaysAfter,
                 )
             )
         }
 
         val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        TestCase.assertEquals(0, impostos.impostos?.size)
-        TestCase.assertEquals(0.0, impostos.total)
+        TestCase.assertEquals(1, impostos.impostos?.size)
+        TestCase.assertEquals(372.75, impostos.total)
     }
 
     @Test

@@ -7,7 +7,6 @@ import com.github.jeancsanchez.leaofaminto.domain.model.Imposto
 import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.dto.ImpostosDTO
-import com.github.jeancsanchez.leaofaminto.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -32,6 +31,8 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
         val lastDay = YearMonth.from(date).atEndOfMonth()
         var lucros = 0.0
         var prejuizos = 0.0
+        var impostoAPagarNoMes = 0.0
+        val operacoesDeCompra = mutableListOf<Operacao>()
         val operacoesDeVenda = mutableListOf<Operacao>()
 
         vendasRepository.findAll()
@@ -42,9 +43,12 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
             .map { venda ->
                 comprasRepository.findAllByAtivoCodigo(venda.ativo.codigo)
                     .forEach { compra ->
+                        operacoesDeCompra.add(compra)
+
                         if (compra.data.isBefore(venda.data)) {
                             if (venda.valorTotal > 0) {
                                 operacoesDeVenda.add(venda)
+
                                 val resultado = venda.valorTotal - compra.valorTotal
                                 if (resultado > 0) {
                                     lucros += resultado
@@ -56,7 +60,7 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                     }
             }
 
-
+        // Volume de vendas menor que 20.000 é insento de imposto de renda.
         if (operacoesDeVenda.sumByDouble { it.valorTotal } > 20000) {
             if (prejuizos > 0) {
 //            Se vamos deduzir este prejuízo da base de cálculo do IR,
@@ -65,8 +69,19 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                 lucros -= prejuizos
             }
 
-            // TODO: Precisa remover os custos antes
-            val valorImpostoDoMes = ((lucros * 0.15) - 0.00005).round()
+            val corretora = operacoesDeCompra.first().corretora
+            val bolsa = operacoesDeCompra.first().corretora.bolsa
+            val governo = operacoesDeCompra.first().corretora.bolsa.governo
+            val operacoes = operacoesDeCompra + operacoesDeVenda
+
+            val taxasOperacionais = operacoes.sumByDouble {
+                corretora.taxarOperacao(it) + bolsa.taxarOperacao(it)
+            }
+
+            val lucroLiquido = lucros - taxasOperacionais
+            val dedoDuro = governo.recolherDedoDuroSwingTrade(lucros)
+            val impostoDevido = governo.taxarLucroSwingTrade(lucroLiquido)
+            impostoAPagarNoMes += impostoDevido - dedoDuro
 
             // Verifica se há impostos remanescentes não pagos
             val impostosRemanescentes = impostoRepository.findAllByEstaPago(estaPago = false)
@@ -74,12 +89,12 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
             // Verifica se o valor de imposto do mês já foi registrado, se não registra
             val impostoDoMes: Imposto = impostoRepository.findTop1ByDataReferenciaAndValor(
                 dataReferencia = date,
-                valor = valorImpostoDoMes
+                valor = impostoAPagarNoMes
             ) ?: let {
                 val novoImposto = Imposto(
                     dataReferencia = operacoesDeVenda.first().data,
                     operacoes = operacoesDeVenda,
-                    valor = valorImpostoDoMes,
+                    valor = impostoAPagarNoMes,
                     estaPago = false
                 )
                 impostoRepository.save(novoImposto)
