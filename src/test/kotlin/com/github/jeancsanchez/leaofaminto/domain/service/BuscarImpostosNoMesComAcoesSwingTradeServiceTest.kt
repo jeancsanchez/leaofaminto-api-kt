@@ -178,20 +178,27 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         TestCase.assertEquals(0.0, impostos.total)
     }
 
+    /**
+     * Nesse caso não há impostos remanescentes, porém há um imposto devido de R$ 1,20
+     * sobre o lucro do mês atual (R$ 8,00).
+     * Como o valor é menor que R$ 10,00, apenas salva o valor.
+     */
     @Test
     fun `Swing trade - Imposto a recolher menor que 10 reais nao precisa gerar Imposto, mas acumula o valor`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(impostoRepository.findTop1ByDataReferenciaAndValor(any(), any())).thenAnswer {
-            null
-        }
-
+        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 0.0004 }
+        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 1.20 }
+        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(impostoRepository.findTop1ByDataReferenciaAndValor(any(), any())).thenAnswer { null }
+        whenever(impostoRepository.findAllByEstaPago(any())).thenAnswer { emptyList<Imposto>() }
         whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
             listOf(
                 // Compra: 20000
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = ClearCorretora(),
+                    corretora = corretora,
                     quantidade = 100,
                     preco = 200.0,
                     data = today
@@ -204,7 +211,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 // Venda: 20008 - Lucro de R$ 8,00
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = ClearCorretora(),
+                    corretora = corretora,
                     quantidade = 100,
                     preco = 200.08,
                     data = tomorrow
@@ -213,18 +220,80 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         }
 
         val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        verify(impostoRepository, atLeast(1)).save(argThat {
+        verify(impostoRepository).save(argThat {
             operacoes.isNotEmpty()
-                    && valor == 1.2
+                    && valor == 1.20
                     && estaPago == false
         })
 
-        TestCase.assertEquals(0, impostos.impostos?.size)
+        TestCase.assertTrue(impostos.impostos?.isEmpty() == true)
         TestCase.assertEquals(0.0, impostos.total)
     }
 
+    /**
+     * Nesse caso há dois impostos remanescentes no valor de R$ 5,00 e o imposto devido de R$ 1,20
+     * sobre o lucro do mês atual (R$ 8,00).
+     * Total de impostos devidos = R$ 11,20
+     */
     @Test
     fun `Swing trade - Imposto acumulado igual ou maior que 10 reais gera Darf`() {
+        val today = LocalDate.of(2021, 1, 1)
+        val tomorrow = today.plusDays(1)
+        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 0.0004 }
+        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 1.20 }
+        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(impostoRepository.findTop1ByDataReferenciaAndValor(any(), any())).thenAnswer { null }
+        whenever(impostoRepository.findAllByEstaPago(any())).thenAnswer { invocation ->
+            listOf(
+                Imposto(
+                    dataReferencia = today.minusMonths(3),
+                    estaPago = false,
+                    valor = 5.0
+                ),
+                Imposto(
+                    dataReferencia = today.minusYears(1),
+                    estaPago = false,
+                    valor = 5.0
+                ),
+                Imposto(
+                    dataReferencia = today.minusYears(2),
+                    estaPago = true,
+                    valor = 5.0
+                )
+            ).filter { it.estaPago == invocation.arguments.first() }
+        }
 
+        whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
+            listOf(
+                // Compra: 20000
+                Compra(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 100,
+                    preco = 200.0,
+                    data = today
+                ),
+            ).filter { it.ativo.codigo == invocation.arguments.first() }
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
+                // Venda: 20008 - Lucro de R$ 8,00
+                Venda(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 100,
+                    preco = 200.08,
+                    data = tomorrow
+                )
+            )
+        }
+
+        val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
+        verify(impostoRepository).findAllByEstaPago(eq(false))
+
+        TestCase.assertTrue(impostos.impostos?.isNotEmpty() == true)
+        TestCase.assertEquals(11.20, impostos.total)
     }
 }

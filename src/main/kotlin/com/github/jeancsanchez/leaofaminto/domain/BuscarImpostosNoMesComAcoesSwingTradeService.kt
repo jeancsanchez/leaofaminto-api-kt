@@ -7,6 +7,7 @@ import com.github.jeancsanchez.leaofaminto.domain.model.Imposto
 import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.dto.ImpostosDTO
+import com.github.jeancsanchez.leaofaminto.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -94,7 +95,7 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                 val novoImposto = Imposto(
                     dataReferencia = operacoesDeVenda.first().data,
                     operacoes = operacoesDeVenda,
-                    valor = impostoAPagarNoMes,
+                    valor = impostoAPagarNoMes.round(),
                     estaPago = false
                 )
                 impostoRepository.save(novoImposto)
@@ -112,7 +113,7 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
 
                 return ImpostosDTO(
                     impostos = impostosList,
-                    total = impostosList.sumByDouble { it.valor }
+                    total = impostosList.sumByDouble { it.valor }.round()
                 )
             }
 
