@@ -95,39 +95,87 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         TestCase.assertEquals(372.75, impostos.total)
     }
 
+    /**
+     * Exemplo retirado de: https://bastter.com/mercado/forum/794001
+     * 500 BAST3 R$ 5.938,71
+     * 505 ITSA4 R$ 5.983,80
+     * 100 MQFO11 R$ 4.326,78
+     * 800 BBDC3 R$ 25.248,89
+     * 1.000 PETR4 R$ 9.673,28
+     * Os custos serão de 0,2825% do total das operações
+     *
+     * b) VENDA PARCIAL DA POSIÇÃO EM UMA ÚNICA OPERAÇÃO
+     * Aqui vendemos parte da posição (205 ações) e precisamos calcular o custo de aquisição das ações vendidas.
+     * Uma regra de três resolve o problema:
+     * 505 ITSA3  adquiridas por R$ 5.983,80
+     * 205 ITSA3 adquiridas por R$ 2.429,06 desprezando a partir da terceira decimal assim como a Receita costuma fazer.
+     * Venda 205 ITSA4 R$ 14,00/ação
+     * 205 x R$ 14,00 = R$ 2.870,00 x 0,2825% = R$ 8,10
+     * Venda R$ 2.870,00 - R$ 8,10 = R$ 2.861,90
+     * Vamos agora calcular o resultado da operação:
+     * Venda R$ 2.861,90 - compra R$ 2.429,06 = R$ 432,84
+     * Venda menor que R$ 20 mil, lucro isento de IR. Informar o valor na ficha Rendimentos isentos e não tributáveis na linha 20.
+     */
     @Test
     @Suppress("DANGEROUS_CHARACTERS")
-    fun `Swing trade - operacoes de venda acima de R$ 20 mil no mes, gera imposto de 15% sobre o lucro do mes`() {
+    fun `Swing trade (Caso 2) - operacoes de venda de ate R$ 20 mil no mes, nao geram imposto`() {
         val today = LocalDate.of(2021, 1, 1)
-        val tomorrow = today.plusDays(1)
+        val someDaysAfter = today.plusDays(15)
+        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 8.10 }
         whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
             listOf(
-                // Compra: 20000
+                Compra(
+                    ativo = Ativo(codigo = "BAST3", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 500,
+                    preco = 11.87,
+                    data = today
+                ),
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = ClearCorretora(),
-                    quantidade = 200,
-                    preco = 100.0,
+                    corretora = corretora,
+                    quantidade = 505,
+                    preco = 11.84,
                     data = today
+                ),
+                Compra(
+                    ativo = Ativo(codigo = "MQFO11", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 100,
+                    preco = 43.26,
+                    data = today
+                ),
+                Compra(
+                    ativo = Ativo(codigo = "BBDC3", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 800,
+                    preco = 31.56,
+                    data = today
+                ),
+                Compra(
+                    ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 1000,
+                    preco = 9.67,
+                    data = today
+                ),
+                // Venda = R$ 2870
+                // Lucro = R$ 432,84
+                Venda(
+                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
+                    corretora = corretora,
+                    quantidade = 205,
+                    preco = 14.0,
+                    data = someDaysAfter
                 ),
             ).filter { it.ativo.codigo == invocation.arguments.first() }
         }
 
-        whenever(vendasRepository.findAll()).thenAnswer {
-            listOf(
-                // Venda: 20.080 - Lucro de R$ 80,00
-                Venda(
-                    ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
-                    corretora = ClearCorretora(),
-                    quantidade = 200,
-                    preco = 100.40,
-                    data = tomorrow
-                )
-            )
-        }
-
         val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        TestCase.assertEquals(12.0, impostos.total)
+        TestCase.assertEquals(0.0, impostos.total)
     }
 
     @Test
