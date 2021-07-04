@@ -13,4 +13,6 @@ interface ITaxador {
     fun taxarLucroSwingTrade(lucro: Double): Double
 
     fun taxarLucroDayTrade(lucro: Double): Double
+
+    fun taxarLucroFII(lucro: Double): Double
 }

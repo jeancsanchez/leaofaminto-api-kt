@@ -28,4 +28,8 @@ class GovernoBR : Governo("Brasil") {
     override fun taxarLucroDayTrade(lucro: Double): Double {
         return 0.0
     }
+
+    override fun taxarLucroFII(lucro: Double): Double {
+        return 0.0
+    }
 }

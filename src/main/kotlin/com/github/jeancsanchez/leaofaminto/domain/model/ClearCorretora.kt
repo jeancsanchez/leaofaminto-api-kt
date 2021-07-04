@@ -24,4 +24,8 @@ class ClearCorretora : Corretora(nome = "Clear", cnpj = "02.332.886/0011-78", bo
     override fun taxarLucroDayTrade(lucro: Double): Double {
         return 0.0
     }
+
+    override fun taxarLucroFII(lucro: Double): Double {
+        return 0.0
+    }
 }
