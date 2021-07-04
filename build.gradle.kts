@@ -63,8 +63,9 @@ jacoco {
 tasks.jacocoTestReport {
     group = "Reporting"
     reports {
-        xml.isEnabled = true
+        xml.isEnabled = false
         csv.isEnabled = false
-        html.isEnabled = false
+        html.isEnabled = true
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }
