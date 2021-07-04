@@ -81,7 +81,7 @@ class MainControllerTest {
             assertEquals(12931.49, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
-                assertTrue(firstLine.corretora.nome.contains("Clear Corretora", true))
+                assertTrue(firstLine.corretora.nome.contains("Clear", true))
                 assertEquals("04/03/20", firstLine.data.formatToStringBR())
                 assertEquals("ITSA4", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
@@ -91,7 +91,7 @@ class MainControllerTest {
             }
 
             last().also { lastLine ->
-                assertTrue(lastLine.corretora.nome.contains("Clear Corretora", true))
+                assertTrue(lastLine.corretora.nome.contains("Clear", true))
                 assertEquals("23/10/20", lastLine.data.formatToStringBR())
                 assertEquals("WEGE3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
@@ -109,7 +109,7 @@ class MainControllerTest {
             assertEquals(878.70, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
-                assertTrue(firstLine.corretora.nome.contains("Clear Corretora", true))
+                assertTrue(firstLine.corretora.nome.contains("Clear", true))
                 assertEquals("23/10/20", firstLine.data.formatToStringBR())
                 assertEquals("SIMH3", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
@@ -119,7 +119,7 @@ class MainControllerTest {
             }
 
             last().also { lastLine ->
-                assertTrue(lastLine.corretora.nome.contains("Clear Corretora", true))
+                assertTrue(lastLine.corretora.nome.contains("Clear", true))
                 assertEquals("23/10/20", lastLine.data.formatToStringBR())
                 assertEquals("SIMH3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)

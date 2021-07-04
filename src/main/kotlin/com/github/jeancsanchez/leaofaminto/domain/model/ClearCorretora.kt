@@ -12,4 +12,20 @@ import javax.persistence.InheritanceType
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-class ClearCorretora : Corretora(nome = "Clear", cnpj = "02.332.886/0011-78")
+class ClearCorretora : Corretora(nome = "Clear", cnpj = "02.332.886/0011-78", bolsa = B3()) {
+    override fun taxarOperacao(operacao: Operacao): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroSwingTrade(lucro: Double): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroDayTrade(lucro: Double): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroFII(lucro: Double): Double {
+        return 0.0
+    }
+}

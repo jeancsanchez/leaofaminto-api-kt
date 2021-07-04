@@ -8,5 +8,11 @@ package com.github.jeancsanchez.leaofaminto.domain.model
 
 interface ITaxador {
 
-    fun taxarOperacao(operacao: Operacao): Double?
+    fun taxarOperacao(operacao: Operacao): Double
+
+    fun taxarLucroSwingTrade(lucro: Double): Double
+
+    fun taxarLucroDayTrade(lucro: Double): Double
+
+    fun taxarLucroFII(lucro: Double): Double
 }

@@ -1,6 +1,9 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Inheritance
+import javax.persistence.InheritanceType
 
 /**
  * @author @jeancsanchez
@@ -10,32 +13,15 @@ import javax.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-open class Governo(
-    val nomePais: String
+abstract class Governo(
+    @Id val nomePais: String
 ) : ITaxador {
-    @Id
-    @GeneratedValue
-    var id: Long? = null
-
-    @OneToMany(targetEntity = Bolsa::class)
-    var bolsas: List<Bolsa> = emptyList()
-        private set
-
-
-    fun adicionarBolsa(bolsa: Bolsa) {
-        if (!bolsas.contains(bolsa)) {
-            bolsas = bolsas
-                .toMutableList()
-                .also { it.add(bolsa) }
-                .toList()
-        }
-    }
-
-    override fun taxarOperacao(operacao: Operacao): Double? {
-        return null
-    }
 
     override fun toString(): String {
         return nomePais
     }
+
+    abstract fun recolherDedoDuroDayTrade(valor: Double): Double
+
+    abstract fun recolherDedoDuroSwingTrade(valor: Double): Double
 }

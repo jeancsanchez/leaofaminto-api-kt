@@ -8,6 +8,28 @@ import javax.persistence.Entity
  * Jesus loves you.
  */
 @Entity
-class GovernoBR(
-    nomePais: String
-) : Governo(nomePais)
+class GovernoBR : Governo("Brasil") {
+    override fun recolherDedoDuroDayTrade(valor: Double): Double {
+        return 0.0
+    }
+
+    override fun recolherDedoDuroSwingTrade(valor: Double): Double {
+        return 0.0
+    }
+
+    override fun taxarOperacao(operacao: Operacao): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroSwingTrade(lucro: Double): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroDayTrade(lucro: Double): Double {
+        return 0.0
+    }
+
+    override fun taxarLucroFII(lucro: Double): Double {
+        return 0.0
+    }
+}

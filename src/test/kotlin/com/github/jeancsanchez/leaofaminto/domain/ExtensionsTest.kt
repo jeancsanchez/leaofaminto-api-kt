@@ -1,10 +1,7 @@
 package com.github.jeancsanchez.leaofaminto.domain
 
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
-import com.github.jeancsanchez.leaofaminto.view.extractCodigoAtivo
-import com.github.jeancsanchez.leaofaminto.view.extractTipoDeAtivo
-import com.github.jeancsanchez.leaofaminto.view.formatStringBRToDate
-import com.github.jeancsanchez.leaofaminto.view.formatToStringBR
+import com.github.jeancsanchez.leaofaminto.view.*
 import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -65,5 +62,11 @@ class ExtensionsTest {
 
         val string1 = "itub3"
         assertEquals("ITUB3", string1.extractCodigoAtivo())
+    }
+
+    @Test
+    fun extractNomeCorretora() {
+        val string = "308 - CLEAR CORRETORA - GRUPO XP"
+        assertEquals("Clear", string.extractNomeCorretora())
     }
 }
