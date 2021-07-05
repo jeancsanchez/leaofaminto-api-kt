@@ -1,4 +1,5 @@
 ![CI status](https://github.com/jeancsanchez/leaofaminto-api/actions/workflows/gradle.yml/badge.svg?branch=dev) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/060ac6a34b35485b82a67d429cce4d6d)](https://app.codacy.com/gh/jeancsanchez/leaofaminto-api?utm_source=github.com&utm_medium=referral&utm_content=jeancsanchez/leaofaminto-api&utm_campaign=Badge_Grade_Settings)
+ [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/5e811cac366549ab9f6c594e26318387)](https://www.codacy.com/gh/jeancsanchez/leaofaminto-api/dashboard?utm_source=github.com&utm_medium=referral&utm_content=jeancsanchez/leaofaminto-api&utm_campaign=Badge_Coverage)
  
 # Leão faminto API
 <p align="center">
