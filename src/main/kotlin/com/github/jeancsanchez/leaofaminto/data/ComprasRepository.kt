@@ -13,7 +13,14 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ComprasRepository : JpaRepository<Compra, String> {
 
+    /**
+     * Busca a primeira operação de compra ordained pelo Id
+     */
     fun findTopByOrderByIdDesc(): Compra?
 
+    /**
+     * Busca todas as operações pelo codigo do ativo.
+     * @param codigo Código do ativo.
+     */
     fun findAllByAtivoCodigo(codigo: String): List<Compra>
 }

@@ -25,7 +25,7 @@ class GerarOperacoesConsolidadasService(
     override fun execute(param: Unit): ConsolidadoDTO {
         val items = comprasRepository.findAll()
             .toMutableList()
-            .handleJSLG()
+            .replaceSIMHToJSLG()
             .groupBy { it.ativo.codigo }
             .map { map ->
                 val valorCompras = map.value
@@ -59,11 +59,7 @@ class GerarOperacoesConsolidadasService(
         )
     }
 
-    /**
-     * O papel JSLG mudou o nome para SIMH. Esse método substitui as operações
-     * de JSLG por SIMH. Apenas o nome.
-     */
-    private fun MutableList<Compra>.handleJSLG(): List<Compra> {
+    private fun MutableList<Compra>.replaceSIMHToJSLG(): List<Compra> {
         replaceAll { compra ->
             if (compra.ativo.codigo == "JSLG3") {
                 compra.ativo.codigo = "SIMH3"

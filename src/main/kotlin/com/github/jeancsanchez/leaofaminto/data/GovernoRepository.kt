@@ -13,5 +13,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface GovernoRepository : JpaRepository<Governo, Long> {
 
+    /**
+     * Pega o primeiro país pelo nome.
+     * @param nome nome do país.
+     */
     fun findTop1ByNomePaisIgnoreCase(nome: String): Governo?
 }
