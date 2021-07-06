@@ -41,6 +41,10 @@ open class Operacao(
             .plus(preco.round())
             .plus(quantidade)
 
+    /**
+     * Desconta a taxa informada do valor total da operação
+     * @param valor valor a ser taxado.
+     */
     fun aplicarTaxa(valor: Double) {
         valorTotal -= valor
     }

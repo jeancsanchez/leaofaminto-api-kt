@@ -13,5 +13,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CorretoraRepository : JpaRepository<Corretora, Long> {
 
+    /**
+     * Pega primeira corretora pelo nome
+     * @param nome nome da corretora
+     */
     fun findTop1ByNomeIgnoreCase(nome: String): Corretora?
 }
