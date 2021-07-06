@@ -26,16 +26,25 @@ class MainController(
     @Autowired val gerarOperacoesConsolidadasService: GerarOperacoesConsolidadasService,
     @Autowired val ceiXLSImporterService: CEIXLSImporterService,
 ) {
+    /**
+     * Lista todas as operações.
+     */
     @GetMapping("/operacoes")
     fun listarOperacoes(): ResponseEntity<List<Operacao>> {
         return ResponseEntity.ok(vendasRepository.findAll())
     }
 
+    /**
+     * Lista todas as operações de forma consolidada
+     */
     @GetMapping("/operacoes/consolidadas")
     fun listarOperacoesConsolidadas(): ResponseEntity<ConsolidadoDTO> {
         return ResponseEntity.ok(gerarOperacoesConsolidadasService.execute(Unit))
     }
 
+    /**
+     * Sincroniza as operações de acordo com o arquivo informado.
+     */
     @PostMapping("/sync")
     fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
         val result = ceiXLSImporterService.execute(arquivo)

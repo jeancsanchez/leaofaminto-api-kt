@@ -21,7 +21,15 @@ abstract class Governo(
         return nomePais
     }
 
+    /**
+     * Recolhe o valor do dedo duro em operação day trade baseado no valor informado.
+     * @param valor valor a ser taxado.
+     */
     abstract fun recolherDedoDuroDayTrade(valor: Double): Double
 
+    /**
+     * Recolhe o valor do dedo duro em operação swing trade baseado no valor informado.
+     * @param valor valor a ser taxado.
+     */
     abstract fun recolherDedoDuroSwingTrade(valor: Double): Double
 }

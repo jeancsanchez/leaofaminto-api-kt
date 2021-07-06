@@ -13,7 +13,14 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OperacaoRepository : JpaRepository<Operacao, String> {
 
+    /**
+     * Pega a primeira operação ordenado pelo Id
+     */
     fun findTopByOrderByIdDesc(): Operacao?
 
+    /**
+     * Pega todas as operações pelo código do ativo
+     * @param codigo codigo do ativo na operação
+     */
     fun findAllByAtivoCodigo(codigo: String): List<Operacao>
 }
