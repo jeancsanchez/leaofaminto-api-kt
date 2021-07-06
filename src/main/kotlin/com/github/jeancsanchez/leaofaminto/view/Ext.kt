@@ -11,6 +11,10 @@ import java.time.LocalDate
  * Jesus loves you.
  */
 
+/**
+ * Formata [LocalDate] para string no formato brasileiro
+ * Ex: 2021-08-01 --> 01/08/2021
+ */
 fun LocalDate.formatToStringBR(): String {
     var day = dayOfMonth.toString()
     var month = monthValue.toString()
@@ -26,6 +30,9 @@ fun LocalDate.formatToStringBR(): String {
     return "$day/$month/$year"
 }
 
+/**
+ * Formata string para o formato [LocalDate]
+ */
 fun String.formatStringBRToDate(): LocalDate? {
     if (trim().contains("/")) {
         return try {
@@ -43,6 +50,9 @@ fun String.formatStringBRToDate(): LocalDate? {
     return null
 }
 
+/**
+ * Extrai o tipo do ativo
+ */
 fun String.extractTipoDeAtivo(): TipoDeAtivo {
     if (trim().contains("FII", true)) {
         return TipoDeAtivo.FII
@@ -51,6 +61,9 @@ fun String.extractTipoDeAtivo(): TipoDeAtivo {
     return TipoDeAtivo.ACAO
 }
 
+/**
+ * Extrai o codigo do ativo
+ */
 fun String.extractCodigoAtivo(): String {
     if (trim().last().equals('F', true)) {
         return this.toUpperCase().dropLast(1)
@@ -59,6 +72,9 @@ fun String.extractCodigoAtivo(): String {
     return this.toUpperCase()
 }
 
+/**
+ * Extrai o nome da corretora
+ */
 fun String.extractNomeCorretora(): String {
     if (contains("Clear", true)) {
         return "Clear"
@@ -67,6 +83,9 @@ fun String.extractNomeCorretora(): String {
     return this
 }
 
+/**
+ * Arredonda o número "para cima"
+ */
 fun Double.round(): Double {
     return BigDecimal(this)
         .setScale(2, RoundingMode.HALF_EVEN)

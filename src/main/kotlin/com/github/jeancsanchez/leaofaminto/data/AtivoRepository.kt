@@ -13,5 +13,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface AtivoRepository : JpaRepository<Ativo, String> {
 
+    /**
+     * Pega o primeiro ativo pelo nome.
+     * @param nome nome do ativo.
+     */
     fun findTop1ByNomeIgnoreCase(nome: String): Ativo?
 }
