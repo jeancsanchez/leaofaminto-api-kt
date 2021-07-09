@@ -2,6 +2,7 @@ package com.github.jeancsanchez.leaofaminto.domain.service
 
 import com.github.jeancsanchez.leaofaminto.data.OperacaoRepository
 import com.github.jeancsanchez.leaofaminto.domain.BuscarImpostosNoMesComAcoesDayTradeService
+import com.github.jeancsanchez.leaofaminto.domain.FakeFactory
 import com.github.jeancsanchez.leaofaminto.domain.model.*
 import junit.framework.TestCase
 import org.junit.jupiter.api.BeforeEach
@@ -29,12 +30,15 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     private lateinit var buscarImpostosNoMesComAcoesDayTradeService: BuscarImpostosNoMesComAcoesDayTradeService
 
     private val governo = mock<Governo>()
-    private val bolsa = mock<Bolsa>().also { it.governo = governo }
-    private val corretora = mock<Corretora>().also { it.bolsa = bolsa }
+    private val bolsa = mock<Bolsa>()
+    private val corretora = mock<Corretora>()
 
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
+
+        whenever(bolsa.governo).thenAnswer { governo }
+        whenever(corretora.bolsa).thenAnswer { bolsa }
     }
 
     /**

@@ -36,13 +36,15 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     private lateinit var buscarImpostosNoMesComAcoesSwingTradeService: BuscarImpostosNoMesComAcoesSwingTradeService
 
     private val governo = mock<Governo>()
-    private val bolsa = mock<Bolsa>().also { it.governo = governo }
-    private val corretora = mock<Corretora>().also { it.bolsa = bolsa }
+    private val bolsa = mock<Bolsa>()
+    private val corretora = mock<Corretora>()
 
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
 
+        whenever(bolsa.governo).thenAnswer { governo }
+        whenever(corretora.bolsa).thenAnswer { bolsa }
         whenever(impostoRepository.save(any<Imposto>())).thenAnswer { it.arguments.first() }
     }
 
