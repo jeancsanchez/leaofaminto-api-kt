@@ -29,7 +29,7 @@ open class Operacao(
     var id: Long? = null
 
     var valorTotal: Double = 0.0
-        private set
+        protected set
         get() = quantidade * preco
 
     var hashId: String = ""
@@ -40,14 +40,6 @@ open class Operacao(
             .plus(ativo.tipoDeAtivo.name)
             .plus(preco.round())
             .plus(quantidade)
-
-    /**
-     * Desconta a taxa informada do valor total da operação
-     * @param valor valor a ser taxado.
-     */
-    fun aplicarTaxa(valor: Double) {
-        valorTotal -= valor
-    }
 
     override fun toString(): String {
         return "${data.formatToStringBR()} - ${javaClass.simpleName} - ${ativo.codigo} - $quantidade - $preco"

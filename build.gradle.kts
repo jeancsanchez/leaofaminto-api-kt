@@ -38,7 +38,8 @@ dependencies {
 
     implementation("org.apache.poi:poi:5.0.0")
     runtimeOnly("mysql:mysql-connector-java")
-    testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation("org.mockito:mockito-inline:2.13.0")
     testRuntimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
