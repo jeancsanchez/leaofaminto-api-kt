@@ -2,6 +2,7 @@ package com.github.jeancsanchez.leaofaminto.domain
 
 import com.github.jeancsanchez.leaofaminto.domain.model.B3
 import com.github.jeancsanchez.leaofaminto.domain.model.Compra
+import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.Venda
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -16,24 +17,59 @@ import org.mockito.kotlin.*
 class B3Test {
 
     @Test
-    fun `Nao cobra taxa em lucro day trade`() {
-//        val b3 = B3()
-//        val resultado = b3.taxarLucroDayTrade(1000.0)
-//        assertEquals(0.0, resultado)
+    fun `Acoes - Nao cobra taxa em lucro day trade`() {
+        val b3 = B3()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.ACAO }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.SWING_TRADE }
+        }
+
+        val resultado = b3.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
     }
 
     @Test
-    fun `Nao cobra taxa em lucro em swing trade`() {
-//        val b3 = B3()
-//        val resultado = b3.taxarLucroSwingTrade(1000.0)
-//        assertEquals(0.0, resultado)
+    fun `Acoes - Nao cobra taxa em lucro em swing trade`() {
+        val b3 = B3()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.ACAO }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.SWING_TRADE }
+        }
+
+        val resultado = b3.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
     }
 
     @Test
-    fun `Nao cobra taxa em lucro com FIIs`() {
-//        val b3 = B3()
-//        val resultado = b3.taxarLucroFII(1000.0)
-//        assertEquals(0.0, resultado)
+    fun `FIIs - Nao cobra taxa em lucro day trade`() {
+        val b3 = B3()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.FII }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.DAY_TRADE }
+        }
+
+        val resultado = b3.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
+    }
+
+    @Test
+    fun `FIIs - Nao cobra taxa em lucro swing trade`() {
+        val b3 = B3()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.FII }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.SWING_TRADE }
+        }
+
+        val resultado = b3.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
     }
 
     /**
@@ -43,7 +79,7 @@ class B3Test {
      * Já, o valor da venda foi de R$ 3.400,00, então, a uma taxa de 0,0300%, o valor será de R$ 1,02.
      */
     @Test
-    fun `Cobra emolumentos sobre operacao de compra`() {
+    fun `Compra - Cobra emolumentos sobre operacao de compra`() {
         val b3 = B3()
         val compra = mock<Compra>().also {
             whenever(it.preco).thenAnswer { 15.0 }
@@ -64,7 +100,7 @@ class B3Test {
      * Já, o valor da venda foi de R$ 3.400,00, então, a uma taxa de 0,0300%, o valor será de R$ 1,02.
      */
     @Test
-    fun `Cobra emolumentos sobre operacao de venda swing trade`() {
+    fun `Venda - Cobra emolumentos sobre operacao de venda swing trade`() {
         val b3 = B3()
         val venda = mock<Venda>().also {
             whenever(it.preco).thenAnswer { 17.0 }
@@ -84,7 +120,7 @@ class B3Test {
      * Emolumentos da faixa de 0 a R$ 1.000.000 é 0,0230%
      */
     @Test
-    fun `Cobra emolumentos sobre operacao de compra day trade`() {
+    fun `Compra - Cobra emolumentos sobre operacao de compra day trade`() {
         val b3 = B3()
         val venda = mock<Venda>().also {
             whenever(it.preco).thenAnswer { 1000.0 }
