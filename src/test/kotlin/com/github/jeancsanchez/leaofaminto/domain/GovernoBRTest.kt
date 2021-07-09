@@ -18,7 +18,7 @@ import org.mockito.kotlin.*
 class GovernoBRTest {
 
     @Test
-    fun `Nao cobra taxa sobre operacao de compra`() {
+    fun `Compra - Nao cobra taxa sobre operacao de compra`() {
         val governo = GovernoBR()
         val compra = mock<Compra>().also {
             whenever(it.valorTotal).thenAnswer { 3000.0 }
@@ -31,7 +31,7 @@ class GovernoBRTest {
     }
 
     @Test
-    fun `Operacao de venda deve ser informado valor do lucro`() {
+    fun `Venda - Operacao de venda deve ser informado valor do lucro`() {
         val governo = GovernoBR()
         val venda = mock<Venda>()
 
