@@ -44,28 +44,46 @@ class BuscarLucroLiquidoNoMesComFIIsService(
                 .map { map ->
                     val corretora = map.key
                     val operacoes = map.value
-                    val lucroBruto = operacoes.sumByDouble {
+                    var lucroNoMes = 0.0
+                    var impostosAPagarNoMes = 0.0
+                    var taxasOperacionaisNoMes = 0.0
+                    var prejuizos = 0.0
+
+                    operacoes.forEach {
                         val compra = it.first
                         val venda = it.second
 
-                        if (venda.valorTotal > compra.valorTotal) {
+                        val resultado = if (venda.valorTotal > compra.valorTotal) {
                             venda.valorTotal - compra.valorTotal
                         } else {
                             compra.valorTotal - (compra.valorTotal - venda.valorTotal)
                         }
-                    }
 
-//                    val imposto = corretora.bolsa.governo.taxarLucroFII(lucroBruto)
-//                    val custosOperacionais =
-//                        corretora.taxarLucroFII(lucroBruto) + corretora.bolsa.taxarLucroFII(lucroBruto)
-//                    val lucroLiquido = lucroBruto - (imposto + custosOperacionais)
+                        taxasOperacionaisNoMes += compra.corretora.taxarOperacao(compra)
+                        taxasOperacionaisNoMes += compra.corretora.bolsa.taxarOperacao(compra)
+                        taxasOperacionaisNoMes += venda.corretora.taxarOperacao(venda)
+                        taxasOperacionaisNoMes += venda.corretora.bolsa.taxarOperacao(venda)
+
+                        if (resultado > 0) {
+                            val taxaCorretora = venda.corretora.taxarLucroVenda(venda, resultado)
+                            val taxaBolsa = venda.corretora.bolsa.taxarLucroVenda(venda, resultado)
+                            val totalCustas = taxaCorretora + taxaBolsa
+                            val lucroLiquido = resultado - totalCustas
+
+                            lucroNoMes += lucroLiquido
+                            taxasOperacionaisNoMes += totalCustas
+                            impostosAPagarNoMes =
+                                venda.corretora.bolsa.governo.taxarLucroVenda(venda, lucroLiquido)
+
+                        } else if (resultado < 0) {
+                            prejuizos += resultado
+                        }
+                    }
 
                     LucroFIIByCorretora(
                         corretora = corretora,
-//                        impostos = imposto,
-//                        lucroLiquido = lucroLiquido
-                        impostos = 0.0,
-                        lucroLiquido = 0.0
+                        impostos = impostosAPagarNoMes,
+                        lucroLiquido = lucroNoMes
                     )
                 }
         }
