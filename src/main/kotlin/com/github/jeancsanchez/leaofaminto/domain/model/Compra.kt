@@ -16,4 +16,13 @@ class Compra(
     data: LocalDate = LocalDate.now(),
     preco: Double,
     quantidade: Int
-) : Operacao(ativo, corretora, data, preco, quantidade)
+) : Operacao(ativo, corretora, data, preco, quantidade) {
+
+    /**
+     * Acrescenta a taxa informada ao valor total da operação
+     * @param valor valor a ser taxado.
+     */
+    fun acrescentarTaxa(valor: Double) {
+        valorTotal += valor
+    }
+}

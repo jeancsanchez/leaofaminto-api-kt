@@ -2,7 +2,6 @@ package com.github.jeancsanchez.leaofaminto.domain.service
 
 import com.github.jeancsanchez.leaofaminto.data.OperacaoRepository
 import com.github.jeancsanchez.leaofaminto.domain.BuscarImpostosNoMesComAcoesDayTradeService
-import com.github.jeancsanchez.leaofaminto.domain.FakeFactory
 import com.github.jeancsanchez.leaofaminto.domain.model.*
 import junit.framework.TestCase
 import org.junit.jupiter.api.BeforeEach
@@ -59,10 +58,9 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     fun `Day trade (Caso 1)- qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
 
-        whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
-        whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.10 }
-        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 189.80 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.10 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 1.0 }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
@@ -106,10 +104,9 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
     fun `Day trade (Caso 2) - qualquer lucro no dia com acoes gera imposto de 20% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
 
-        whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 2.0 }
-        whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 40.0 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 38.0 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
@@ -164,13 +161,12 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
         val yesterday = today.minusDays(1)
         val corretora2 = mock<Corretora>().also { it.bolsa = bolsa }
 
-        whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 0.60 }
-        whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 11.93284 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 22.67 }
         whenever(bolsa.taxarOperacao(any<Compra>())).thenAnswer { 0.161 }
         whenever(bolsa.taxarOperacao(any<Venda>())).thenAnswer { 0.1748 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora2.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora2.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora2.bolsa).thenAnswer { bolsa }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
@@ -214,11 +210,11 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
         val today = LocalDate.of(2021, 1, 5)
         val corretora2 = mock<Corretora>().also { it.bolsa = bolsa }
 
-        whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
-        whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.10 }
-        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
-        whenever(corretora2.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 189.8 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.10 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 1.0 }
+        whenever(corretora2.taxarLucroVenda(any(), any())).thenAnswer { 1.0 }
+        whenever(corretora2.bolsa).thenAnswer { bolsa }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
@@ -248,10 +244,9 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
 
-        whenever(governo.recolherDedoDuroDayTrade(any())).thenAnswer { 9.98 }
-        whenever(governo.taxarLucroDayTrade(any())).thenAnswer { 199.78 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.10 }
-        whenever(corretora.taxarLucroDayTrade(any())).thenAnswer { 1.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 189.8 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.10 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 1.0 }
         whenever(operacaoRepository.findAll()).thenAnswer {
             listOf(
                 Compra(

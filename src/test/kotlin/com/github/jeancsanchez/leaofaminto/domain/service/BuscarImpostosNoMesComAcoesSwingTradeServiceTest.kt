@@ -62,10 +62,9 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     fun `Swing trade (Caso 1) - operacoes de venda acima de R$ 20 mil no mes, geram imposto de 15% sobre o lucro do mes`() {
         val today = LocalDate.of(2021, 1, 1)
         val someDaysAfter = today.plusDays(15)
-        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 2.25 }
-        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 375.0 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 372.75 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
         whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer {
             listOf(
                 // Compra: 42.500
@@ -93,8 +92,8 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
         }
 
         val impostos = buscarImpostosNoMesComAcoesSwingTradeService.execute(today)
-        TestCase.assertEquals(1, impostos.impostos?.size)
         TestCase.assertEquals(372.75, impostos.total)
+        TestCase.assertEquals(1, impostos.impostos?.size)
     }
 
     /**
@@ -123,10 +122,9 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     fun `Swing trade (Caso 2) - operacoes de venda de ate R$ 20 mil no mes, nao geram imposto`() {
         val today = LocalDate.of(2021, 1, 1)
         val someDaysAfter = today.plusDays(15)
-        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 0.0 }
-        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 8.10 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 8.10 }
         whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
             listOf(
                 Compra(
@@ -189,10 +187,9 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     fun `Swing trade - Imposto a recolher menor que 10 reais nao precisa gerar Imposto, mas acumula o valor`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 0.0004 }
-        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 1.20 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 1.20 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
         whenever(impostoRepository.findTop1ByDataReferenciaAndValor(any(), any())).thenAnswer { null }
         whenever(impostoRepository.findAllByEstaPago(any())).thenAnswer { emptyList<Imposto>() }
         whenever(comprasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
@@ -241,10 +238,10 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
     fun `Swing trade - Imposto acumulado igual ou maior que 10 reais gera Darf`() {
         val today = LocalDate.of(2021, 1, 1)
         val tomorrow = today.plusDays(1)
-        whenever(governo.recolherDedoDuroSwingTrade(any())).thenAnswer { 0.0004 }
-        whenever(governo.taxarLucroSwingTrade(any())).thenAnswer { 1.20 }
-        whenever(bolsa.taxarLucroDayTrade(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroSwingTrade(any())).thenAnswer { 0.0 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 0.0004 }
+        whenever(governo.taxarLucroVenda(any(), any())).thenAnswer { 1.20 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
         whenever(impostoRepository.findTop1ByDataReferenciaAndValor(any(), any())).thenAnswer { null }
         whenever(impostoRepository.findAllByEstaPago(any())).thenAnswer { invocation ->
             listOf(

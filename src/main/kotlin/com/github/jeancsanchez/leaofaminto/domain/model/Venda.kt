@@ -37,6 +37,14 @@ class Venda(
         tipoTrade = TipoTrade.SWING_TRADE
     }
 
+    /**
+     * Desconta a taxa informada do valor total da operação
+     * @param valor valor a ser taxado.
+     */
+    fun descontarTaxa(valor: Double) {
+        valorTotal -= valor
+    }
+
     enum class TipoTrade {
         DAY_TRADE, SWING_TRADE
     }

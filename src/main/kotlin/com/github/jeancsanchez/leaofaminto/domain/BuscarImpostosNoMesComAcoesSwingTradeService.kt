@@ -3,9 +3,10 @@ package com.github.jeancsanchez.leaofaminto.domain
 import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.ImpostoRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
+import com.github.jeancsanchez.leaofaminto.domain.model.Compra
 import com.github.jeancsanchez.leaofaminto.domain.model.Imposto
-import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
 import com.github.jeancsanchez.leaofaminto.domain.model.dto.ImpostosDTO
 import com.github.jeancsanchez.leaofaminto.view.round
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,12 +31,14 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
     override fun execute(date: LocalDate): ImpostosDTO {
         val firstDay = YearMonth.from(date).atDay(1)
         val lastDay = YearMonth.from(date).atEndOfMonth()
-        var lucros = 0.0
+        var lucroNoMes = 0.0
+        var impostosAPagarNoMes = 0.0
+        var taxasOperacionaisNoMes = 0.0
         var prejuizos = 0.0
-        var impostoAPagarNoMes = 0.0
-        val operacoesDeCompra = mutableListOf<Operacao>()
-        val operacoesDeVenda = mutableListOf<Operacao>()
+        val operacoesDeCompra = mutableListOf<Compra>()
+        val operacoesDeVenda = mutableListOf<Venda>()
 
+        // FIXME: Considerar por corretoras
         vendasRepository.findAll()
             .filter { it.data >= firstDay && it.data <= lastDay }
             .filter { it.ativo.tipoDeAtivo == TipoDeAtivo.ACAO }
@@ -51,8 +54,22 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
                                 operacoesDeVenda.add(venda)
 
                                 val resultado = venda.valorTotal - compra.valorTotal
+                                taxasOperacionaisNoMes += compra.corretora.taxarOperacao(compra)
+                                taxasOperacionaisNoMes += compra.corretora.bolsa.taxarOperacao(compra)
+                                taxasOperacionaisNoMes += venda.corretora.taxarOperacao(venda)
+                                taxasOperacionaisNoMes += venda.corretora.bolsa.taxarOperacao(venda)
+
                                 if (resultado > 0) {
-                                    lucros += resultado
+                                    val taxaCorretora = venda.corretora.taxarLucroVenda(venda, resultado)
+                                    val taxaBolsa = venda.corretora.bolsa.taxarLucroVenda(venda, resultado)
+                                    val totalCustas = taxaCorretora + taxaBolsa
+                                    val lucroLiquido = resultado - totalCustas
+
+                                    lucroNoMes += lucroLiquido
+                                    taxasOperacionaisNoMes += totalCustas
+                                    impostosAPagarNoMes =
+                                        venda.corretora.bolsa.governo.taxarLucroVenda(venda, lucroLiquido)
+
                                 } else if (resultado < 0) {
                                     prejuizos += resultado
                                 }
@@ -67,22 +84,8 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
 //            Se vamos deduzir este prejuízo da base de cálculo do IR,
 //            ele passa a ser OBRIGATÓRIO a informar na declaração,
 //            na ficha Renda variável/Operações comuns.
-                lucros -= prejuizos
+                lucroNoMes -= prejuizos
             }
-
-            val corretora = operacoesDeCompra.first().corretora
-            val bolsa = operacoesDeCompra.first().corretora.bolsa
-            val governo = operacoesDeCompra.first().corretora.bolsa.governo
-            val operacoes = operacoesDeCompra + operacoesDeVenda
-
-            val taxasOperacionais = operacoes.sumByDouble {
-                corretora.taxarOperacao(it) + bolsa.taxarOperacao(it)
-            }
-
-            val lucroLiquido = lucros - taxasOperacionais
-            val dedoDuro = governo.recolherDedoDuroSwingTrade(lucros)
-            val impostoDevido = governo.taxarLucroSwingTrade(lucroLiquido)
-            impostoAPagarNoMes += impostoDevido - dedoDuro
 
             // Verifica se há impostos remanescentes não pagos
             val impostosRemanescentes = impostoRepository.findAllByEstaPago(estaPago = false)
@@ -90,12 +93,12 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
             // Verifica se o valor de imposto do mês já foi registrado, se não registra
             val impostoDoMes: Imposto = impostoRepository.findTop1ByDataReferenciaAndValor(
                 dataReferencia = date,
-                valor = impostoAPagarNoMes
+                valor = impostosAPagarNoMes
             ) ?: let {
                 val novoImposto = Imposto(
                     dataReferencia = operacoesDeVenda.first().data,
                     operacoes = operacoesDeVenda,
-                    valor = impostoAPagarNoMes.round(),
+                    valor = impostosAPagarNoMes.round(),
                     estaPago = false
                 )
                 impostoRepository.save(novoImposto)

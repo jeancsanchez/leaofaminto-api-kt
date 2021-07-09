@@ -14,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.time.LocalDate
@@ -53,12 +54,12 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
     fun `Trazer lucros com FIIs do mes, considerando impostos por corretora`() {
         val today = LocalDate.of(2021, 2, 1)
         val corretora2 = mock<Corretora>()
+        whenever(governo.taxarLucroVenda(any(), eq(210.0))).thenAnswer { 42.0 }
+        whenever(governo.taxarLucroVenda(any(), eq(408.0))).thenAnswer { 81.60 }
+        whenever(bolsa.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
+        whenever(corretora2.taxarLucroVenda(any(), any())).thenAnswer { 0.0 }
         whenever(corretora2.bolsa).thenAnswer { bolsa }
-        whenever(governo.taxarLucroFII(210.0)).thenAnswer { 42.0 }
-        whenever(governo.taxarLucroFII(408.0)).thenAnswer { 81.60 }
-        whenever(bolsa.taxarLucroFII(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroFII(any())).thenAnswer { 0.0 }
-        whenever(corretora2.taxarLucroFII(any())).thenAnswer { 0.0 }
         whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
                 Compra(
@@ -119,10 +120,10 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
 
         assertNotNull(resultado.find { it.corretora == corretora })
         assertEquals(42.0, resultado.find { it.corretora == corretora }!!.impostos)
-        assertEquals(168.0, resultado.find { it.corretora == corretora }!!.lucroLiquido)
+        assertEquals(210.0, resultado.find { it.corretora == corretora }!!.lucroLiquido)
         assertNotNull(resultado.find { it.corretora == corretora2 })
         assertEquals(81.60, resultado.find { it.corretora == corretora2 }!!.impostos)
-        assertEquals(326.4, resultado.find { it.corretora == corretora2 }!!.lucroLiquido)
-        assertEquals(494.4, resultado.sumByDouble { it.lucroLiquido })
+        assertEquals(408.0, resultado.find { it.corretora == corretora2 }!!.lucroLiquido)
+        assertEquals(618.0, resultado.sumByDouble { it.lucroLiquido })
     }
 }
