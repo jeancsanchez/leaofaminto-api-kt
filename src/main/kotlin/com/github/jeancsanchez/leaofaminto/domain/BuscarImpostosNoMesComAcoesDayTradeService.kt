@@ -49,12 +49,12 @@ class BuscarImpostosNoMesComAcoesDayTradeService(
                         if (compra.corretora == venda.corretora) {
                             val resultado = venda.valorTotal - compra.valorTotal
                             if (resultado > 0) {
-                                val emolumentos = bolsa.taxarOperacao(compra) + bolsa.taxarOperacao(venda)
-                                val taxasOperacionais = corretora.taxarLucroDayTrade(resultado) + emolumentos
-                                val lucroLiquido = resultado - taxasOperacionais
-                                val dedoDuro = governo.recolherDedoDuroDayTrade(resultado)
-                                val impostoDevido = governo.taxarLucroDayTrade(lucroLiquido)
-                                impostoAPagar += impostoDevido - dedoDuro
+//                                val emolumentos = bolsa.taxarOperacao(compra) + bolsa.taxarOperacao(venda)
+//                                val taxasOperacionais = corretora.taxarLucroDayTrade(resultado) + emolumentos
+//                                val lucroLiquido = resultado - taxasOperacionais
+//                                val dedoDuro = governo.recolherDedoDuroDayTrade(resultado)
+//                                val impostoDevido = governo.taxarLucroDayTrade(lucroLiquido)
+//                                impostoAPagar += impostoDevido - dedoDuro
                             }
                         }
                     }

@@ -80,9 +80,9 @@ class BuscarImpostosNoMesComAcoesSwingTradeService(
             }
 
             val lucroLiquido = lucros - taxasOperacionais
-            val dedoDuro = governo.recolherDedoDuroSwingTrade(lucros)
-            val impostoDevido = governo.taxarLucroSwingTrade(lucroLiquido)
-            impostoAPagarNoMes += impostoDevido - dedoDuro
+//            val dedoDuro = governo.recolherDedoDuroSwingTrade(lucros)
+//            val impostoDevido = governo.taxarLucroSwingTrade(lucroLiquido)
+//            impostoAPagarNoMes += impostoDevido - dedoDuro
 
             // Verifica se há impostos remanescentes não pagos
             val impostosRemanescentes = impostoRepository.findAllByEstaPago(estaPago = false)

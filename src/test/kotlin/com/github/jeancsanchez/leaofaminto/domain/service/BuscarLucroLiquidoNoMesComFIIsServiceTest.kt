@@ -13,7 +13,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.time.LocalDate
@@ -54,11 +53,11 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
         val today = LocalDate.of(2021, 2, 1)
         val corretora2 = mock<Corretora>()
         whenever(corretora2.bolsa).thenAnswer { bolsa }
-        whenever(governo.taxarLucroFII(210.0)).thenAnswer { 42.0 }
-        whenever(governo.taxarLucroFII(408.0)).thenAnswer { 81.60 }
-        whenever(bolsa.taxarLucroFII(any())).thenAnswer { 0.0 }
-        whenever(corretora.taxarLucroFII(any())).thenAnswer { 0.0 }
-        whenever(corretora2.taxarLucroFII(any())).thenAnswer { 0.0 }
+//        whenever(governo.taxarLucroFII(210.0)).thenAnswer { 42.0 }
+//        whenever(governo.taxarLucroFII(408.0)).thenAnswer { 81.60 }
+//        whenever(bolsa.taxarLucroFII(any())).thenAnswer { 0.0 }
+//        whenever(corretora.taxarLucroFII(any())).thenAnswer { 0.0 }
+//        whenever(corretora2.taxarLucroFII(any())).thenAnswer { 0.0 }
         whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
                 Compra(

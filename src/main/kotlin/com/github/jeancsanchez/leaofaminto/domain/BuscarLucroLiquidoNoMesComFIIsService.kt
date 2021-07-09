@@ -55,15 +55,17 @@ class BuscarLucroLiquidoNoMesComFIIsService(
                         }
                     }
 
-                    val imposto = corretora.bolsa.governo.taxarLucroFII(lucroBruto)
-                    val custosOperacionais =
-                        corretora.taxarLucroFII(lucroBruto) + corretora.bolsa.taxarLucroFII(lucroBruto)
-                    val lucroLiquido = lucroBruto - (imposto + custosOperacionais)
+//                    val imposto = corretora.bolsa.governo.taxarLucroFII(lucroBruto)
+//                    val custosOperacionais =
+//                        corretora.taxarLucroFII(lucroBruto) + corretora.bolsa.taxarLucroFII(lucroBruto)
+//                    val lucroLiquido = lucroBruto - (imposto + custosOperacionais)
 
                     LucroFIIByCorretora(
                         corretora = corretora,
-                        impostos = imposto,
-                        lucroLiquido = lucroLiquido
+//                        impostos = imposto,
+//                        lucroLiquido = lucroLiquido
+                        impostos = 0.0,
+                        lucroLiquido = 0.0
                     )
                 }
         }

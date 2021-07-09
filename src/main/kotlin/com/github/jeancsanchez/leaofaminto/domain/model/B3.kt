@@ -51,15 +51,7 @@ class B3 : Bolsa("B3", GovernoBR()), ITaxador {
         return 0.0
     }
 
-    override fun taxarLucroSwingTrade(lucro: Double): Double {
-        return 0.0
-    }
-
-    override fun taxarLucroDayTrade(lucro: Double): Double {
-        return 0.0
-    }
-
-    override fun taxarLucroFII(lucro: Double): Double {
+    override fun taxarLucroVenda(venda: Venda, lucro: Double): Double {
         return 0.0
     }
 }

@@ -17,19 +17,14 @@ abstract class Governo(
     @Id val nomePais: String
 ) : ITaxador {
 
+    /**
+     * Recolhe o valor do dedo duro em operação day trade baseado no valor informado.
+     * @param valor valor de dedo duro a ser recolhido
+     * @param tipoTrade [Venda.TipoTrade] tipo de trade.
+     */
+    abstract fun recolherDedoDuro(valor: Double, tipoTrade: Venda.TipoTrade): Double
+
     override fun toString(): String {
         return nomePais
     }
-
-    /**
-     * Recolhe o valor do dedo duro em operação day trade baseado no valor informado.
-     * @param valor valor a ser taxado.
-     */
-    abstract fun recolherDedoDuroDayTrade(valor: Double): Double
-
-    /**
-     * Recolhe o valor do dedo duro em operação swing trade baseado no valor informado.
-     * @param valor valor a ser taxado.
-     */
-    abstract fun recolherDedoDuroSwingTrade(valor: Double): Double
 }
