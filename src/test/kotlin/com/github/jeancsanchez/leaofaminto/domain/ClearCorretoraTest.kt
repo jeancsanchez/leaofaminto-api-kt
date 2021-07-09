@@ -1,8 +1,12 @@
 package com.github.jeancsanchez.leaofaminto.domain
 
 import com.github.jeancsanchez.leaofaminto.domain.model.ClearCorretora
+import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 /**
  * @author @jeancsanchez
@@ -13,28 +17,63 @@ import org.junit.jupiter.api.Test
 class ClearCorretoraTest {
 
     @Test
-    fun `Nao cobra taxa em lucro day trade`() {
-//        val clearCorretora = ClearCorretora()
-//        val resultado = clearCorretora.taxarLucroDayTrade(1000.0)
-//        assertEquals(0.0, resultado)
+    fun `Acoes - Nao cobra taxa em lucro day trade`() {
+        val clearCorretora = ClearCorretora()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.ACAO }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.SWING_TRADE }
+        }
+
+        val resultado = clearCorretora.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
     }
 
     @Test
-    fun `Nao cobra taxa em lucro em swing trade`() {
-//        val clearCorretora = ClearCorretora()
-//        val resultado = clearCorretora.taxarLucroSwingTrade(1000.0)
-//        assertEquals(0.0, resultado)
+    fun `Acoes - Nao cobra taxa em lucro em swing trade`() {
+        val clearCorretora = ClearCorretora()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.ACAO }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.SWING_TRADE }
+        }
+
+        val resultado = clearCorretora.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
     }
 
     @Test
-    fun `Nao cobra taxa em lucro com FIIs`() {
-//        val clearCorretora = ClearCorretora()
-//        val resultado = clearCorretora.taxarLucroFII(1000.0)
-//        assertEquals(0.0, resultado)
+    fun `FIIs - Nao cobra taxa em lucro day trade`() {
+        val clearCorretora = ClearCorretora()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.FII }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.DAY_TRADE }
+        }
+
+        val resultado = clearCorretora.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
     }
 
     @Test
-    fun `Nao cobra taxa sobre operacao de compra`() {
+    fun `FIIs - Nao cobra taxa em lucro swing trade`() {
+        val clearCorretora = ClearCorretora()
+        val venda = mock<Venda>().also {
+            whenever(it.ativo).thenAnswer { FakeFactory.getVendas().first().ativo }
+            whenever(it.ativo.tipoDeAtivo).thenAnswer { TipoDeAtivo.FII }
+            whenever(it.tipoTrade).thenAnswer { Venda.TipoTrade.SWING_TRADE }
+        }
+
+        val resultado = clearCorretora.taxarLucroVenda(venda, 1000.0)
+
+        assertEquals(0.0, resultado)
+    }
+
+    @Test
+    fun `Compra - Nao cobra taxa sobre operacao de compra`() {
         val clearCorretora = ClearCorretora()
         val venda = FakeFactory.getCompras().first()
 
@@ -44,7 +83,7 @@ class ClearCorretoraTest {
     }
 
     @Test
-    fun `Nao cobra taxa sobre operacao de venda`() {
+    fun `Venda - Nao cobra taxa sobre operacao de venda`() {
         val clearCorretora = ClearCorretora()
         val venda = FakeFactory.getVendas().first()
 
