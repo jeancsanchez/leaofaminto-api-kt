@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       logLevel:
-        description: 'Log level'     
+        description: 'Log level'
         required: true
         default: 'warning'
       tags:
@@ -35,3 +35,17 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build --scan
+
+      - name: Reporting Jacoco to Codacy
+        run:  |
+          # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/jacoco_report.sh"
+
+          # run script
+          ./${GITHUB_WORKSPACE}/scripts/jacoco_report.sh
+
+        shell: bash
+
+
+
+
