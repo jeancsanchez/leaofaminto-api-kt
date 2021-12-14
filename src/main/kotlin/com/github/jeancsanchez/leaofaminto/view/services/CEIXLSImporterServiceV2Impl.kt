@@ -20,8 +20,8 @@ import java.time.LocalDate
  */
 
 @Service
-@Qualifier("CEIImporter")
-class CEIXLSImporterServiceImpl(
+@Qualifier("CEIImporterV2")
+class CEIXLSImporterServiceV2Impl(
     @Autowired val operacaoRepository: OperacaoRepository,
     @Autowired val comprasRepository: ComprasRepository,
     @Autowired val vendasRepository: VendasRepository,

@@ -6,6 +6,7 @@ import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.domain.model.dto.ConsolidadoDTO
 import com.github.jeancsanchez.leaofaminto.view.services.CEIXLSImporterService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -24,7 +25,12 @@ import org.springframework.web.multipart.MultipartFile
 class MainController(
     @Autowired val vendasRepository: VendasRepository,
     @Autowired val gerarOperacoesConsolidadasService: GerarOperacoesConsolidadasService,
-    @Autowired val ceiXLSImporterService: CEIXLSImporterService,
+
+    @Autowired
+    @Qualifier("CEIImporter") val ceiXLSImporterService: CEIXLSImporterService,
+
+    @Autowired
+    @Qualifier("CEIImporterV2") val ceiXLSImporterServiceV2: CEIXLSImporterService,
 ) {
     /**
      * Lista todas as operações.
@@ -43,11 +49,24 @@ class MainController(
     }
 
     /**
-     * Sincroniza as operações de acordo com o arquivo informado.
+     * Sincroniza as operações conforme o arquivo informado.
      */
+    @Deprecated(
+        message = "Arquivo antigo do CEI (meados de 2020).",
+        replaceWith = ReplaceWith("syncOperacoesV2")
+    )
     @PostMapping("/sync")
     fun syncOperacoes(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
         val result = ceiXLSImporterService.execute(arquivo)
+        return ResponseEntity.ok(result)
+    }
+
+    /**
+     * Sincroniza as operações conforme o arquivo informado.
+     */
+    @PostMapping("/v2/sync")
+    fun syncOperacoesV2(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
+        val result = ceiXLSImporterServiceV2.execute(arquivo)
         return ResponseEntity.ok(result)
     }
 }
