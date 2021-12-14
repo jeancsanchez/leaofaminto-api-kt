@@ -13,10 +13,10 @@ import javax.persistence.ManyToOne
 
 @Entity
 abstract class Corretora(
-    @Id @GeneratedValue var id: Long? = null,
-    var cnpj: String = "",
-    var nome: String = "",
-    @ManyToOne var bolsa: Bolsa
+    @Id @GeneratedValue open var id: Long? = null,
+    open var cnpj: String = "",
+    open var nome: String = "",
+    @ManyToOne open var bolsa: Bolsa
 ) : ITaxador {
 
     override fun toString(): String {

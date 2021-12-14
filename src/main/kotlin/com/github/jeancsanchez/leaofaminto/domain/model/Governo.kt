@@ -14,7 +14,7 @@ import javax.persistence.InheritanceType
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Governo(
-    @Id val nomePais: String
+    @Id open val nomePais: String
 ) : ITaxador {
 
     /**

@@ -11,6 +11,6 @@ import javax.persistence.*
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Bolsa(
-    @Id var nome: String,
-    @ManyToOne var governo: Governo
+    @Id open var nome: String,
+    @ManyToOne open var governo: Governo
 ) : ITaxador

@@ -15,18 +15,18 @@ import javax.persistence.*
 open class Operacao(
 
     @ManyToOne
-    var ativo: Ativo,
+    open var ativo: Ativo,
 
     @ManyToOne
-    var corretora: Corretora,
+    open var corretora: Corretora,
 
-    var data: LocalDate = LocalDate.now(),
-    var preco: Double,
-    var quantidade: Int
+    open var data: LocalDate = LocalDate.now(),
+    open var preco: Double,
+    open var quantidade: Int
 ) {
     @Id
     @GeneratedValue
-    var id: Long? = null
+    open var id: Long? = null
 
     var valorTotal: Double = 0.0
         protected set
