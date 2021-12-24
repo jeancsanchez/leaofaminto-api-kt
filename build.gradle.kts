@@ -15,12 +15,12 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
-    maven(url = "http://maven.vaadin.com/vaadin-addons")
+//    maven(url = "http://maven.vaadin.com/vaadin-addons")
 }
 
 dependencyManagement {
     imports {
-        mavenBom("com.vaadin:vaadin-bom:14.0.9")
+//        mavenBom("com.vaadin:vaadin-bom:14.0.9")
     }
 }
 
@@ -36,7 +36,9 @@ dependencies {
 //    implementation("org.vaadin.crudui:crudui:4.4.0")
 //    implementation("com.vaadin:vaadin-spring-boot-starter")
 
-    implementation("org.apache.poi:poi:5.0.0")
+    implementation("org.apache.xmlbeans:xmlbeans:5.0.2")
+    implementation("org.apache.poi:poi:5.1.0")
+    implementation("org.apache.poi:poi-ooxml:5.1.0")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation("org.mockito:mockito-inline:2.13.0")

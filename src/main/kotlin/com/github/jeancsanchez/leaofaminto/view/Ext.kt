@@ -73,6 +73,13 @@ fun String.extractCodigoAtivo(): String {
 }
 
 /**
+ * Extrai o codigo do ativo do arquivo de movimentações v2 do portal CEI
+ */
+fun String.extractCodigoAtivoV2(): String {
+    return this.split("-")[0].trim().toUpperCase()
+}
+
+/**
  * Extrai o nome da corretora
  */
 fun String.extractNomeCorretora(): String {

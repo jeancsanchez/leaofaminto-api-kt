@@ -66,6 +66,8 @@ class MainControllerTest {
     @Value("classpath:cei_2021.xls")
     var arquivo2021: Resource? = null
 
+    @Value("classpath:posicao_2021_v2.xlsx")
+    var arquivo2021V2: Resource? = null
 
     @BeforeEach
     fun setUp() {
@@ -98,6 +100,35 @@ class MainControllerTest {
                 assertEquals(12, lastLine.quantidade)
                 assertEquals(81.08, lastLine.preco)
                 assertEquals(972.96, lastLine.valorTotal)
+            }
+        }
+    }
+
+    @Test
+    fun sincronizarComprasAcoesCEIExcelV2() {
+        fazerUploadDeArquivo(arquivo2021V2, version = 2)
+        comprasRepository.findAll().run {
+            assertEquals(10, count())
+            assertEquals(47524.94, sumByDouble { it.valorTotal }.round())
+
+            first().also { firstLine ->
+                assertTrue(firstLine.corretora.nome.contains("Clear", true))
+                assertEquals("16/12/2021", firstLine.data.formatToStringBR())
+                assertEquals("BRCR11", firstLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.FII, firstLine.ativo.tipoDeAtivo)
+                assertEquals(4, firstLine.quantidade)
+                assertEquals(70.07, firstLine.preco)
+                assertEquals(280.28, firstLine.valorTotal)
+            }
+
+            last().also { lastLine ->
+                assertTrue(lastLine.corretora.nome.contains("Clear", true))
+                assertEquals("08/01/2021", lastLine.data.formatToStringBR())
+                assertEquals("MDIA3", lastLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
+                assertEquals(11, lastLine.quantidade)
+                assertEquals(32.87, lastLine.preco)
+                assertEquals(361.57, lastLine.valorTotal)
             }
         }
     }
@@ -145,13 +176,17 @@ class MainControllerTest {
         assertEquals(4, vendasRepository.count())
     }
 
-    private fun fazerUploadDeArquivo(resource: Resource?) {
+    private fun fazerUploadDeArquivo(resource: Resource?, version: Int? = 1) {
         val file = MockMultipartFile(
             "arquivo",
             resource!!.inputStream
         )
 
-        request = multipart("/api/sync").file(file)
+        request = if (version == 2) {
+            multipart("/api/v2/sync").file(file)
+        } else {
+            multipart("/api/sync").file(file)
+        }
 
         mvc.perform(request)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
