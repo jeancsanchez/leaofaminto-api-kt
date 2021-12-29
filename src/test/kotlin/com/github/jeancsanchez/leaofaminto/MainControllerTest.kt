@@ -66,7 +66,7 @@ class MainControllerTest {
     @Value("classpath:cei_2021.xls")
     var arquivo2021: Resource? = null
 
-    @Value("classpath:posicao_2021_v2.xlsx")
+    @Value("classpath:cei_2021_v2.xlsx")
     var arquivo2021V2: Resource? = null
 
     @BeforeEach
@@ -107,9 +107,10 @@ class MainControllerTest {
     @Test
     fun sincronizarComprasAcoesCEIExcelV2() {
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
+
         comprasRepository.findAll().run {
-            assertEquals(10, count())
-            assertEquals(47524.94, sumByDouble { it.valorTotal }.round())
+            assertEquals(24, count())
+            assertEquals(5638.36, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Clear", true))
@@ -126,9 +127,34 @@ class MainControllerTest {
                 assertEquals("08/01/2021", lastLine.data.formatToStringBR())
                 assertEquals("MDIA3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
-                assertEquals(11, lastLine.quantidade)
+                assertEquals(2, lastLine.quantidade)
                 assertEquals(32.87, lastLine.preco)
-                assertEquals(361.57, lastLine.valorTotal)
+                assertEquals(65.74, lastLine.valorTotal)
+            }
+        }
+
+        vendasRepository.findAll().run {
+            assertEquals(6, count())
+            assertEquals(6138.48, sumByDouble { it.valorTotal }.round())
+
+            first().also { firstLine ->
+                assertTrue(firstLine.corretora.nome.contains("Clear", true))
+                assertEquals("16/12/2021", firstLine.data.formatToStringBR())
+                assertEquals("CEAB3", firstLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
+                assertEquals(50, firstLine.quantidade)
+                assertEquals(6.23, firstLine.preco)
+                assertEquals(311.50, firstLine.valorTotal)
+            }
+
+            last().also { lastLine ->
+                assertTrue(lastLine.corretora.nome.contains("Clear", true))
+                assertEquals("20/04/2021", lastLine.data.formatToStringBR())
+                assertEquals("CEAB3", lastLine.ativo.codigo)
+                assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
+                assertEquals(68, lastLine.quantidade)
+                assertEquals(13.73, lastLine.preco)
+                assertEquals(933.64, lastLine.valorTotal)
             }
         }
     }

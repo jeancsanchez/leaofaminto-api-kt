@@ -2,10 +2,7 @@ package com.github.jeancsanchez.leaofaminto.view.services
 
 import com.github.jeancsanchez.leaofaminto.data.*
 import com.github.jeancsanchez.leaofaminto.domain.model.*
-import com.github.jeancsanchez.leaofaminto.view.extractCodigoAtivoV2
-import com.github.jeancsanchez.leaofaminto.view.extractNomeCorretora
-import com.github.jeancsanchez.leaofaminto.view.extractTipoDeAtivo
-import com.github.jeancsanchez.leaofaminto.view.formatStringBRToDate
+import com.github.jeancsanchez.leaofaminto.view.*
 import com.github.jeancsanchez.leaofaminto.view.services.exceptions.ImporterException
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.beans.factory.annotation.Autowired
@@ -97,6 +94,10 @@ class CEIXLSImporterServiceV2Impl(
 
                                     colunaCorretora -> {
                                         corretora = column.stringCellValue.run {
+                                            if (isNullOrEmpty()) {
+                                                return@rowsLooping
+                                            }
+
                                             corretoraRepository.findTop1ByNomeIgnoreCase(extractNomeCorretora())
                                         }
                                     }
@@ -120,7 +121,11 @@ class CEIXLSImporterServiceV2Impl(
                                     }
 
                                     colunaQuantidade -> {
-                                        quantidade = column.stringCellValue.toInt()
+                                        quantidade = try {
+                                            column.stringCellValue.toInt()
+                                        } catch (e: IllegalStateException) {
+                                            column.numericCellValue.toInt()
+                                        }
                                     }
 
                                     colunaPrecoOperacao -> {
