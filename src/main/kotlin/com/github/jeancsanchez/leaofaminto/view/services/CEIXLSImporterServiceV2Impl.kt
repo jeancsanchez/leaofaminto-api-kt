@@ -2,7 +2,10 @@ package com.github.jeancsanchez.leaofaminto.view.services
 
 import com.github.jeancsanchez.leaofaminto.data.*
 import com.github.jeancsanchez.leaofaminto.domain.model.*
-import com.github.jeancsanchez.leaofaminto.view.*
+import com.github.jeancsanchez.leaofaminto.view.extractCodigoAtivoV2
+import com.github.jeancsanchez.leaofaminto.view.extractNomeCorretora
+import com.github.jeancsanchez.leaofaminto.view.extractTipoDeAtivo
+import com.github.jeancsanchez.leaofaminto.view.formatStringBRToDate
 import com.github.jeancsanchez.leaofaminto.view.services.exceptions.ImporterException
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.beans.factory.annotation.Autowired
@@ -129,7 +132,16 @@ class CEIXLSImporterServiceV2Impl(
                                     }
 
                                     colunaPrecoOperacao -> {
-                                        preco = column.numericCellValue
+                                        preco = try {
+                                            column.numericCellValue
+                                        } catch (e: IllegalStateException) {
+                                            val value = column.stringCellValue
+                                            if (value.equals("-")) {
+                                                return@rowsLooping
+                                            }
+
+                                            value.toDouble()
+                                        }
                                     }
 
                                     colunaEntradaSaida -> {
