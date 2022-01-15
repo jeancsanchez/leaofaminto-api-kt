@@ -3,7 +3,7 @@ package com.github.jeancsanchez.leaofaminto.view
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.GerarOperacoesConsolidadasService
 import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
-import com.github.jeancsanchez.leaofaminto.domain.model.dto.ConsolidadoDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.ConsolidadoDTO
 import com.github.jeancsanchez.leaofaminto.view.services.CEIXLSImporterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier

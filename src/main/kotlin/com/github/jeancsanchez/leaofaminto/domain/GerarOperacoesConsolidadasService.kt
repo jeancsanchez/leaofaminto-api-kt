@@ -3,8 +3,8 @@ package com.github.jeancsanchez.leaofaminto.domain
 import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.model.Compra
-import com.github.jeancsanchez.leaofaminto.domain.model.dto.ConsolidadoDTO
-import com.github.jeancsanchez.leaofaminto.domain.model.dto.OperacaoConsolidadaDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.ConsolidadoDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.OperacaoConsolidadaDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal

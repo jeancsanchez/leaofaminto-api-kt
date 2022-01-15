@@ -7,7 +7,7 @@ import com.github.jeancsanchez.leaofaminto.domain.model.Compra
 import com.github.jeancsanchez.leaofaminto.domain.model.Imposto
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.Venda
-import com.github.jeancsanchez.leaofaminto.domain.model.dto.ImpostosDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.ImpostosDTO
 import com.github.jeancsanchez.leaofaminto.view.round
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

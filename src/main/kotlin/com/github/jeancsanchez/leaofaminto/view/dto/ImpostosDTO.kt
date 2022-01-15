@@ -1,4 +1,4 @@
-package com.github.jeancsanchez.leaofaminto.domain.model.dto
+package com.github.jeancsanchez.leaofaminto.view.dto
 
 import com.github.jeancsanchez.leaofaminto.domain.model.Imposto
 

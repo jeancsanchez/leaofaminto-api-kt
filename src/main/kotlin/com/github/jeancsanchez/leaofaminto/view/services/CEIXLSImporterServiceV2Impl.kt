@@ -189,28 +189,19 @@ class CEIXLSImporterServiceV2Impl(
             }
         }
 
-        return updateRepository(resultList)
+        return resultList.updateRepository()
     }
 
     /**
-     * Atualiza o [OperacaoRepository] considerando os objetos já existentes para evitar duplicidades.
-     *
-     * @param resultList Lista com novos registros
-     * @return Lista de operações atualizada.
+     * Atualiza o [OperacaoRepository]. Os registros são substituídos, pois, pode haver
+     * operações iguais no mesmo dia, ficando impossível saber se é o mesmo registro.
      */
-    private fun updateRepository(resultList: MutableList<Operacao>): List<Operacao> {
-        if (resultList.isNotEmpty()) {
-            if (operacaoRepository.count() == 0L) {
-                operacaoRepository.saveAll(resultList)
-            } else if (operacaoRepository.findTopByOrderByIdDesc()?.hashId !== resultList.last().hashId) {
-                if (resultList.last().hashId !== operacaoRepository.findTopByOrderByIdDesc()?.hashId) {
-                    val differenceList = resultList.subList(operacaoRepository.count().toInt(), resultList.size)
-                    operacaoRepository.saveAll(differenceList)
-                    return resultList
-                }
-            }
+    private fun MutableList<Operacao>.updateRepository(): List<Operacao> {
+        if (isNotEmpty()) {
+            operacaoRepository.deleteAll()
+            operacaoRepository.saveAll(this)
         }
 
-        return resultList
+        return this
     }
 }
