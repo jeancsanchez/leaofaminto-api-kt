@@ -1,0 +1,6 @@
+"orderId","enteredAt","executedAt","status","side","type","symbol","filledQuantity","quantity","amount","price","service","feesUSD"
+"IJ.2c0c7291-2f88-40e6-9a4c-a65da05e91bd","2021-10-12T00:25:53.999Z","2021-10-12T13:30:08.654Z","filled","BUY","MARKET","SLYV","0.45152091","0.45152091","38","84.16","driveWealth",0
+"IJ.e912343a-1a23-493e-b4d7-5f99bf6f73b2","2021-10-12T00:24:59.274Z",,"canceled","BUY","MARKET","VT","0","1.76555996","0","0","driveWealth",0
+"IJ.b1d8fec6-b8f3-4d6d-98ff-991cbbebea4e","2021-10-11T23:55:57.087Z",,"canceled","BUY","MARKET","VT","0","2.27470719","0","0","driveWealth",0
+"IA.0f35740b-8714-49fc-b903-41a198da1ac3","2021-01-06T19:26:58.077Z","2021-01-06T19:26:58.096Z","filled","BUY","MARKET","AAPL","0.28865657","0.28865657","37","128.18","driveWealth",0
+"IA.19339a2d-1c6b-4701-ada3-2de703e89da0","2021-01-06T18:59:24.741Z","2021-01-06T18:59:24.879Z","filled","BUY","MARKET","AMZN","0.02357082","0.02357082","75","3181.9","driveWealth",0

@@ -74,16 +74,16 @@ class PassfolioControllerTest {
     fun sincronizarComprasAcoesPassfolioCSV() {
         fazerUploadDeArquivo(passfolio2021)
         comprasRepository.findAll().run {
-            assertEquals(2208.25, sumByDouble { it.valorTotal }.round(), 0.1)
+            assertEquals(150.0, sumByDouble { it.valorTotal }.round(), 0.1)
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Passfolio", true))
-                assertEquals("14/01/2022", firstLine.data.formatToStringBR())
-                assertEquals("VT", firstLine.ativo.codigo)
+                assertEquals("12/10/2021", firstLine.data.formatToStringBR())
+                assertEquals("SLYV", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.STOCK, firstLine.ativo.tipoDeAtivo)
-                assertEquals(0.2058935, firstLine.quantidade)
-                assertEquals(105.54, firstLine.preco)
-                assertEquals(21.73, firstLine.valorTotal.round())
+                assertEquals(0.45152091, firstLine.quantidade)
+                assertEquals(84.16, firstLine.preco)
+                assertEquals(38.0, firstLine.valorTotal.round())
             }
 
             last().also { lastLine ->
