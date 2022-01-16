@@ -23,4 +23,10 @@ interface OperacaoRepository : JpaRepository<Operacao, String> {
      * @param codigo codigo do ativo na operação
      */
     fun findAllByAtivoCodigo(codigo: String): List<Operacao>
+
+    /**
+     * Deleta todas as operações pelo nome da corretora
+     * @param nome da corretora
+     */
+    fun deleteAllInBatchByCorretoraNomeIgnoreCase(nome: String)
 }

@@ -109,12 +109,12 @@ class PassfolioImporterServiceImpl(
     }
 
     /**
-     * Atualiza o [OperacaoRepository]. Os registros são substituídos, pois, pode haver
+     * Atualiza o [OperacaoRepository]. Os registros não são substituídos, pois, pode haver
      * operações iguais no mesmo dia, ficando impossível saber se é o mesmo registro.
      */
     private fun MutableList<Operacao>.updateRepository(): List<Operacao> {
         if (isNotEmpty()) {
-            operacaoRepository.deleteAll()
+            operacaoRepository.deleteAllInBatchByCorretoraNomeIgnoreCase("Passfolio")
             operacaoRepository.saveAll(this)
         }
 
