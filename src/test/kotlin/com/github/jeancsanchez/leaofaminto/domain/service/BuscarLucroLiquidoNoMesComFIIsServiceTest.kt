@@ -3,7 +3,13 @@ package com.github.jeancsanchez.leaofaminto.domain.service
 import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.BuscarLucroLiquidoNoMesComFIIsService
-import com.github.jeancsanchez.leaofaminto.domain.model.*
+import com.github.jeancsanchez.leaofaminto.domain.model.Ativo
+import com.github.jeancsanchez.leaofaminto.domain.model.Compra
+import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.Bolsa
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.Governo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -65,14 +71,14 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
                     corretora = corretora,
-                    quantidade = 10,
+                    quantidade = 10.0,
                     preco = 100.0,
                     data = today,
                 ),
                 Compra(
                     ativo = Ativo(codigo = "FII3", tipoDeAtivo = TipoDeAtivo.FII),
                     corretora = corretora2,
-                    quantidade = 10,
+                    quantidade = 10.0,
                     preco = 100.0,
                     data = today,
                 )
@@ -84,14 +90,14 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
                     corretora = corretora,
-                    quantidade = 2,
+                    quantidade = 2.0,
                     preco = 105.0, // Lucro R$ 210
                     data = today
                 ),
                 Venda(
                     ativo = Ativo(codigo = "FII3", tipoDeAtivo = TipoDeAtivo.FII),
                     corretora = corretora2,
-                    quantidade = 4,
+                    quantidade = 4.0,
                     preco = 102.0, // Lucro R$ 408
                     data = today.plusDays(5),
                 ),
@@ -100,7 +106,7 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "XPLG11", tipoDeAtivo = TipoDeAtivo.FII),
                     corretora = corretora,
-                    quantidade = 2,
+                    quantidade = 2.0,
                     preco = 230.0,
                     data = today.plusMonths(1)
                 ),
@@ -109,7 +115,7 @@ internal class BuscarLucroLiquidoNoMesComFIIsServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "FII3", tipoDeAtivo = TipoDeAtivo.FII),
                     corretora = corretora2,
-                    quantidade = 2,
+                    quantidade = 2.0,
                     preco = 230.0,
                     data = today.minusMonths(1)
                 ),

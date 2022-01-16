@@ -2,7 +2,13 @@ package com.github.jeancsanchez.leaofaminto.domain.service
 
 import com.github.jeancsanchez.leaofaminto.data.OperacaoRepository
 import com.github.jeancsanchez.leaofaminto.domain.BuscarImpostosNoMesComAcoesDayTradeService
-import com.github.jeancsanchez.leaofaminto.domain.model.*
+import com.github.jeancsanchez.leaofaminto.domain.model.Ativo
+import com.github.jeancsanchez.leaofaminto.domain.model.Compra
+import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.Bolsa
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.Governo
 import junit.framework.TestCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -66,14 +72,14 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 25.0,
                     data = today,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 26.0,
                     data = today
                 ),
@@ -112,14 +118,14 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 9.80,
                     data = today,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 9.90,
                     data = today
                 ),
@@ -172,28 +178,28 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 10,
+                    quantidade = 10.0,
                     preco = 70.0,
                     data = yesterday,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 10,
+                    quantidade = 10.0,
                     preco = 76.0,
                     data = yesterday
                 ),
                 Compra(
                     ativo = Ativo(codigo = "ABC", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora2,
-                    quantidade = 10,
+                    quantidade = 10.0,
                     preco = 70.0,
                     data = today,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "ABC", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora2,
-                    quantidade = 10,
+                    quantidade = 10.0,
                     preco = 76.0,
                     data = today
                 ),
@@ -220,14 +226,14 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 25.0,
                     data = today,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora2,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 26.0,
                     data = today
                 ),
@@ -252,14 +258,14 @@ class BuscarImpostosNoMesComAcoesDayTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 25.0,
                     data = today,
                 ),
                 Venda(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 26.0,
                     data = tomorrow
                 ),

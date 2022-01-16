@@ -27,7 +27,7 @@ class CEIXLSImporterServiceImpl(
     @Autowired val vendasRepository: VendasRepository,
     @Autowired val corretoraRepository: CorretoraRepository,
     @Autowired val ativoRepository: AtivoRepository
-) : CEIXLSImporterService {
+) : FileImporterService {
 
     override fun execute(param: MultipartFile): List<Operacao> {
         val resultList = mutableListOf<Operacao>()
@@ -51,7 +51,7 @@ class CEIXLSImporterServiceImpl(
         var ativo: Ativo? = null
         var tipoDeAtivo: TipoDeAtivo
         var tipoOperacao = ""
-        var quantidade = 0
+        var quantidade = 0.0
         var preco = 0.0
 
         currentSheet.rowIterator().withIndex().forEach rowsLooping@{ row ->
@@ -75,7 +75,7 @@ class CEIXLSImporterServiceImpl(
                         }
 
                         colunaQuantidade -> {
-                            quantidade = column.numericCellValue.toInt()
+                            quantidade = column.numericCellValue.toDouble()
                         }
 
                         colunaPrecoOperacao -> {

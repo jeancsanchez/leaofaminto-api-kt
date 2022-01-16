@@ -39,6 +39,7 @@ dependencies {
     implementation("org.apache.xmlbeans:xmlbeans:5.0.2")
     implementation("org.apache.poi:poi:5.1.0")
     implementation("org.apache.poi:poi-ooxml:5.1.0")
+    implementation("org.apache.commons:commons-csv:1.9.0")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation("org.mockito:mockito-inline:2.13.0")

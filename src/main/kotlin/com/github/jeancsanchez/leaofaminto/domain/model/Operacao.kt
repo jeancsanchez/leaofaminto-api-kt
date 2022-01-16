@@ -23,7 +23,7 @@ open class Operacao(
 
     open var data: LocalDate = LocalDate.now(),
     open var preco: Double,
-    open var quantidade: Int
+    open var quantidade: Double
 ) {
     @Id
     @GeneratedValue

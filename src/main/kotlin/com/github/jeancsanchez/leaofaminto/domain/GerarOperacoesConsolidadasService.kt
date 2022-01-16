@@ -32,10 +32,10 @@ class GerarOperacoesConsolidadasService(
                     .sumByDouble { it.valorTotal }
 
                 val quantidadeCompras = map.value
-                    .sumBy { it.quantidade }
+                    .sumByDouble { it.quantidade }
 
                 val quantidadeVendas = vendasRepository.findAllByAtivoCodigo(map.key)
-                    .sumBy { it.quantidade }
+                    .sumByDouble { it.quantidade }
 
                 val quantidade = quantidadeCompras - quantidadeVendas
                 val precoMedio = if (quantidade > 0) {

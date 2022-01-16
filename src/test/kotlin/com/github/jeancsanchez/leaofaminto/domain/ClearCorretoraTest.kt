@@ -1,8 +1,8 @@
 package com.github.jeancsanchez.leaofaminto.domain
 
-import com.github.jeancsanchez.leaofaminto.domain.model.ClearCorretora
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.ClearCorretora
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock

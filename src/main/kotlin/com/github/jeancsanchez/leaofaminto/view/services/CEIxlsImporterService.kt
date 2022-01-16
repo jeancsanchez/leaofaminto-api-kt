@@ -8,4 +8,4 @@ import org.springframework.web.multipart.MultipartFile
  * @created 09/06/2021
  * Jesus loves you.
  */
-interface CEIXLSImporterService : ApplicationService<MultipartFile, List<Operacao>>
+interface FileImporterService : ApplicationService<MultipartFile, List<Operacao>>

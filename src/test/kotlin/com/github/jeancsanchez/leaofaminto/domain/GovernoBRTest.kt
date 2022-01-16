@@ -1,9 +1,9 @@
 package com.github.jeancsanchez.leaofaminto.domain
 
 import com.github.jeancsanchez.leaofaminto.domain.model.Compra
-import com.github.jeancsanchez.leaofaminto.domain.model.GovernoBR
-import com.github.jeancsanchez.leaofaminto.domain.model.MethodNotAllowedException
 import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.base.MethodNotAllowedException
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.GovernoBR
 import com.github.jeancsanchez.leaofaminto.view.round
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

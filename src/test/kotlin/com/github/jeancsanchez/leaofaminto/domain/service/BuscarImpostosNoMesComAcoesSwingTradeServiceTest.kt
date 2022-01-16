@@ -5,6 +5,9 @@ import com.github.jeancsanchez.leaofaminto.data.ImpostoRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.BuscarImpostosNoMesComAcoesSwingTradeService
 import com.github.jeancsanchez.leaofaminto.domain.model.*
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.Bolsa
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.Governo
 import junit.framework.TestCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -71,7 +74,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "BPAC11", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 500,
+                    quantidade = 500.0,
                     preco = 85.0,
                     data = today,
                 ),
@@ -84,7 +87,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "BPAC11", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 500,
+                    quantidade = 500.0,
                     preco = 90.0,
                     data = someDaysAfter,
                 )
@@ -130,35 +133,35 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "BAST3", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 500,
+                    quantidade = 500.0,
                     preco = 11.87,
                     data = today
                 ),
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 505,
+                    quantidade = 505.0,
                     preco = 11.84,
                     data = today
                 ),
                 Compra(
                     ativo = Ativo(codigo = "MQFO11", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 100,
+                    quantidade = 100.0,
                     preco = 43.26,
                     data = today
                 ),
                 Compra(
                     ativo = Ativo(codigo = "BBDC3", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 800,
+                    quantidade = 800.0,
                     preco = 31.56,
                     data = today
                 ),
                 Compra(
                     ativo = Ativo(codigo = "PETR4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 1000,
+                    quantidade = 1000.0,
                     preco = 9.67,
                     data = today
                 ),
@@ -167,7 +170,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 205,
+                    quantidade = 205.0,
                     preco = 14.0,
                     data = someDaysAfter
                 ),
@@ -198,7 +201,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 100,
+                    quantidade = 100.0,
                     preco = 200.0,
                     data = today
                 ),
@@ -211,7 +214,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 100,
+                    quantidade = 100.0,
                     preco = 200.08,
                     data = tomorrow
                 )
@@ -269,7 +272,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Compra(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 100,
+                    quantidade = 100.0,
                     preco = 200.0,
                     data = today
                 ),
@@ -282,7 +285,7 @@ internal class BuscarImpostosNoMesComAcoesSwingTradeServiceTest {
                 Venda(
                     ativo = Ativo(codigo = "ITSA4", tipoDeAtivo = TipoDeAtivo.ACAO),
                     corretora = corretora,
-                    quantidade = 100,
+                    quantidade = 100.0,
                     preco = 200.08,
                     data = tomorrow
                 )

@@ -1,10 +1,12 @@
 package com.github.jeancsanchez.leaofaminto.view
 
+import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.GerarOperacoesConsolidadasService
 import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.view.dto.ConsolidadoDTO
-import com.github.jeancsanchez.leaofaminto.view.services.CEIXLSImporterService
+import com.github.jeancsanchez.leaofaminto.view.dto.OperacoesDTO
+import com.github.jeancsanchez.leaofaminto.view.services.FileImporterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Configuration
@@ -24,20 +26,26 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api")
 class MainController(
     @Autowired val vendasRepository: VendasRepository,
+    @Autowired val comprasRepository: ComprasRepository,
     @Autowired val gerarOperacoesConsolidadasService: GerarOperacoesConsolidadasService,
 
     @Autowired
-    @Qualifier("CEIImporter") val ceiXLSImporterService: CEIXLSImporterService,
+    @Qualifier("CEIImporter") val ceiXLSImporterService: FileImporterService,
 
     @Autowired
-    @Qualifier("CEIImporterV2") val ceiXLSImporterServiceV2: CEIXLSImporterService,
+    @Qualifier("CEIImporterV2") val ceiXLSImporterServiceV2: FileImporterService,
 ) {
     /**
      * Lista todas as operações.
      */
     @GetMapping("/operacoes")
-    fun listarOperacoes(): ResponseEntity<List<Operacao>> {
-        return ResponseEntity.ok(vendasRepository.findAll())
+    fun listarOperacoes(): ResponseEntity<OperacoesDTO> {
+        return OperacoesDTO(
+            compras = comprasRepository.findAll(),
+            vendas = vendasRepository.findAll(),
+        ).run {
+            ResponseEntity.ok(this)
+        }
     }
 
     /**

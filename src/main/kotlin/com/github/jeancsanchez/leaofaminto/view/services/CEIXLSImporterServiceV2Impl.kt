@@ -2,6 +2,7 @@ package com.github.jeancsanchez.leaofaminto.view.services
 
 import com.github.jeancsanchez.leaofaminto.data.*
 import com.github.jeancsanchez.leaofaminto.domain.model.*
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
 import com.github.jeancsanchez.leaofaminto.view.extractCodigoAtivoV2
 import com.github.jeancsanchez.leaofaminto.view.extractNomeCorretora
 import com.github.jeancsanchez.leaofaminto.view.extractTipoDeAtivo
@@ -28,7 +29,7 @@ class CEIXLSImporterServiceV2Impl(
     @Autowired val vendasRepository: VendasRepository,
     @Autowired val corretoraRepository: CorretoraRepository,
     @Autowired val ativoRepository: AtivoRepository
-) : CEIXLSImporterService {
+) : FileImporterService {
 
     companion object {
         // Credito | Transferência - Liquidação ---> significa que é uma compra
@@ -63,7 +64,7 @@ class CEIXLSImporterServiceV2Impl(
         var tipoDeAtivo: TipoDeAtivo
         var entradaSaida = -1
         var movimentacao = -1
-        var quantidade = 0
+        var quantidade = 0.0
         var preco = 0.0
 
         currentSheet.rowIterator().withIndex().forEach rowsLooping@{ row ->
@@ -125,9 +126,9 @@ class CEIXLSImporterServiceV2Impl(
 
                                     colunaQuantidade -> {
                                         quantidade = try {
-                                            column.stringCellValue.toInt()
+                                            column.stringCellValue.toDouble()
                                         } catch (e: IllegalStateException) {
-                                            column.numericCellValue.toInt()
+                                            column.numericCellValue.toDouble()
                                         }
                                     }
 

@@ -4,6 +4,7 @@ import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 /**
  * @author @jeancsanchez
@@ -48,6 +49,13 @@ fun String.formatStringBRToDate(): LocalDate? {
     }
 
     return null
+}
+
+/**
+ * Formata um string timestamp para o formato [LocalDate]
+ */
+fun String.formatStringBRFromTimeStamp(): LocalDate {
+    return ZonedDateTime.parse(this).toLocalDate()
 }
 
 /**

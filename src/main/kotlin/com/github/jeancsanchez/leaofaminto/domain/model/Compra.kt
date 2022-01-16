@@ -16,7 +16,7 @@ class Compra(
     corretora: Corretora,
     data: LocalDate = LocalDate.now(),
     preco: Double,
-    quantidade: Int
+    quantidade: Double
 ) : Operacao(ativo, corretora, data, preco, quantidade) {
 
     /**

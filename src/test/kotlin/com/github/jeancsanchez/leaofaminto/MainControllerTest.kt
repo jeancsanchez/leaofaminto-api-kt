@@ -87,7 +87,7 @@ class MainControllerTest {
                 assertEquals("04/03/20", firstLine.data.formatToStringBR())
                 assertEquals("ITSA4", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
-                assertEquals(100, firstLine.quantidade)
+                assertEquals(100.0, firstLine.quantidade)
                 assertEquals(12.20, firstLine.preco)
                 assertEquals(1220.0, firstLine.valorTotal)
             }
@@ -97,7 +97,7 @@ class MainControllerTest {
                 assertEquals("23/10/20", lastLine.data.formatToStringBR())
                 assertEquals("WEGE3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
-                assertEquals(12, lastLine.quantidade)
+                assertEquals(12.0, lastLine.quantidade)
                 assertEquals(81.08, lastLine.preco)
                 assertEquals(972.96, lastLine.valorTotal)
             }
@@ -117,7 +117,7 @@ class MainControllerTest {
                 assertEquals("16/12/2021", firstLine.data.formatToStringBR())
                 assertEquals("BRCR11", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.FII, firstLine.ativo.tipoDeAtivo)
-                assertEquals(4, firstLine.quantidade)
+                assertEquals(4.0, firstLine.quantidade)
                 assertEquals(70.07, firstLine.preco)
                 assertEquals(280.28, firstLine.valorTotal)
             }
@@ -127,7 +127,7 @@ class MainControllerTest {
                 assertEquals("08/01/2021", lastLine.data.formatToStringBR())
                 assertEquals("MDIA3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
-                assertEquals(2, lastLine.quantidade)
+                assertEquals(2.0, lastLine.quantidade)
                 assertEquals(32.87, lastLine.preco)
                 assertEquals(65.74, lastLine.valorTotal)
             }
@@ -142,7 +142,7 @@ class MainControllerTest {
                 assertEquals("16/12/2021", firstLine.data.formatToStringBR())
                 assertEquals("CEAB3", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
-                assertEquals(50, firstLine.quantidade)
+                assertEquals(50.0, firstLine.quantidade)
                 assertEquals(6.23, firstLine.preco)
                 assertEquals(311.50, firstLine.valorTotal)
             }
@@ -152,7 +152,7 @@ class MainControllerTest {
                 assertEquals("20/04/2021", lastLine.data.formatToStringBR())
                 assertEquals("CEAB3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
-                assertEquals(68, lastLine.quantidade)
+                assertEquals(68.0, lastLine.quantidade)
                 assertEquals(13.73, lastLine.preco)
                 assertEquals(933.64, lastLine.valorTotal)
             }
@@ -170,7 +170,7 @@ class MainControllerTest {
                 assertEquals("23/10/20", firstLine.data.formatToStringBR())
                 assertEquals("SIMH3", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
-                assertEquals(13, firstLine.quantidade)
+                assertEquals(13.0, firstLine.quantidade)
                 assertEquals(29.29, firstLine.preco)
                 assertEquals(380.77, firstLine.valorTotal)
             }
@@ -180,7 +180,7 @@ class MainControllerTest {
                 assertEquals("23/10/20", lastLine.data.formatToStringBR())
                 assertEquals("SIMH3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
-                assertEquals(17, lastLine.quantidade)
+                assertEquals(17.0, lastLine.quantidade)
                 assertEquals(29.29, lastLine.preco)
                 assertEquals(497.93, lastLine.valorTotal)
             }

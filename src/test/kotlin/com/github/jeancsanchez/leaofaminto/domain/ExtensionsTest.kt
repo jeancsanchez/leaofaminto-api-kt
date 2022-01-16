@@ -24,6 +24,13 @@ class ExtensionsTest {
     }
 
     @Test
+    fun formatStringBRFromTimeStamp() {
+        val dateString = "2022-01-14T00:53:02.402Z"
+        val date = LocalDate.of(2022, 1, 14)
+        assertEquals(date, dateString.formatStringBRFromTimeStamp())
+    }
+
+    @Test
     fun formatStringBRToDate() {
         val dateString = "01/05/2020"
         val date = LocalDate.of(2020, 5, 1)

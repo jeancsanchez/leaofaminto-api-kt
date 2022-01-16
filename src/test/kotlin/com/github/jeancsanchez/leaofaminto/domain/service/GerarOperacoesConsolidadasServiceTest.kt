@@ -62,10 +62,10 @@ internal class GerarOperacoesConsolidadasServiceTest {
         val itemsCeA = result.items.filter { it.codigoAtivo == "CEAB3" }
 
         // Deve retornar a quantidade de ações considerando as operações
-        assertEquals(20, itemsSimpar.sumBy { it.quantidadeTotal })
+        assertEquals(20.0, itemsSimpar.sumByDouble { it.quantidadeTotal })
 
         // Deve retornar a quantidade de ações considerando as operações
-        assertEquals(50, itemsCeA.sumBy { it.quantidadeTotal })
+        assertEquals(50.0, itemsCeA.sumByDouble { it.quantidadeTotal })
 
         // Deve retornar o preço médio das ações
         assertEquals(18.50, itemsSimpar.sumByDouble { it.precoMedio })
@@ -92,7 +92,7 @@ internal class GerarOperacoesConsolidadasServiceTest {
         assertEquals(1, result.items.size)
 
         // Deve retornar a quantidade de ações considerando as operações
-        assertEquals(20, result.items.first().quantidadeTotal)
+        assertEquals(20.0, result.items.first().quantidadeTotal)
 
         // Deve retornar o preço médio das ações
         assertEquals(18.50, result.items.first().precoMedio)

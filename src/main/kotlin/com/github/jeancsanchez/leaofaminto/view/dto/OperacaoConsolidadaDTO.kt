@@ -8,7 +8,7 @@ package com.github.jeancsanchez.leaofaminto.view.dto
 
 data class OperacaoConsolidadaDTO(
     val codigoAtivo: String,
-    val quantidadeTotal: Int,
+    val quantidadeTotal: Double,
     val precoMedio: Double,
     val totalInvestido: Double
 )

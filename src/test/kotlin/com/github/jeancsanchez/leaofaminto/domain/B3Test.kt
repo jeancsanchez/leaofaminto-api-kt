@@ -1,9 +1,9 @@
 package com.github.jeancsanchez.leaofaminto.domain
 
-import com.github.jeancsanchez.leaofaminto.domain.model.B3
 import com.github.jeancsanchez.leaofaminto.domain.model.Compra
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.B3
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
