@@ -1,5 +1,6 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
 import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.EnumType

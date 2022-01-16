@@ -1,5 +1,7 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.governos
 
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.base.ITaxador
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Inheritance

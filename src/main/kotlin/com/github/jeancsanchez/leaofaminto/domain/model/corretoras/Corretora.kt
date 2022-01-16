@@ -1,5 +1,7 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.corretoras
 
+import com.github.jeancsanchez.leaofaminto.domain.model.base.ITaxador
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.Bolsa
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id

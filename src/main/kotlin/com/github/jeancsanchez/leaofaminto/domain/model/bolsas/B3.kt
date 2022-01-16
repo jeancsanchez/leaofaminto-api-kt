@@ -1,5 +1,10 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.bolsas
 
+import com.github.jeancsanchez.leaofaminto.domain.model.Compra
+import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.base.ITaxador
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.GovernoBR
 import com.github.jeancsanchez.leaofaminto.view.round
 import javax.persistence.Entity
 

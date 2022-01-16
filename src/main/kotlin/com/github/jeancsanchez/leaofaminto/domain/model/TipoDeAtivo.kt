@@ -8,5 +8,6 @@ package com.github.jeancsanchez.leaofaminto.domain.model
 
 enum class TipoDeAtivo {
     ACAO,
+    STOCK,
     FII
 }

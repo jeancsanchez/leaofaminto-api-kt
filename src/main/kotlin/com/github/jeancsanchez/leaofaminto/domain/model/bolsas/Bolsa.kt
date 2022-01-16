@@ -1,5 +1,7 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.bolsas
 
+import com.github.jeancsanchez.leaofaminto.domain.model.base.ITaxador
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.Governo
 import javax.persistence.*
 
 /**

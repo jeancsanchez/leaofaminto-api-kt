@@ -1,4 +1,4 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.base
 
 /**
  * @author @jeancsanchez

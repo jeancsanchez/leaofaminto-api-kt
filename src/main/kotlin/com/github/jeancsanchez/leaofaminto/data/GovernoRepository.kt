@@ -1,6 +1,6 @@
 package com.github.jeancsanchez.leaofaminto.data
 
-import com.github.jeancsanchez.leaofaminto.domain.model.Governo
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.Governo
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

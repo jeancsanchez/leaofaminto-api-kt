@@ -1,5 +1,8 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.governos
 
+import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.base.MethodNotAllowedException
 import com.github.jeancsanchez.leaofaminto.view.round
 import javax.persistence.Entity
 

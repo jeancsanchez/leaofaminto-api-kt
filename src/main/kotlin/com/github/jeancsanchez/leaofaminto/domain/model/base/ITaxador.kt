@@ -1,4 +1,7 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.base
+
+import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
 
 /**
  * @author @jeancsanchez

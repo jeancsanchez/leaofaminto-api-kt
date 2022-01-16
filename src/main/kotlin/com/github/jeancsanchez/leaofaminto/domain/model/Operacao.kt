@@ -1,5 +1,6 @@
 package com.github.jeancsanchez.leaofaminto.domain.model
 
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
 import com.github.jeancsanchez.leaofaminto.view.formatToStringBR
 import com.github.jeancsanchez.leaofaminto.view.round
 import java.time.LocalDate

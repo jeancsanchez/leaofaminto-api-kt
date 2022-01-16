@@ -3,9 +3,9 @@ package com.github.jeancsanchez.leaofaminto.domain
 import com.github.jeancsanchez.leaofaminto.data.BolsaRepository
 import com.github.jeancsanchez.leaofaminto.data.CorretoraRepository
 import com.github.jeancsanchez.leaofaminto.data.GovernoRepository
-import com.github.jeancsanchez.leaofaminto.domain.model.B3
-import com.github.jeancsanchez.leaofaminto.domain.model.ClearCorretora
-import com.github.jeancsanchez.leaofaminto.domain.model.GovernoBR
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.B3
+import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.ClearCorretora
+import com.github.jeancsanchez.leaofaminto.domain.model.governos.GovernoBR
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

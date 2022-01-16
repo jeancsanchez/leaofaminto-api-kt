@@ -1,5 +1,8 @@
-package com.github.jeancsanchez.leaofaminto.domain.model
+package com.github.jeancsanchez.leaofaminto.domain.model.corretoras
 
+import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
+import com.github.jeancsanchez.leaofaminto.domain.model.Venda
+import com.github.jeancsanchez.leaofaminto.domain.model.bolsas.B3
 import javax.persistence.Entity
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
