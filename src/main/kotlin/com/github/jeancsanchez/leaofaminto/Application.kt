@@ -1,6 +1,7 @@
 package com.github.jeancsanchez.leaofaminto
 
 import com.github.jeancsanchez.leaofaminto.domain.CriarCenarioBrasilService
+import com.github.jeancsanchez.leaofaminto.domain.CriarCenarioEUAService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -18,6 +19,9 @@ class Application : CommandLineRunner {
     @Autowired
     private lateinit var criarCenarioBrasilService: CriarCenarioBrasilService
 
+    @Autowired
+    private lateinit var criarCenarioAmericanoService: CriarCenarioEUAService
+
     companion object {
 
         @JvmStatic
@@ -28,5 +32,6 @@ class Application : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         criarCenarioBrasilService.execute(Unit)
+        criarCenarioAmericanoService.execute(Unit)
     }
 }
