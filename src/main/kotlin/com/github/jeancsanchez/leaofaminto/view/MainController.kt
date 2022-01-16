@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.github.jeancsanchez.leaofaminto.view
 
 import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
@@ -34,6 +36,9 @@ class MainController(
 
     @Autowired
     @Qualifier("CEIImporterV2") val ceiXLSImporterServiceV2: FileImporterService,
+
+    @Autowired
+    @Qualifier("passfolioImporter") val passfolioImporterService: FileImporterService
 ) {
     /**
      * Lista todas as operações.
@@ -75,6 +80,15 @@ class MainController(
     @PostMapping("/v2/sync")
     fun syncOperacoesV2(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
         val result = ceiXLSImporterServiceV2.execute(arquivo)
+        return ResponseEntity.ok(result)
+    }
+
+    /**
+     * Sincroniza as operações conforme o arquivo da Passfolio.
+     */
+    @PostMapping("/passfolio/sync")
+    fun syncOperacoesPassfolio(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
+        val result = passfolioImporterService.execute(arquivo)
         return ResponseEntity.ok(result)
     }
 }
