@@ -192,7 +192,7 @@ class MainControllerTest {
      * deve-se manter os já importados e só adicionar os novos.
      */
     @Test
-    fun sincronizarOperacoesComNovoArquivoCEIExcel() {
+    fun sincronizarOperacoesArquivoCEIExcelSemDuplicidade() {
         fazerUploadDeArquivo(arquivo2020)
         assertEquals(20, comprasRepository.count())
         assertEquals(2, vendasRepository.count())
@@ -200,6 +200,21 @@ class MainControllerTest {
         fazerUploadDeArquivo(arquivo2021)
         assertEquals(31, comprasRepository.count())
         assertEquals(4, vendasRepository.count())
+    }
+
+    /**
+     * Nesse caso, quando já existe operações importadas, ao sincronizar novo arquivo,
+     * deve-se manter os já importados e só adicionar os novos.
+     */
+    @Test
+    fun sincronizarOperacoesArquivoCEIExcelSemDuplicidadeV2() {
+        fazerUploadDeArquivo(arquivo2021V2, version = 2)
+        assertEquals(24, comprasRepository.count())
+        assertEquals(6, vendasRepository.count())
+
+        fazerUploadDeArquivo(arquivo2021V2, version = 2)
+        assertEquals(24, comprasRepository.count())
+        assertEquals(6, vendasRepository.count())
     }
 
     private fun fazerUploadDeArquivo(resource: Resource?, version: Int? = 1) {

@@ -199,10 +199,13 @@ class CEIXLSImporterServiceV2Impl(
      */
     private fun MutableList<Operacao>.updateRepository(): List<Operacao> {
         if (isNotEmpty()) {
-            operacaoRepository.deleteAll()
-            operacaoRepository.saveAll(this)
+            forEach {
+                if (operacaoRepository.findById(it.hashId).isPresent.not()) {
+                    operacaoRepository.save(it)
+                }
+            }
         }
 
-        return this
+        return operacaoRepository.findAll()
     }
 }

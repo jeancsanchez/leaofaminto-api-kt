@@ -98,6 +98,21 @@ class PassfolioControllerTest {
         }
     }
 
+    /**
+     * Nesse caso, quando já existe operações importadas, ao sincronizar novo arquivo,
+     * deve-se manter os já importados e só adicionar os novos.
+     */
+    @Test
+    fun sincronizarOperacoesPassfolioSemDuplicidade() {
+        fazerUploadDeArquivo(passfolio2021, version = 2)
+        assertEquals(3, comprasRepository.count())
+        assertEquals(0, vendasRepository.count())
+
+        fazerUploadDeArquivo(passfolio2021, version = 2)
+        assertEquals(3, comprasRepository.count())
+        assertEquals(0, vendasRepository.count())
+    }
+
     private fun fazerUploadDeArquivo(resource: Resource?, version: Int? = 1) {
         val file = MockMultipartFile(
             "arquivo",

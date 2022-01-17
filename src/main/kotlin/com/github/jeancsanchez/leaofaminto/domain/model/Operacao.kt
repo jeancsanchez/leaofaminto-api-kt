@@ -1,8 +1,11 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.github.jeancsanchez.leaofaminto.domain.model
 
 import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
 import com.github.jeancsanchez.leaofaminto.view.formatToStringBR
 import com.github.jeancsanchez.leaofaminto.view.round
+import org.hibernate.annotations.GenericGenerator
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -26,15 +29,18 @@ open class Operacao(
     open var quantidade: Double
 ) {
     @Id
-    @GeneratedValue
-    open var id: Long? = null
+    @GeneratedValue(generator = "hashId")
+    @GenericGenerator(
+        name = "hashId",
+        strategy = "com.github.jeancsanchez.leaofaminto.domain.model.OperacaoId"
+    )
+    open var id: String? = null
 
     var valorTotal: Double = 0.0
         protected set
         get() = quantidade * preco
 
-    var hashId: String = ""
-        private set
+    val hashId: String
         get() = data.formatToStringBR()
             .plus(ativo.codigo)
             .plus(corretora.id)

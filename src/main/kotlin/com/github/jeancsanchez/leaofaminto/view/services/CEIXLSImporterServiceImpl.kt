@@ -121,17 +121,13 @@ class CEIXLSImporterServiceImpl(
      */
     private fun updateRepository(resultList: MutableList<Operacao>): List<Operacao> {
         if (resultList.isNotEmpty()) {
-            if (operacaoRepository.count() == 0L) {
-                operacaoRepository.saveAll(resultList)
-            } else if (operacaoRepository.findTopByOrderByIdDesc()?.hashId !== resultList.last().hashId) {
-                if (resultList.last().hashId !== operacaoRepository.findTopByOrderByIdDesc()?.hashId) {
-                    val differenceList = resultList.subList(operacaoRepository.count().toInt(), resultList.size)
-                    operacaoRepository.saveAll(differenceList)
-                    return resultList
+            resultList.forEach {
+                if (operacaoRepository.findById(it.hashId).isPresent.not()) {
+                    operacaoRepository.save(it)
                 }
             }
         }
 
-        return resultList
+        return operacaoRepository.findAll()
     }
 }

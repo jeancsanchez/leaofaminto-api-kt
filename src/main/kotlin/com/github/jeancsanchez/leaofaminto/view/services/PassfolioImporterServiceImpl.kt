@@ -114,10 +114,13 @@ class PassfolioImporterServiceImpl(
      */
     private fun MutableList<Operacao>.updateRepository(): List<Operacao> {
         if (isNotEmpty()) {
-            operacaoRepository.deleteAllInBatchByCorretoraNomeIgnoreCase("Passfolio")
-            operacaoRepository.saveAll(this)
+            forEach {
+                if (operacaoRepository.findById(it.hashId).isPresent.not()) {
+                    operacaoRepository.save(it)
+                }
+            }
         }
 
-        return this
+        return operacaoRepository.findAll()
     }
 }
