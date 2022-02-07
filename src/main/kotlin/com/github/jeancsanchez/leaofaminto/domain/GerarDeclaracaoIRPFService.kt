@@ -86,7 +86,7 @@ class GerarDeclaracaoIRPFService(
                     discriminacao = ("${it.quantidadeTotal.toQuantidadeString()} $tipoDeAcao DE ${ativo.nome} (${ativo.codigo}) AO CUSTO" +
                             " MÉDIO DE ${it.precoMedio.toBrazilMoney()} CUSTODIADA NA CORRETORA ${corretora.nome}," +
                             " CNPJ: ${corretora.cnpj}").toUpperCase()
-                ).apply {
+                ).run {
                     bensEDireitosList.add(this)
                 }
             }
