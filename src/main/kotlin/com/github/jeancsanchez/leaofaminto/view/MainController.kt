@@ -4,9 +4,12 @@ package com.github.jeancsanchez.leaofaminto.view
 
 import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
+import com.github.jeancsanchez.leaofaminto.domain.GerarDeclaracaoIRPFService
 import com.github.jeancsanchez.leaofaminto.domain.GerarOperacoesConsolidadasService
 import com.github.jeancsanchez.leaofaminto.domain.model.Operacao
 import com.github.jeancsanchez.leaofaminto.view.dto.ConsolidadoDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.DeclaracaoIRPFDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.IRPFRequestDTO
 import com.github.jeancsanchez.leaofaminto.view.dto.OperacoesDTO
 import com.github.jeancsanchez.leaofaminto.view.services.FileImporterService
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +33,7 @@ class MainController(
     @Autowired val vendasRepository: VendasRepository,
     @Autowired val comprasRepository: ComprasRepository,
     @Autowired val gerarOperacoesConsolidadasService: GerarOperacoesConsolidadasService,
+    @Autowired val gerarDeclaracaoIRPFService: GerarDeclaracaoIRPFService,
 
     @Autowired
     @Qualifier("CEIImporter") val ceiXLSImporterService: FileImporterService,
@@ -89,6 +93,16 @@ class MainController(
     @PostMapping("/passfolio/sync")
     fun syncOperacoesPassfolio(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
         val result = passfolioImporterService.execute(arquivo)
+        return ResponseEntity.ok(result)
+    }
+
+
+    /**
+     * Gera declaração de imposto de renda do ano informado.
+     */
+    @PostMapping("/irpf")
+    fun generateIRPF(@RequestBody request: IRPFRequestDTO): ResponseEntity<DeclaracaoIRPFDTO> {
+        val result = gerarDeclaracaoIRPFService.execute(request.year)
         return ResponseEntity.ok(result)
     }
 }

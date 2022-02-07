@@ -5,8 +5,7 @@ import com.github.jeancsanchez.leaofaminto.data.ComprasRepository
 import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.model.Ativo
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
-import com.github.jeancsanchez.leaofaminto.view.dto.DeclaracaoBensEDireitosDTO
-import com.github.jeancsanchez.leaofaminto.view.dto.DeclaracaoIRPFDTO
+import com.github.jeancsanchez.leaofaminto.view.dto.*
 import com.github.jeancsanchez.leaofaminto.view.toBrazilMoney
 import com.github.jeancsanchez.leaofaminto.view.toQuantidadeString
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,9 +33,6 @@ class GerarDeclaracaoIRPFService(
     override fun execute(param: Int): DeclaracaoIRPFDTO {
         val consolidados = gerarOperacoesConsolidadasService.execute(Unit)
 
-        val tituloBensEDireitos = "Bens e Direitos"
-        val codigo = "31"
-
 //        AMZN - 0.02357082 ac ̧ o ̃ es de Amazon . com Inc..
 //                Custo total de US $ 75, 00 com dólar médio de R$ 5, 3683.
 //
@@ -45,7 +41,12 @@ class GerarDeclaracaoIRPFService(
 //        CNPJ:  02.332.886/0001-04
 
         val positionsList = getLastAndCurrentPosition(currentYear = param)
-        val bensEDireitosList = arrayListOf<DeclaracaoBensEDireitosDTO>()
+        val bensEDireitosList = arrayListOf<BensEDireitosItemDTO>()
+        val bensEDireitos = DeclaracaoBensEDireitosDTO(
+            titulo = "Bens e Direitos",
+            codigo = "31",
+            data = bensEDireitosList
+        )
 
         consolidados
             .items
@@ -76,9 +77,7 @@ class GerarDeclaracaoIRPFService(
 
 
                 val positions = positionsList.find { it.ativo.codigo == ativo.codigo }
-                DeclaracaoBensEDireitosDTO(
-                    titulo = tituloBensEDireitos,
-                    codigo = codigo,
+                BensEDireitosItemDTO(
                     localizacao = localizacao,
                     cnpj = ativo.cnpj,
                     situacaoAnterior = positions?.lastPosition ?: "R$ 00,00",
@@ -92,9 +91,17 @@ class GerarDeclaracaoIRPFService(
             }
 
         return DeclaracaoIRPFDTO(
-            rendimentosInsentos = emptyList(),
-            rendimentosTributaveis = emptyList(),
-            bensEDireitos = bensEDireitosList
+            rendimentosInsentos = DeclaracaoRendimentosIsentosDTO(
+                titulo = "Rendimentos Insentos ou Não tributaveis",
+                codigo = "9", // Lucros e dividendos recebidos. 20 - Ganhos liquidos em operações...
+                data = emptyList()
+            ),
+            rendimentosTributaveis = DeclaracaoRendimentosTributaveisDTO(
+                titulo = "Rendimentos Tributaveis",
+                codigo = "10", // Juros sobre capital proprio
+                data = emptyList()
+            ),
+            bensEDireitos = bensEDireitos
         )
     }
 

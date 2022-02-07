@@ -120,21 +120,25 @@ internal class GerarDeclaracaoIRPFServiceTest {
 
         // Then
         result.bensEDireitos
-            .first()
-            .also {
-                assertEquals("Bens e Direitos", it.titulo)
-                assertEquals("31", it.codigo)
-                assertEquals("Brasil", it.localizacao)
-                assertEquals(dummyAtivo.cnpj, it.cnpj)
+            .also { secao ->
+                assertEquals("Bens e Direitos", secao.titulo)
+                assertEquals("31", secao.codigo)
 
-                assertEquals(
-                    "200 AÇÕES DE C&A (CEAB3) AO CUSTO MÉDIO DE R$ 10,00" +
-                            " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
-                    it.discriminacao
-                )
+                secao.data
+                    .first()
+                    .also {
+                        assertEquals("Brasil", it.localizacao)
+                        assertEquals(dummyAtivo.cnpj, it.cnpj)
 
-                assertEquals("R$ 100,00", it.situacaoAnterior)
-                assertEquals("R$ 200,00", it.situacaoAtual)
+                        assertEquals(
+                            "200 AÇÕES DE C&A (CEAB3) AO CUSTO MÉDIO DE R$ 10,00" +
+                                    " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
+                            it.discriminacao
+                        )
+
+                        assertEquals("R$ 100,00", it.situacaoAnterior)
+                        assertEquals("R$ 200,00", it.situacaoAtual)
+                    }
             }
     }
 
