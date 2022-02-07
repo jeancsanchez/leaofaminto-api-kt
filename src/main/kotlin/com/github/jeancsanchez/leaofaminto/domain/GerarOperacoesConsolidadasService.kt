@@ -26,7 +26,7 @@ class GerarOperacoesConsolidadasService(
         val items = comprasRepository.findAll()
             .toMutableList()
             .replaceSIMHToJSLG()
-            .groupBy { it.ativo.codigo }
+            .groupBy { it.ativo }
             .map { map ->
                 val valorCompras = map.value
                     .sumByDouble { it.valorTotal }
@@ -34,7 +34,7 @@ class GerarOperacoesConsolidadasService(
                 val quantidadeCompras = map.value
                     .sumByDouble { it.quantidade }
 
-                val quantidadeVendas = vendasRepository.findAllByAtivoCodigo(map.key)
+                val quantidadeVendas = vendasRepository.findAllByAtivoCodigo(map.key.codigo)
                     .sumByDouble { it.quantidade }
 
                 val quantidade = quantidadeCompras - quantidadeVendas
@@ -46,7 +46,7 @@ class GerarOperacoesConsolidadasService(
                 val precoTotal = quantidade * precoMedio
 
                 OperacaoConsolidadaDTO(
-                    codigoAtivo = map.key,
+                    ativo = map.key,
                     quantidadeTotal = quantidade,
                     precoMedio = BigDecimal(precoMedio).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
                     totalInvestido = BigDecimal(precoTotal).setScale(2, RoundingMode.HALF_EVEN).toDouble()

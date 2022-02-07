@@ -106,3 +106,24 @@ fun Double.round(): Double {
         .setScale(2, RoundingMode.HALF_EVEN)
         .toDouble()
 }
+
+/**
+ * Converte valor para o formato de moeda brasileira
+ */
+
+fun Double.toBrazilMoney(): String {
+    val str = "R$ ${round()}".replace(".", ",")
+    if (str.split(",")[1] == "0") {
+        return str.plus("0")
+    }
+
+    return str
+}
+
+fun Double.toQuantidadeString(): String {
+    if ((this % this) == 0.0) {
+        return toInt().toString()
+    }
+
+    return toString()
+}

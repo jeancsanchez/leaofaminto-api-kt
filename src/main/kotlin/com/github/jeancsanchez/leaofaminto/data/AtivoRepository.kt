@@ -18,4 +18,10 @@ interface AtivoRepository : JpaRepository<Ativo, String> {
      * @param nome nome do ativo.
      */
     fun findTop1ByNomeIgnoreCase(nome: String): Ativo?
+
+    /**
+     * Pega o primeiro ativo pelo codigo.
+     * @param codigo nome do ativo.
+     */
+    fun findTop1ByCodigoIgnoreCase(codigo: String): Ativo?
 }

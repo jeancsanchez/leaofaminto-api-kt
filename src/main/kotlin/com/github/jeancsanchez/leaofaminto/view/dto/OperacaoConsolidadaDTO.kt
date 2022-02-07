@@ -1,5 +1,7 @@
 package com.github.jeancsanchez.leaofaminto.view.dto
 
+import com.github.jeancsanchez.leaofaminto.domain.model.Ativo
+
 /**
  * @author @jeancsanchez
  * @created 21/05/2021
@@ -7,7 +9,7 @@ package com.github.jeancsanchez.leaofaminto.view.dto
  */
 
 data class OperacaoConsolidadaDTO(
-    val codigoAtivo: String,
+    val ativo: Ativo,
     val quantidadeTotal: Double,
     val precoMedio: Double,
     val totalInvestido: Double

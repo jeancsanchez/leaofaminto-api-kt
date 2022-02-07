@@ -58,8 +58,8 @@ internal class GerarOperacoesConsolidadasServiceTest {
         // Deve retornar apenas um item consolidando as operações
         assertEquals(2, result.items.size)
 
-        val itemsSimpar = result.items.filter { it.codigoAtivo == "SIMH3" }
-        val itemsCeA = result.items.filter { it.codigoAtivo == "CEAB3" }
+        val itemsSimpar = result.items.filter { it.ativo.codigo == "SIMH3" }
+        val itemsCeA = result.items.filter { it.ativo.codigo == "CEAB3" }
 
         // Deve retornar a quantidade de ações considerando as operações
         assertEquals(20.0, itemsSimpar.sumByDouble { it.quantidadeTotal })
