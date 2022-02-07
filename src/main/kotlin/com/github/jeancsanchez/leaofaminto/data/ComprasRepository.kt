@@ -26,7 +26,7 @@ interface ComprasRepository : JpaRepository<Compra, String> {
 
     /**
      * Busca a última compra de um ativo pelo código.
-     * @param codigo Código do ativo.
+     * @param codigo  codigo do ativo.
      */
-    fun findTopByOrderByCodigoDesc(codigo: String): Compra
+    fun findTopByAtivoCodigoOrderByDataDesc(codigo: String): Compra
 }

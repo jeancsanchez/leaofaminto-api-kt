@@ -100,7 +100,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
 
         whenever(comprasRepository.findAll()).thenAnswer { comprasList }
         whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer { vendasList }
-        whenever(comprasRepository.findTopByOrderByCodigoDesc(any())).thenAnswer { comprasList.first() }
+        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer { comprasList.first() }
         whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
             ConsolidadoDTO(
                 items = listOf(
@@ -194,8 +194,8 @@ internal class GerarDeclaracaoIRPFServiceTest {
             .first()
             .also {
                 assertEquals("CEAB3", it.ativo.codigo)
-                assertEquals("R$ 100,0", it.lastPosition)
-                assertEquals("R$ 200,0", it.currentPosition)
+                assertEquals("R$ 100,00", it.lastPosition)
+                assertEquals("R$ 200,00", it.currentPosition)
             }
     }
 }

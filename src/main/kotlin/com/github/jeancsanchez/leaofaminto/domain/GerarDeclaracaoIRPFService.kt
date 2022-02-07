@@ -51,12 +51,13 @@ class GerarDeclaracaoIRPFService(
             .items
             .map {
                 val ativo = it.ativo
-                val corretora = comprasRepository.findTopByOrderByCodigoDesc(ativo.codigo).corretora
+                val corretora = comprasRepository.findTopByAtivoCodigoOrderByDataDesc(ativo.codigo).corretora
 
                 val tipoDeAcao: String = when (ativo.tipoDeAtivo) {
                     TipoDeAtivo.ACAO -> {
                         if (it.quantidadeTotal > 1) "ações" else "ação"
                     }
+
                     TipoDeAtivo.FII -> {
                         if (it.quantidadeTotal > 1) "cotas" else "cota"
                     }
