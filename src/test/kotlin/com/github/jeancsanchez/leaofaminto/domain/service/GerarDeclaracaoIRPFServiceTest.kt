@@ -6,11 +6,7 @@ import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.GerarDeclaracaoIRPFService
 import com.github.jeancsanchez.leaofaminto.domain.GerarOperacoesConsolidadasService
 import com.github.jeancsanchez.leaofaminto.domain.model.Ativo
-import com.github.jeancsanchez.leaofaminto.domain.model.Compra
-import com.github.jeancsanchez.leaofaminto.domain.model.Venda
-import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.ClearCorretora
-import com.github.jeancsanchez.leaofaminto.view.dto.ConsolidadoDTO
-import com.github.jeancsanchez.leaofaminto.view.dto.OperacaoConsolidadaDTO
+import com.github.jeancsanchez.leaofaminto.domain.service.scenarios.DomainScenarios
 import junit.framework.TestCase.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,8 +15,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
 import java.time.LocalDate
 
 /**
@@ -48,6 +42,9 @@ internal class GerarDeclaracaoIRPFServiceTest {
     @InjectMocks
     private lateinit var relatorioService: GerarDeclaracaoIRPFService
 
+    @InjectMocks
+    private lateinit var scenarios: DomainScenarios
+
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
@@ -61,62 +58,15 @@ internal class GerarDeclaracaoIRPFServiceTest {
      */
     @Test
     fun gerarDeclaracaoIRPF() {
-        val lastYear = LocalDate.of(2020, 1, 1)
-        val currentYear = LocalDate.of(2021, 1, 1)
+        val reportYear = 2022
         val dummyAtivo = Ativo(codigo = "CEAB3", nome = "C&A", cnpj = "010101/01")
-        val comprasList = listOf(
-            Compra(
-                ativo = dummyAtivo,
-                quantidade = 10.0,
-                preco = 10.0,
-                corretora = ClearCorretora(),
-                data = lastYear,
-            ),
-            Compra(
-                ativo = dummyAtivo,
-                quantidade = 10.0,
-                preco = 10.0,
-                corretora = ClearCorretora(),
-                data = lastYear.plusMonths(2)
-            ),
-            Compra(
-                ativo = dummyAtivo,
-                quantidade = 10.0,
-                preco = 10.0,
-                corretora = ClearCorretora(),
-                data = currentYear
-            ),
+        scenarios.loadGerarDeclaracaoIRPFScenario(
+            dummyAtivo = dummyAtivo,
+            reportYear = LocalDate.of(reportYear, 1, 1),
         )
-
-        val vendasList = listOf(
-            Venda(
-                ativo = dummyAtivo,
-                quantidade = 10.0,
-                preco = 10.0,
-                corretora = ClearCorretora(),
-                data = lastYear.plusMonths(4)
-            )
-        )
-
-        whenever(comprasRepository.findAll()).thenAnswer { comprasList }
-        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer { vendasList }
-        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer { comprasList.first() }
-        whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
-            ConsolidadoDTO(
-                items = listOf(
-                    OperacaoConsolidadaDTO(
-                        ativo = dummyAtivo,
-                        quantidadeTotal = 200.0,
-                        precoMedio = 10.0,
-                        totalInvestido = 200.0
-                    )
-                ),
-                totalInvestido = 200.0
-            )
-        }
 
         // When
-        val result = relatorioService.execute(currentYear.year)
+        val result = relatorioService.execute(reportYear)
 
         // Then
         result.bensEDireitos
@@ -143,63 +93,33 @@ internal class GerarDeclaracaoIRPFServiceTest {
     }
 
     /**
-     * Nesse caso, foram compradas 20 ações de C&A ao valor de R$ 10,00 no ano de 2020. No mesmo ano,
-     * 10 ações foram vendidas ao mesmo preço, somando 100 ações ao preço médio de R$ 10,00 no ano de 2020.
-     * No ano de 2021, foram compradas mais 10 ações a R$ 10,00, totalizando 200 ações a R$ 10,00
-     * em 2021.
+     * Nesse caso, ações da Ambev foram compradas nos anos de 2019, 2020 e 2021. Ao gerar a declaração de 2022,
+     * a posição anterior deve considerar todos os anos anteriores a 2022.
+     * Nesse cenário, foram compradas 306 ações ao custo de R$4,508.98. Foram vendidas também, 100 ações
+     * ao preço de -R$1,145.00, restando a posição final de 206 ações ao custo de R$ R$3,363.98 e preço médio
+     * de R$ 16.33.
      */
     @Test
-    fun pegarPosicaoAtivoAnoAnteriorEAnoCorrente() {
-        val lastYear = LocalDate.of(2020, 1, 1)
-        val currentYear = LocalDate.of(2021, 1, 1)
-        val dummyAtivo = Ativo(codigo = "CEAB3", cnpj = "010101/01")
+    fun gerarDeclaracaoIRPFSomandoTodosOsAnosAnteriores() {
+        val ambev = Ativo(nome = "Ambev", codigo = "ABEV3", cnpj = "010101/01")
+        scenarios.loadGerarDeclaracaoIRPFSomandoTodosOsAnosAnterioresScenario(ambev)
 
-        whenever(comprasRepository.findAll()).thenAnswer {
-            listOf(
-                Compra(
-                    ativo = dummyAtivo,
-                    quantidade = 10.0,
-                    preco = 10.0,
-                    corretora = ClearCorretora(),
-                    data = lastYear,
-                ),
-                Compra(
-                    ativo = dummyAtivo,
-                    quantidade = 10.0,
-                    preco = 10.0,
-                    corretora = ClearCorretora(),
-                    data = lastYear.plusMonths(2)
-                ),
-                Compra(
-                    ativo = dummyAtivo,
-                    quantidade = 10.0,
-                    preco = 10.0,
-                    corretora = ClearCorretora(),
-                    data = currentYear
-                ),
-            )
-        }
+        // When
+        val result = relatorioService.execute(2022)
 
-        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer { invocation ->
-            listOf(
-                Venda(
-                    ativo = dummyAtivo,
-                    quantidade = 10.0,
-                    preco = 10.0,
-                    corretora = ClearCorretora(),
-                    data = lastYear.plusMonths(4)
-                )
-            )
-        }
-
-        val result = relatorioService.getLastAndCurrentPosition(currentYear.year)
-
-        result
+        // Then
+        result.bensEDireitos.data
             .first()
             .also {
-                assertEquals("CEAB3", it.ativo.codigo)
-                assertEquals("R$ 100,00", it.lastPosition)
-                assertEquals("R$ 200,00", it.currentPosition)
+                assertEquals("R$ 1280,68", it.situacaoAnterior)
+                assertEquals("R$ 3363,98", it.situacaoAtual)
+
+                assertEquals(
+                    "206 AÇÕES DE AMBEV (ABEV3) AO CUSTO MÉDIO DE R$ 16,33" +
+                            " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
+                    it.discriminacao
+                )
             }
     }
+
 }

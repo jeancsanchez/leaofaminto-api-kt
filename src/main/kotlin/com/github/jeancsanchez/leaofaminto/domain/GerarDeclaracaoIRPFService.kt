@@ -28,7 +28,7 @@ class GerarDeclaracaoIRPFService(
 ) : IDomainService<Int, DeclaracaoIRPFDTO> {
 
     /**
-     * @param param Current year
+     * @param param Report year
      */
     override fun execute(param: Int): DeclaracaoIRPFDTO {
         val consolidados = gerarOperacoesConsolidadasService.execute(Unit)
@@ -40,7 +40,7 @@ class GerarDeclaracaoIRPFService(
 //        AO CUSTO MEDIO DE R$10.56-CUSTODIADA NA CORRETORA XP INVESTIMENTOS CCTVM S/A,
 //        CNPJ:  02.332.886/0001-04
 
-        val positionsList = getLastAndCurrentPosition(currentYear = param)
+        val positionsList = getLastAndCurrentPosition(reportYear = param)
         val bensEDireitosList = arrayListOf<BensEDireitosItemDTO>()
         val bensEDireitos = DeclaracaoBensEDireitosDTO(
             titulo = "Bens e Direitos",
@@ -112,31 +112,32 @@ class GerarDeclaracaoIRPFService(
         val currentPosition: String?,
     )
 
-    fun getLastAndCurrentPosition(currentYear: Int): List<AtivoPosition> {
-        val lastYear = currentYear - 1
-        val firstDayOfLastYear = LocalDate.of(lastYear, 1, 1)
+    fun getLastAndCurrentPosition(reportYear: Int): List<AtivoPosition> {
+        val olderYear = LocalDate.of(2010, 1, 1)
+        val firstDayOfLastYear = LocalDate.of(reportYear - 1, 1, 1)
         val lastDayOfLastYear = firstDayOfLastYear.with(TemporalAdjusters.lastDayOfYear())
 
-        val firstDayOfYear = LocalDate.of(currentYear, 1, 1)
-        val lastDayOfYear = firstDayOfYear.with(TemporalAdjusters.lastDayOfYear())
+        val lastPositions: List<AtivoPosition> = getPositionWithinDates(
+            startDate = olderYear,
+            endDate = firstDayOfLastYear.minusDays(1)
+        ).map {
+            AtivoPosition(
+                ativo = it.first,
+                lastPosition = it.second.toString(),
+                currentPosition = null
+            )
+        }
 
-        val lastPositions = getPosicaoWithinDates(firstDayOfLastYear, lastDayOfLastYear)
-            .map {
-                AtivoPosition(
-                    ativo = it.first,
-                    lastPosition = it.second.toString(),
-                    currentPosition = null
-                )
-            }
-
-        val currentPositions = getPosicaoWithinDates(firstDayOfYear, lastDayOfYear)
-            .map {
-                AtivoPosition(
-                    ativo = it.first,
-                    lastPosition = null,
-                    currentPosition = it.second.toString()
-                )
-            }
+        val currentPositions: List<AtivoPosition> = getPositionWithinDates(
+            startDate = firstDayOfLastYear,
+            endDate = lastDayOfLastYear
+        ).map {
+            AtivoPosition(
+                ativo = it.first,
+                lastPosition = null,
+                currentPosition = it.second.toString()
+            )
+        }.ifEmpty { lastPositions }
 
         val result = lastPositions
             .zip(currentPositions)
@@ -154,33 +155,34 @@ class GerarDeclaracaoIRPFService(
         return result
     }
 
-    private fun getPosicaoWithinDates(startDate: LocalDate, endDate: LocalDate): List<Pair<Ativo, Double>> {
+    private fun getPositionWithinDates(startDate: LocalDate, endDate: LocalDate): List<Pair<Ativo, Double>> {
         return comprasRepository.findAll()
             .filter { it.data in startDate..endDate }
             .toMutableList()
             .groupBy { it.ativo }
             .map { map ->
-                val valorCompras = map.value
-                    .sumByDouble { it.valorTotal }
-
-                val quantidadeCompras = map.value
-                    .sumByDouble { it.quantidade }
-
-                val quantidadeVendas = vendasRepository
+                val compras = map.value
+                val vendas = vendasRepository
                     .findAllByAtivoCodigo(map.key.codigo)
                     .filter { it.data in startDate..endDate }
-                    .sumByDouble { it.quantidade }
 
-                val quantidade = quantidadeCompras - quantidadeVendas
-                val precoMedio = if (quantidade > 0) {
-                    valorCompras / quantidadeCompras
+                val valorCompras = compras.sumByDouble { it.valorTotal }
+                val valorVendas = vendas.sumByDouble { it.valorTotal }
+                val valorTotal = valorCompras - valorVendas
+
+                val quantidadeCompras = compras.sumByDouble { it.quantidade }
+                val quantidadeVendas = vendas.sumByDouble { it.quantidade }
+                val quantidadeTotal = quantidadeCompras - quantidadeVendas
+
+                val precoMedio = if (quantidadeTotal > 0) {
+                    valorTotal / quantidadeTotal
                 } else {
                     0.0
                 }
 
-                val valorTotal = quantidade * precoMedio
+                val valorFinal = quantidadeTotal * precoMedio
 
-                Pair(map.key, valorTotal)
+                Pair(map.key, valorFinal)
             }
     }
 }
