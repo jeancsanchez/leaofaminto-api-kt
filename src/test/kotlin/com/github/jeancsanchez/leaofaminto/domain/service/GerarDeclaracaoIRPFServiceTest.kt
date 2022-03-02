@@ -122,4 +122,33 @@ internal class GerarDeclaracaoIRPFServiceTest {
             }
     }
 
+
+    /**
+     * Nesse caso, ações da RAIZ4 NÃO foram compradas no de 2020, mas foram compradas 3 ações no ano de 2021
+     * ao preço médio de R$ 6,41.
+     *
+     */
+    @Test
+    fun gerarDeclaracaoIRPFConsiderandoNovasCompras() {
+        val raizen = Ativo(nome = "Raizen SA", codigo = "RAIZ4", cnpj = "010101/01")
+        scenarios.loadGerarDeclaracaoIRPFConsiderandoNovasComprasScenario(raizen)
+
+        // When
+        val result = relatorioService.execute(2022)
+
+        // Then
+        result.bensEDireitos.data
+            .first()
+            .also {
+                assertEquals("R$ 0,00", it.situacaoAnterior)
+                assertEquals("R$ 19,23", it.situacaoAtual)
+
+                assertEquals(
+                    "3 AÇÕES DE RAIZEN SA (RAIZ4) AO CUSTO MÉDIO DE R$ 6,41" +
+                            " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
+                    it.discriminacao
+                )
+            }
+    }
+
 }

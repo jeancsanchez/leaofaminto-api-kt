@@ -127,3 +127,7 @@ fun Double.toQuantidadeString(): String {
 
     return toString()
 }
+
+fun String.stripToDouble(): Double = replace("R$ ", "")
+    .replace(",", ".")
+    .toDouble()

@@ -193,4 +193,44 @@ class DomainScenarios(
             comprasList.first()
         }
     }
+
+    fun loadGerarDeclaracaoIRPFConsiderandoNovasComprasScenario(raizen: Ativo) {
+        val comprasList = mutableListOf<Compra>()
+
+        whenever(comprasRepository.findAll()).thenAnswer {
+            listOf(
+                Compra(
+                    ativo = raizen,
+                    quantidade = 3.0,
+                    preco = 6.41,
+                    corretora = ClearCorretora(),
+                    data = LocalDate.of(2021, 9, 3),
+                )
+            ).also {
+                comprasList.addAll(it)
+            }
+        }
+
+        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer {
+            emptyList<Venda>()
+        }
+
+        whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
+            ConsolidadoDTO(
+                items = listOf(
+                    OperacaoConsolidadaDTO(
+                        ativo = raizen,
+                        quantidadeTotal = 3.0,
+                        precoMedio = 6.41,
+                        totalInvestido = 19.23
+                    )
+                ),
+                totalInvestido = 19.23
+            )
+        }
+
+        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer {
+            comprasList.first()
+        }
+    }
 }

@@ -6,6 +6,7 @@ import com.github.jeancsanchez.leaofaminto.data.VendasRepository
 import com.github.jeancsanchez.leaofaminto.domain.model.Ativo
 import com.github.jeancsanchez.leaofaminto.domain.model.TipoDeAtivo
 import com.github.jeancsanchez.leaofaminto.view.dto.*
+import com.github.jeancsanchez.leaofaminto.view.stripToDouble
 import com.github.jeancsanchez.leaofaminto.view.toBrazilMoney
 import com.github.jeancsanchez.leaofaminto.view.toQuantidadeString
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,21 +51,25 @@ class GerarDeclaracaoIRPFService(
 
         consolidados
             .items
-            .map {
-                val ativo = it.ativo
-                val corretora = comprasRepository.findTopByAtivoCodigoOrderByDataDesc(ativo.codigo).corretora
+            .map { operacaoConsolidada ->
+                val ativo = operacaoConsolidada.ativo
+                val positions = positionsList.find { it.ativo == ativo }
+                val lastPosition = positions?.lastPosition?.stripToDouble() ?: 0.0
+                val currentPosition = positions?.currentPosition?.stripToDouble() ?: 0.0
+                if (lastPosition == 0.0 && currentPosition == 0.0) return@map
 
+                val corretora = comprasRepository.findTopByAtivoCodigoOrderByDataDesc(ativo.codigo).corretora
                 val tipoDeAcao: String = when (ativo.tipoDeAtivo) {
                     TipoDeAtivo.ACAO -> {
-                        if (it.quantidadeTotal > 1) "ações" else "ação"
+                        if (operacaoConsolidada.quantidadeTotal > 1) "ações" else "ação"
                     }
 
                     TipoDeAtivo.FII -> {
-                        if (it.quantidadeTotal > 1) "cotas" else "cota"
+                        if (operacaoConsolidada.quantidadeTotal > 1) "cotas" else "cota"
                     }
 
                     TipoDeAtivo.STOCK -> {
-                        if (it.quantidadeTotal > 1) "ações" else "ação"
+                        if (operacaoConsolidada.quantidadeTotal > 1) "ações" else "ação"
                     }
                 }
 
@@ -75,15 +80,15 @@ class GerarDeclaracaoIRPFService(
                         "Estados Unidos"
                     }
 
-
-                val positions = positionsList.find { it.ativo.codigo == ativo.codigo }
                 BensEDireitosItemDTO(
                     localizacao = localizacao,
                     cnpj = ativo.cnpj,
-                    situacaoAnterior = positions?.lastPosition ?: "R$ 00,00",
-                    situacaoAtual = positions?.currentPosition ?: "R$ 00,00",
-                    discriminacao = ("${it.quantidadeTotal.toQuantidadeString()} $tipoDeAcao DE ${ativo.nome} (${ativo.codigo}) AO CUSTO" +
-                            " MÉDIO DE ${it.precoMedio.toBrazilMoney()} CUSTODIADA NA CORRETORA ${corretora.nome}," +
+                    situacaoAnterior = lastPosition.toBrazilMoney(),
+                    situacaoAtual = currentPosition.toBrazilMoney(),
+                    discriminacao = (operacaoConsolidada.quantidadeTotal.toQuantidadeString() +
+                            " $tipoDeAcao DE ${ativo.nome} (${ativo.codigo}) AO CUSTO" +
+                            " MÉDIO DE ${operacaoConsolidada.precoMedio.toBrazilMoney()}" +
+                            " CUSTODIADA NA CORRETORA ${corretora.nome}," +
                             " CNPJ: ${corretora.cnpj}").toUpperCase()
                 ).run {
                     bensEDireitosList.add(this)
@@ -117,42 +122,55 @@ class GerarDeclaracaoIRPFService(
         val firstDayOfLastYear = LocalDate.of(reportYear - 1, 1, 1)
         val lastDayOfLastYear = firstDayOfLastYear.with(TemporalAdjusters.lastDayOfYear())
 
-        val lastPositions: List<AtivoPosition> = getPositionWithinDates(
+        val lastPositions: List<Pair<Ativo, Double>> = getPositionWithinDates(
             startDate = olderYear,
             endDate = firstDayOfLastYear.minusDays(1)
-        ).map {
-            AtivoPosition(
-                ativo = it.first,
-                lastPosition = it.second.toString(),
-                currentPosition = null
-            )
-        }
+        )
 
-        val currentPositions: List<AtivoPosition> = getPositionWithinDates(
+        val currentPositions: List<Pair<Ativo, Double>> = getPositionWithinDates(
             startDate = firstDayOfLastYear,
             endDate = lastDayOfLastYear
-        ).map {
-            AtivoPosition(
-                ativo = it.first,
-                lastPosition = null,
-                currentPosition = it.second.toString()
-            )
-        }.ifEmpty { lastPositions }
+        )
 
-        val result = lastPositions
-            .zip(currentPositions)
-            .map {
-                val currentPosition =
-                    (it.first.lastPosition?.toDouble() ?: 0.0) + (it.second.currentPosition?.toDouble() ?: 0.0)
+        val oldAtivos = lastPositions.distinctBy { it.first }.map { it.first }
+        val currentAtivos = currentPositions.distinctBy { it.first }.map { it.first }
+        val newAtivos = currentAtivos
+            .mapNotNull { currentAtivo ->
+                if (oldAtivos.contains(currentAtivo).not()) {
+                    return@mapNotNull currentAtivo
+                }
 
-                AtivoPosition(
-                    ativo = it.first.ativo,
-                    lastPosition = it.first.lastPosition?.toDouble()?.toBrazilMoney(),
-                    currentPosition = currentPosition.toBrazilMoney()
-                )
+                return@mapNotNull null
             }
 
-        return result
+        val allPositions = lastPositions + currentPositions
+        return allPositions
+            .distinctBy { it.first }
+            .map { pair ->
+                val ativo = pair.first
+
+                if (ativo in newAtivos) {
+                    return@map AtivoPosition(
+                        ativo = ativo,
+                        lastPosition = 0.0.toBrazilMoney(),
+                        currentPosition = pair.second.toBrazilMoney()
+                    )
+                }
+
+                val lastPositionValue = lastPositions.find { it.first == ativo }
+                    ?.second
+                    ?: 0.0
+
+                val currentPosition = currentPositions.find { it.first == ativo }
+                    ?.second
+                    ?: 0.0
+
+                AtivoPosition(
+                    ativo = ativo,
+                    lastPosition = lastPositionValue.toBrazilMoney(),
+                    currentPosition = (currentPosition + lastPositionValue).toBrazilMoney()
+                )
+            }
     }
 
     private fun getPositionWithinDates(startDate: LocalDate, endDate: LocalDate): List<Pair<Ativo, Double>> {
