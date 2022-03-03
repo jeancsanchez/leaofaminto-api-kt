@@ -233,4 +233,103 @@ class DomainScenarios(
             comprasList.first()
         }
     }
+
+    fun loadGerarDeclaracaoIRPFConsiderandoVendasNosAnosSeguintesScenario(linx: Ativo) {
+        val comprasList = mutableListOf<Compra>()
+        val vendasList = mutableListOf<Venda>()
+
+        whenever(comprasRepository.findAll()).thenAnswer {
+            listOf(
+                Compra(
+                    ativo = linx,
+                    quantidade = 6.0,
+                    preco = 36.80,
+                    corretora = ClearCorretora(),
+                    data = LocalDate.of(2020, 1, 1),
+                )
+            ).also {
+                comprasList.addAll(it)
+            }
+        }
+
+        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer {
+            comprasList.first()
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
+            listOf(
+                Venda(
+                    ativo = linx,
+                    quantidade = 6.0,
+                    preco = 33.52,
+                    corretora = ClearCorretora(),
+                    data = LocalDate.of(2021, 1, 1),
+                )
+            ).also {
+                vendasList.addAll(it)
+            }
+        }
+
+        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer {
+            vendasList
+        }
+
+        whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
+            ConsolidadoDTO(
+                items = listOf(
+                    OperacaoConsolidadaDTO(
+                        ativo = linx,
+                        quantidadeTotal = 0.0,
+                        precoMedio = 0.0,
+                        totalInvestido = 0.0
+                    )
+                ),
+                totalInvestido = 0.0
+            )
+        }
+    }
+
+    fun loadGerarDeclaracaoIRPFConsiderandoNenhumaOperacaoNosAnosSeguintesScenario(wege: Ativo) {
+        val comprasList = mutableListOf<Compra>()
+
+        whenever(comprasRepository.findAll()).thenAnswer {
+            listOf(
+                Compra(
+                    ativo = wege,
+                    quantidade = 3.0,
+                    preco = 10.0,
+                    corretora = ClearCorretora(),
+                    data = LocalDate.of(2019, 1, 1),
+                )
+            ).also {
+                comprasList.addAll(it)
+            }
+        }
+
+        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer {
+            comprasList.first()
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
+            emptyList<Venda>()
+        }
+
+        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer {
+            emptyList<Venda>()
+        }
+
+        whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
+            ConsolidadoDTO(
+                items = listOf(
+                    OperacaoConsolidadaDTO(
+                        ativo = wege,
+                        quantidadeTotal = 3.0,
+                        precoMedio = 10.0,
+                        totalInvestido = 30.0
+                    )
+                ),
+                totalInvestido = 30.0
+            )
+        }
+    }
 }

@@ -126,7 +126,6 @@ internal class GerarDeclaracaoIRPFServiceTest {
     /**
      * Nesse caso, ações da RAIZ4 NÃO foram compradas no de 2020, mas foram compradas 3 ações no ano de 2021
      * ao preço médio de R$ 6,41.
-     *
      */
     @Test
     fun gerarDeclaracaoIRPFConsiderandoNovasCompras() {
@@ -145,6 +144,62 @@ internal class GerarDeclaracaoIRPFServiceTest {
 
                 assertEquals(
                     "3 AÇÕES DE RAIZEN SA (RAIZ4) AO CUSTO MÉDIO DE R$ 6,41" +
+                            " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
+                    it.discriminacao
+                )
+            }
+    }
+
+    /**
+     * Nesse caso, 6 ações da LINX3 FORAM compradas no de 2020 ao preço médio de R$ 36,80
+     * e 6 ações foram vendidas no ano de 2021 ao preço médio de R$ 33,52.
+     * Logo, a posição anterior deve ser de R$ 220,80 e posição atual R$ 0,00.
+     */
+    @Test
+    fun gerarDeclaracaoIRPFConsiderandoVendasNosAnosSeguintes() {
+        val linx = Ativo(nome = "Linx", codigo = "LINX3", cnpj = "010101/01")
+        scenarios.loadGerarDeclaracaoIRPFConsiderandoVendasNosAnosSeguintesScenario(linx)
+
+        // When
+        val result = relatorioService.execute(2022)
+
+        // Then
+        result.bensEDireitos.data
+            .first()
+            .also {
+                assertEquals("R$ 220,8", it.situacaoAnterior)
+                assertEquals("R$ 0,00", it.situacaoAtual)
+
+                assertEquals(
+                    "0 AÇÃO DE LINX (LINX3) AO CUSTO MÉDIO DE R$ 0,00" +
+                            " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
+                    it.discriminacao
+                )
+            }
+    }
+
+    /**
+     * Nesse caso, 3 ações da WEGE3 FORAM compradas no de 2019 ao preço médio de R$ 10,00
+     * e nos anos seguintes nenhuma outra operação foi feita.
+     * Logo, a posição anterior deve ser de R$ 30,00 e posição atual R$ 30,00.
+     */
+    @Test
+    fun gerarDeclaracaoIRPFConsiderandoNenhumaOperacaoNosAnosSeguintes() {
+        val wege = Ativo(nome = "WEGE", codigo = "WEGE3", cnpj = "010101/01")
+        scenarios.loadGerarDeclaracaoIRPFConsiderandoNenhumaOperacaoNosAnosSeguintesScenario(wege)
+
+        // When
+        val result = relatorioService.execute(2022)
+
+        // Then
+        result.bensEDireitos.data
+            .first()
+            .also {
+                assertEquals("R$ 30,00", it.situacaoAnterior)
+                assertEquals("R$ 30,00", it.situacaoAtual)
+
+                assertEquals(
+                    "3 AÇÕES DE WEGE (WEGE3) AO CUSTO MÉDIO DE R$ 10,00" +
                             " CUSTODIADA NA CORRETORA CLEAR, CNPJ: 02.332.886/0011-78",
                     it.discriminacao
                 )

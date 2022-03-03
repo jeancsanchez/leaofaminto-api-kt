@@ -161,46 +161,67 @@ class GerarDeclaracaoIRPFService(
                     ?.second
                     ?: 0.0
 
-                val currentPosition = currentPositions.find { it.first == ativo }
+                val currentPosition = (currentPositions.find { it.first == ativo }
                     ?.second
-                    ?: 0.0
+                    ?: 0.0)
+                    .run { this + lastPositionValue }
 
                 AtivoPosition(
                     ativo = ativo,
                     lastPosition = lastPositionValue.toBrazilMoney(),
-                    currentPosition = (currentPosition + lastPositionValue).toBrazilMoney()
+                    currentPosition = if (currentPosition <= 0.0) {
+                        0.0.toBrazilMoney()
+                    } else {
+                        currentPosition.toBrazilMoney()
+                    }
                 )
             }
     }
 
     private fun getPositionWithinDates(startDate: LocalDate, endDate: LocalDate): List<Pair<Ativo, Double>> {
-        return comprasRepository.findAll()
+        val comprasList = comprasRepository.findAll()
             .filter { it.data in startDate..endDate }
-            .toMutableList()
-            .groupBy { it.ativo }
-            .map { map ->
-                val compras = map.value
-                val vendas = vendasRepository
-                    .findAllByAtivoCodigo(map.key.codigo)
-                    .filter { it.data in startDate..endDate }
 
-                val valorCompras = compras.sumByDouble { it.valorTotal }
-                val valorVendas = vendas.sumByDouble { it.valorTotal }
-                val valorTotal = valorCompras - valorVendas
-
-                val quantidadeCompras = compras.sumByDouble { it.quantidade }
-                val quantidadeVendas = vendas.sumByDouble { it.quantidade }
-                val quantidadeTotal = quantidadeCompras - quantidadeVendas
-
-                val precoMedio = if (quantidadeTotal > 0) {
-                    valorTotal / quantidadeTotal
-                } else {
-                    0.0
+        return if (comprasList.isEmpty()) {
+            vendasRepository.findAll()
+                .filter { it.data in startDate..endDate }
+                .toMutableList()
+                .groupBy { it.ativo }
+                .map { map ->
+                    val vendas = map.value
+                    val quantidade = vendas.sumByDouble { it.quantidade }
+                    val valor = map.value.sumByDouble { it.valorTotal }
+                    val valorFinal = (quantidade * valor) * -1
+                    Pair(map.key, valorFinal)
                 }
+        } else {
+            comprasList
+                .toMutableList()
+                .groupBy { it.ativo }
+                .map { map ->
+                    val compras = map.value
+                    val vendas = vendasRepository
+                        .findAllByAtivoCodigo(map.key.codigo)
+                        .filter { it.data in startDate..endDate }
 
-                val valorFinal = quantidadeTotal * precoMedio
+                    val valorCompras = compras.sumByDouble { it.valorTotal }
+                    val valorVendas = vendas.sumByDouble { it.valorTotal }
+                    val valorTotal = valorCompras - valorVendas
 
-                Pair(map.key, valorFinal)
-            }
+                    val quantidadeCompras = compras.sumByDouble { it.quantidade }
+                    val quantidadeVendas = vendas.sumByDouble { it.quantidade }
+                    val quantidadeTotal = quantidadeCompras - quantidadeVendas
+
+                    val precoMedio = if (quantidadeTotal > 0) {
+                        valorTotal / quantidadeTotal
+                    } else {
+                        0.0
+                    }
+
+                    val valorFinal = quantidadeTotal * precoMedio
+
+                    Pair(map.key, valorFinal)
+                }
+        }
     }
 }

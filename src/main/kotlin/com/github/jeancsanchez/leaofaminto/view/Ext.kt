@@ -121,10 +121,7 @@ fun Double.toBrazilMoney(): String {
 }
 
 fun Double.toQuantidadeString(): String {
-    if ((this % this) == 0.0) {
-        return toInt().toString()
-    }
-
+    if (this == 0.0 || (this % this) == 0.0) return toInt().toString()
     return toString()
 }
 
