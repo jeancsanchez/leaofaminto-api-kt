@@ -109,8 +109,8 @@ class MainControllerTest {
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
 
         comprasRepository.findAll().run {
-            assertEquals(94, count())
-            assertEquals(40077.11, sumByDouble { it.valorTotal }.round())
+            assertEquals(34, count())
+            assertEquals(13861.38, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Clear", true))
@@ -134,8 +134,8 @@ class MainControllerTest {
         }
 
         vendasRepository.findAll().run {
-            assertEquals(8, count())
-            assertEquals(7112.43, sumByDouble { it.valorTotal }.round())
+            assertEquals(2, count())
+            assertEquals(1245.14, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Clear", true))
@@ -209,12 +209,12 @@ class MainControllerTest {
     @Test
     fun sincronizarOperacoesArquivoCEIExcelSemDuplicidadeV2() {
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
-        assertEquals(94, comprasRepository.count())
-        assertEquals(8, vendasRepository.count())
+        assertEquals(34, comprasRepository.count())
+        assertEquals(2, vendasRepository.count())
 
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
-        assertEquals(94, comprasRepository.count())
-        assertEquals(8, vendasRepository.count())
+        assertEquals(34, comprasRepository.count())
+        assertEquals(2, vendasRepository.count())
     }
 
     private fun fazerUploadDeArquivo(resource: Resource?, version: Int? = 1) {

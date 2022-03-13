@@ -161,10 +161,6 @@ class GerarDeclaracaoIRPFService(
                     ?.second
                     ?: 0.0
 
-                if (ativo.codigo == "LINX3") {
-                    println()
-                }
-
                 val currentPosition = (currentPositions.find { it.first == ativo }
                     ?.second
                     ?: 0.0)
@@ -223,10 +219,6 @@ class GerarDeclaracaoIRPFService(
                     }
 
                     val valorFinal = quantidadeTotal * precoMedio
-
-                    if (keyMap.key.codigo == "EGIE3") {
-                        println()
-                    }
 
                     Pair(keyMap.key, valorFinal)
                 }
