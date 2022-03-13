@@ -40,14 +40,8 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           api-token: ${{ secrets.CODACY_API_TOKEN }}
-        run:  |
-          # make file runnable, might not be necessary
-          chmod +x "${GITHUB_WORKSPACE}/scripts/jacoco_report.sh"
+          coverage-reports: cobertura.xml
 
-          # run script
-          ${GITHUB_WORKSPACE}/scripts/jacoco_report.sh
-
-        shell: bash
 
 
 
