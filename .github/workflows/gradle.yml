@@ -5,7 +5,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
   pull_request:
     branches: [ dev ]
   workflow_dispatch:
@@ -37,12 +37,15 @@ jobs:
         run: ./gradlew build --scan
 
       - name: Reporting Jacoco to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          api-token: ${{ secrets.CODACY_API_TOKEN }}
         run:  |
           # make file runnable, might not be necessary
           chmod +x "${GITHUB_WORKSPACE}/scripts/jacoco_report.sh"
 
           # run script
-          ./${GITHUB_WORKSPACE}/scripts/jacoco_report.sh
+          ${GITHUB_WORKSPACE}/scripts/jacoco_report.sh
 
         shell: bash
 
