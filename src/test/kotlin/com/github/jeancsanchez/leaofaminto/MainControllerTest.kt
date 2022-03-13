@@ -109,12 +109,12 @@ class MainControllerTest {
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
 
         comprasRepository.findAll().run {
-            assertEquals(24, count())
-            assertEquals(5638.36, sumByDouble { it.valorTotal }.round())
+            assertEquals(94, count())
+            assertEquals(40077.11, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Clear", true))
-                assertEquals("16/12/2021", firstLine.data.formatToStringBR())
+                assertEquals("14/12/2021", firstLine.data.formatToStringBR())
                 assertEquals("BRCR11", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.FII, firstLine.ativo.tipoDeAtivo)
                 assertEquals(4.0, firstLine.quantidade)
@@ -124,22 +124,22 @@ class MainControllerTest {
 
             last().also { lastLine ->
                 assertTrue(lastLine.corretora.nome.contains("Clear", true))
-                assertEquals("08/01/2021", lastLine.data.formatToStringBR())
+                assertEquals("06/01/2021", lastLine.data.formatToStringBR())
                 assertEquals("MDIA3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
-                assertEquals(2.0, lastLine.quantidade)
+                assertEquals(11.0, lastLine.quantidade)
                 assertEquals(32.87, lastLine.preco)
-                assertEquals(65.74, lastLine.valorTotal)
+                assertEquals(361.57, lastLine.valorTotal)
             }
         }
 
         vendasRepository.findAll().run {
-            assertEquals(6, count())
-            assertEquals(6138.48, sumByDouble { it.valorTotal }.round())
+            assertEquals(8, count())
+            assertEquals(7112.43, sumByDouble { it.valorTotal }.round())
 
             first().also { firstLine ->
                 assertTrue(firstLine.corretora.nome.contains("Clear", true))
-                assertEquals("16/12/2021", firstLine.data.formatToStringBR())
+                assertEquals("14/12/2021", firstLine.data.formatToStringBR())
                 assertEquals("CEAB3", firstLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, firstLine.ativo.tipoDeAtivo)
                 assertEquals(50.0, firstLine.quantidade)
@@ -149,7 +149,7 @@ class MainControllerTest {
 
             last().also { lastLine ->
                 assertTrue(lastLine.corretora.nome.contains("Clear", true))
-                assertEquals("20/04/2021", lastLine.data.formatToStringBR())
+                assertEquals("16/04/2021", lastLine.data.formatToStringBR())
                 assertEquals("CEAB3", lastLine.ativo.codigo)
                 assertEquals(TipoDeAtivo.ACAO, lastLine.ativo.tipoDeAtivo)
                 assertEquals(68.0, lastLine.quantidade)
@@ -209,12 +209,12 @@ class MainControllerTest {
     @Test
     fun sincronizarOperacoesArquivoCEIExcelSemDuplicidadeV2() {
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
-        assertEquals(24, comprasRepository.count())
-        assertEquals(6, vendasRepository.count())
+        assertEquals(94, comprasRepository.count())
+        assertEquals(8, vendasRepository.count())
 
         fazerUploadDeArquivo(arquivo2021V2, version = 2)
-        assertEquals(24, comprasRepository.count())
-        assertEquals(6, vendasRepository.count())
+        assertEquals(94, comprasRepository.count())
+        assertEquals(8, vendasRepository.count())
     }
 
     private fun fazerUploadDeArquivo(resource: Resource?, version: Int? = 1) {

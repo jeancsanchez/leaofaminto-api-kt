@@ -179,7 +179,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
     }
 
     /**
-     * Nesse caso, 3 ações da WEGE3 FORAM compradas no de 2019 ao preço médio de R$ 10,00
+     * Nesse caso, 3 ações da WEGE3 FORAM compradas no ano de 2019 ao preço médio de R$ 10,00
      * e nos anos seguintes nenhuma outra operação foi feita.
      * Logo, a posição anterior deve ser de R$ 30,00 e posição atual R$ 30,00.
      */

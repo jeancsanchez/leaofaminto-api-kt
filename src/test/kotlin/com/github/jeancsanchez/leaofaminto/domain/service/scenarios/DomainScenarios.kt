@@ -64,6 +64,7 @@ class DomainScenarios(
         )
 
         whenever(comprasRepository.findAll()).thenAnswer { comprasList }
+        whenever(vendasRepository.findAll()).thenAnswer { vendasList }
         whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer { vendasList }
         whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer { comprasList.first() }
         whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
@@ -127,6 +128,7 @@ class DomainScenarios(
 
     fun loadGerarDeclaracaoIRPFSomandoTodosOsAnosAnterioresScenario(ambev: Ativo) {
         val comprasList = mutableListOf<Compra>()
+        val vendasList = mutableListOf<Venda>()
 
         whenever(comprasRepository.findAll()).thenAnswer {
             listOf(
@@ -163,7 +165,11 @@ class DomainScenarios(
             }
         }
 
-        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer {
+        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer {
+            comprasList.first()
+        }
+
+        whenever(vendasRepository.findAll()).thenAnswer {
             listOf(
                 Venda(
                     ativo = ambev,
@@ -172,7 +178,13 @@ class DomainScenarios(
                     corretora = ClearCorretora(),
                     data = LocalDate.of(2021, 9, 3),
                 )
-            )
+            ).also {
+                vendasList.addAll(it)
+            }
+        }
+
+        whenever(vendasRepository.findAllByAtivoCodigo(any())).thenAnswer {
+            vendasList.first()
         }
 
         whenever(gerarOperacoesConsolidadasService.execute(Unit)).thenAnswer {
@@ -187,10 +199,6 @@ class DomainScenarios(
                 ),
                 totalInvestido = 3363.98
             )
-        }
-
-        whenever(comprasRepository.findTopByAtivoCodigoOrderByDataDesc(any())).thenAnswer {
-            comprasList.first()
         }
     }
 

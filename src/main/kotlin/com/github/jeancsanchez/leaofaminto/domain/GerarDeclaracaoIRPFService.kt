@@ -161,19 +161,23 @@ class GerarDeclaracaoIRPFService(
                     ?.second
                     ?: 0.0
 
+                if (ativo.codigo == "LINX3") {
+                    println()
+                }
+
                 val currentPosition = (currentPositions.find { it.first == ativo }
                     ?.second
                     ?: 0.0)
-                    .run { this + lastPositionValue }
+                    .run {
+                        if (this < 0.0) return@run 0.0 // Posição liquidada
+                        if (this == 0.0) return@run lastPositionValue // Posição se manteve
+                        return@run this + lastPositionValue
+                    }
 
                 AtivoPosition(
                     ativo = ativo,
                     lastPosition = lastPositionValue.toBrazilMoney(),
-                    currentPosition = if (currentPosition <= 0.0) {
-                        0.0.toBrazilMoney()
-                    } else {
-                        currentPosition.toBrazilMoney()
-                    }
+                    currentPosition = currentPosition.toBrazilMoney()
                 )
             }
     }
@@ -181,28 +185,28 @@ class GerarDeclaracaoIRPFService(
     private fun getPositionWithinDates(startDate: LocalDate, endDate: LocalDate): List<Pair<Ativo, Double>> {
         val comprasList = comprasRepository.findAll()
             .filter { it.data in startDate..endDate }
+            .toMutableList()
+
+        val vendasList = vendasRepository.findAll()
+            .filter { it.data in startDate..endDate }
+            .toMutableList()
 
         return if (comprasList.isEmpty()) {
-            vendasRepository.findAll()
-                .filter { it.data in startDate..endDate }
-                .toMutableList()
+            vendasList
                 .groupBy { it.ativo }
-                .map { map ->
-                    val vendas = map.value
+                .map { keyMap ->
+                    val vendas = keyMap.value
                     val quantidade = vendas.sumByDouble { it.quantidade }
-                    val valor = map.value.sumByDouble { it.valorTotal }
+                    val valor = keyMap.value.sumByDouble { it.valorTotal }
                     val valorFinal = (quantidade * valor) * -1
-                    Pair(map.key, valorFinal)
+                    Pair(keyMap.key, valorFinal)
                 }
         } else {
             comprasList
-                .toMutableList()
                 .groupBy { it.ativo }
-                .map { map ->
-                    val compras = map.value
-                    val vendas = vendasRepository
-                        .findAllByAtivoCodigo(map.key.codigo)
-                        .filter { it.data in startDate..endDate }
+                .map { keyMap ->
+                    val compras = keyMap.value
+                    val vendas = vendasList.filter { it.ativo == keyMap.key }
 
                     val valorCompras = compras.sumByDouble { it.valorTotal }
                     val valorVendas = vendas.sumByDouble { it.valorTotal }
@@ -220,7 +224,11 @@ class GerarDeclaracaoIRPFService(
 
                     val valorFinal = quantidadeTotal * precoMedio
 
-                    Pair(map.key, valorFinal)
+                    if (keyMap.key.codigo == "EGIE3") {
+                        println()
+                    }
+
+                    Pair(keyMap.key, valorFinal)
                 }
         }
     }

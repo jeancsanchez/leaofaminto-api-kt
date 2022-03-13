@@ -55,9 +55,7 @@ class GerarOperacoesConsolidadasService(
 
         return ConsolidadoDTO(
             totalInvestido = items.sumByDouble { it.totalInvestido },
-            items = items
-                .filter { it.quantidadeTotal > 0 }
-                .sortedByDescending { it.totalInvestido }
+            items = items.sortedByDescending { it.totalInvestido }
         )
     }
 
