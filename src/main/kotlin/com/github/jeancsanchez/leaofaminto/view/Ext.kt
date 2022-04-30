@@ -122,7 +122,8 @@ fun Double.toBrazilMoney(): String {
 }
 
 fun Double.toQuantidadeString(): String {
-    if (this == 0.0 || (this % this) == 0.0) return toInt().toString()
+    val isExact = this.toString().split(".")[1].toLong() == 0L
+    if (this == 0.0 || isExact) return toInt().toString()
     return toString()
 }
 
