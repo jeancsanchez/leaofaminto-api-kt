@@ -83,6 +83,7 @@ class GerarDeclaracaoIRPFService(
 
                 BensEDireitosItemDTO(
                     localizacao = localizacao,
+                    nome = ativo.nome,
                     cnpj = ativo.cnpj,
                     situacaoAnterior = lastPosition.toBrazilMoney(),
                     situacaoAtual = currentPosition.toBrazilMoney(),

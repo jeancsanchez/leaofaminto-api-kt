@@ -17,6 +17,7 @@ data class DeclaracaoIRPFDTO(
 //region Bens e Direitos
 data class BensEDireitosItemDTO(
     val localizacao: String,
+    val nome: String?,
     val cnpj: String?,
     val discriminacao: String,
     val situacaoAnterior: String,
