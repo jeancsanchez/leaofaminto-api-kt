@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.github.jeancsanchez.leaofaminto.domain
 
 import com.github.jeancsanchez.leaofaminto.data.AtivoRepository
@@ -32,24 +34,23 @@ class GerarDeclaracaoIRPFService(
      * @param param Report year
      */
     override fun execute(param: Int): DeclaracaoIRPFDTO {
-        val consolidados = gerarOperacoesConsolidadasService.execute(Unit)
+        val bensEDireitos = generateBensEDireitos(reportYear = param)
+        val rendimentosIsentos = generateRendimentosIsentos(reportYear = param)
+        val rendimentosTributaveis = generateRendimentosTributaveis(reportYear = param)
 
-//        AMZN - 0.02357082 ac ̧ o ̃ es de Amazon . com Inc..
-//                Custo total de US $ 75, 00 com dólar médio de R$ 5, 3683.
-//
-//        400 ACOES ORDINARIAS DE ITAUSA INVESTIMENTOS (ITSA4)
-//        AO CUSTO MEDIO DE R$10.56-CUSTODIADA NA CORRETORA XP INVESTIMENTOS CCTVM S/A,
-//        CNPJ:  02.332.886/0001-04
-
-        val positionsList = getLastAndCurrentPosition(reportYear = param)
-        val bensEDireitosList = arrayListOf<BensEDireitosItemDTO>()
-        val bensEDireitos = DeclaracaoBensEDireitosDTO(
-            titulo = "Bens e Direitos",
-            codigo = "31",
-            data = bensEDireitosList
+        return DeclaracaoIRPFDTO(
+            rendimentosInsentos = rendimentosIsentos,
+            rendimentosTributaveis = rendimentosTributaveis,
+            bensEDireitos = bensEDireitos
         )
+    }
 
-        consolidados
+    private fun generateBensEDireitos(reportYear: Int): DeclaracaoBensEDireitosDTO {
+        val positionsList = getLastAndCurrentPosition(reportYear = reportYear)
+        val bensEDireitosList = arrayListOf<BensEDireitosItemDTO>()
+
+        gerarOperacoesConsolidadasService
+            .execute(Unit)
             .items
             .map { operacaoConsolidada ->
                 val ativo = operacaoConsolidada.ativo
@@ -95,29 +96,20 @@ class GerarDeclaracaoIRPFService(
                 }
             }
 
-        return DeclaracaoIRPFDTO(
-            rendimentosInsentos = DeclaracaoRendimentosIsentosDTO(
-                titulo = "Rendimentos Insentos ou Não tributaveis",
-                codigo = "9", // Lucros e dividendos recebidos. 20 - Ganhos liquidos em operações...
-                data = emptyList()
-            ),
-            rendimentosTributaveis = DeclaracaoRendimentosTributaveisDTO(
-                titulo = "Rendimentos Tributaveis",
-                codigo = "10", // Juros sobre capital proprio
-                data = emptyList()
-            ),
-            bensEDireitos = bensEDireitos
+        return DeclaracaoBensEDireitosDTO(
+            titulo = "Bens e Direitos",
+            codigo = "31",
+            dados = bensEDireitosList
         )
     }
 
-
-    data class AtivoPosition(
+    private data class AtivoPosition(
         val ativo: Ativo,
         val lastPosition: String?,
         val currentPosition: String?,
     )
 
-    fun getLastAndCurrentPosition(reportYear: Int): List<AtivoPosition> {
+    private fun getLastAndCurrentPosition(reportYear: Int): List<AtivoPosition> {
         val olderYear = LocalDate.of(2010, 1, 1)
         val firstDayOfLastYear = LocalDate.of(reportYear - 1, 1, 1)
         val lastDayOfLastYear = firstDayOfLastYear.with(TemporalAdjusters.lastDayOfYear())
@@ -223,5 +215,33 @@ class GerarDeclaracaoIRPFService(
                     Pair(keyMap.key, valorFinal)
                 }
         }
+    }
+
+    private fun generateRendimentosIsentos(reportYear: Int): DeclaracaoRendimentosIsentosDTO {
+        val firstDayOfLastYear = LocalDate.of(reportYear - 1, 1, 1)
+        val lastDayOfLastYear = firstDayOfLastYear.with(TemporalAdjusters.lastDayOfYear())
+
+        val comprasList = comprasRepository.findAll()
+            .filter { it.data in firstDayOfLastYear..lastDayOfLastYear }
+            .toMutableList()
+
+        val vendasList = vendasRepository.findAll()
+            .filter { it.data in firstDayOfLastYear..lastDayOfLastYear }
+            .toMutableList()
+
+
+        return DeclaracaoRendimentosIsentosDTO(
+            titulo = "Rendimentos Insentos ou Não tributaveis",
+            codigo = "9", // Lucros e dividendos recebidos. 20 - Ganhos liquidos em operações...
+            dados = emptyList()
+        )
+    }
+
+    private fun generateRendimentosTributaveis(reportYear: Int): DeclaracaoRendimentosTributaveisDTO {
+        return DeclaracaoRendimentosTributaveisDTO(
+            titulo = "Rendimentos Tributaveis",
+            codigo = "10", // Juros sobre capital proprio
+            dados = emptyList()
+        )
     }
 }

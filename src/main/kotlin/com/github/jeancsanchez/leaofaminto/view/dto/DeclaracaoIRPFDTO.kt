@@ -26,7 +26,7 @@ data class BensEDireitosItemDTO(
 data class DeclaracaoBensEDireitosDTO(
     val titulo: String,
     val codigo: String,
-    val data: List<BensEDireitosItemDTO>
+    val dados: List<BensEDireitosItemDTO>
 )
 
 //endregion
@@ -41,7 +41,7 @@ data class RedimentosIsentosItemDTO(
 data class DeclaracaoRendimentosIsentosDTO(
     val titulo: String,
     val codigo: String,
-    val data: List<RedimentosIsentosItemDTO>
+    val dados: List<RedimentosIsentosItemDTO>
 )
 //endregion
 
@@ -55,6 +55,6 @@ data class RedimentosTributaveisDTO(
 data class DeclaracaoRendimentosTributaveisDTO(
     val titulo: String,
     val codigo: String,
-    val data: List<RedimentosTributaveisDTO>
+    val dados: List<RedimentosTributaveisDTO>
 )
 //endregion

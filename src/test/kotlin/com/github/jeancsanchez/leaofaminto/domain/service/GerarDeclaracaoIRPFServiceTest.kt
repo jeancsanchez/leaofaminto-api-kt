@@ -74,7 +74,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
                 assertEquals("Bens e Direitos", secao.titulo)
                 assertEquals("31", secao.codigo)
 
-                secao.data
+                secao.dados
                     .first()
                     .also {
                         assertEquals("Brasil", it.localizacao)
@@ -108,7 +108,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
         val result = relatorioService.execute(2022)
 
         // Then
-        result.bensEDireitos.data
+        result.bensEDireitos.dados
             .first()
             .also {
                 assertEquals("R$ 1280,68", it.situacaoAnterior)
@@ -136,7 +136,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
         val result = relatorioService.execute(2022)
 
         // Then
-        result.bensEDireitos.data
+        result.bensEDireitos.dados
             .first()
             .also {
                 assertEquals("R$ 0,00", it.situacaoAnterior)
@@ -164,7 +164,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
         val result = relatorioService.execute(2022)
 
         // Then
-        result.bensEDireitos.data
+        result.bensEDireitos.dados
             .first()
             .also {
                 assertEquals("R$ 220,8", it.situacaoAnterior)
@@ -192,7 +192,7 @@ internal class GerarDeclaracaoIRPFServiceTest {
         val result = relatorioService.execute(2022)
 
         // Then
-        result.bensEDireitos.data
+        result.bensEDireitos.dados
             .first()
             .also {
                 assertEquals("R$ 30,00", it.situacaoAnterior)
