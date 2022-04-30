@@ -1,6 +1,7 @@
 package com.github.jeancsanchez.leaofaminto.view.services
 
 import com.github.jeancsanchez.leaofaminto.data.*
+import com.github.jeancsanchez.leaofaminto.domain.PegarAtivoInfoService
 import com.github.jeancsanchez.leaofaminto.domain.model.*
 import com.github.jeancsanchez.leaofaminto.domain.model.corretoras.Corretora
 import com.github.jeancsanchez.leaofaminto.view.extractCodigoAtivo
@@ -12,7 +13,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 
@@ -29,7 +29,8 @@ class CEIXLSImporterServiceV2Impl(
     @Autowired val comprasRepository: ComprasRepository,
     @Autowired val vendasRepository: VendasRepository,
     @Autowired val corretoraRepository: CorretoraRepository,
-    @Autowired val ativoRepository: AtivoRepository
+    @Autowired val ativoRepository: AtivoRepository,
+    @Autowired val pegarAtivoInfoService: PegarAtivoInfoService
 ) : FileImporterService {
 
     companion object {
@@ -103,7 +104,7 @@ class CEIXLSImporterServiceV2Impl(
                                                 ativo = ativoRepository
                                                     .findTop1ByNomeIgnoreCase(codigoAtivo)
                                                     ?: let {
-                                                        val ativoInfo = getAtivoInfo(codigoAtivo)
+                                                        val ativoInfo = pegarAtivoInfoService.execute(codigoAtivo)
                                                         ativoRepository.save(
                                                             Ativo(
                                                                 codigo = codigoAtivo,
@@ -190,23 +191,5 @@ class CEIXLSImporterServiceV2Impl(
         }
 
         return operacaoRepository.findAll()
-    }
-
-    private data class AtivoInfo(
-        val cnpj: String?,
-        val name: String?
-    )
-
-    private fun getAtivoInfo(ativoCodigo: String): AtivoInfo? {
-        RestTemplate().getForEntity(
-            "https://leaofaminto-ativos-api.herokuapp.com/api/ativo/$ativoCodigo",
-            AtivoInfo::class.java
-        ).also {
-            if (it.statusCode.is2xxSuccessful) {
-                return it.body
-            }
-        }
-
-        return null
     }
 }

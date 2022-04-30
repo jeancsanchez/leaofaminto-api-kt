@@ -1,6 +1,7 @@
 package com.github.jeancsanchez.leaofaminto.view.services
 
 import com.github.jeancsanchez.leaofaminto.data.*
+import com.github.jeancsanchez.leaofaminto.domain.PegarAtivoInfoService
 import com.github.jeancsanchez.leaofaminto.domain.model.*
 import com.github.jeancsanchez.leaofaminto.view.formatStringBRFromTimeStamp
 import com.github.jeancsanchez.leaofaminto.view.services.exceptions.ImporterException
@@ -26,14 +27,14 @@ class PassfolioImporterServiceImpl(
     @Autowired val comprasRepository: ComprasRepository,
     @Autowired val vendasRepository: VendasRepository,
     @Autowired val corretoraRepository: CorretoraRepository,
-    @Autowired val ativoRepository: AtivoRepository
+    @Autowired val ativoRepository: AtivoRepository,
+    @Autowired val pegarAtivoInfoService: PegarAtivoInfoService
 ) : FileImporterService {
 
     companion object {
         const val BUY = "BUY"
         const val SELL = "SELL"
     }
-
 
     override fun execute(param: MultipartFile): List<Operacao> {
         val resultList = mutableListOf<Operacao>()
@@ -63,12 +64,16 @@ class PassfolioImporterServiceImpl(
                     row.get(colunaCodigoAtivo).let { codigoAtivo ->
                         ativo = ativoRepository
                             .findTop1ByNomeIgnoreCase(codigoAtivo)
-                            ?: ativoRepository.save(
-                                Ativo(
-                                    codigo = codigoAtivo,
-                                    tipoDeAtivo = TipoDeAtivo.STOCK
+                            ?: let {
+                                val ativoInfo = pegarAtivoInfoService.execute(codigoAtivo)
+                                ativoRepository.save(
+                                    Ativo(
+                                        codigo = codigoAtivo,
+                                        tipoDeAtivo = TipoDeAtivo.STOCK,
+                                        nome = ativoInfo?.name ?: "Stock"
+                                    )
                                 )
-                            )
+                            }
                     }
 
                     currentColumnIndex = colunaQuantidade
