@@ -23,10 +23,6 @@ Lá, ele precisa declarar as suas ações, lucros e dividendos. O investidor tam
 O que geralmente acontece é que todo o ano o investidor tem que correr atrás nas corretoras de baixar as notas de corretagem ou pegar essas informações de planilhas próprias e coloca-las manualmente no programa da Receita Federal.
 Existem no mercado plataformas como Bastter e Trade Map que consolida todas essas informações, porém são plataformas pagas. A ideia do **Leão Faminto API** é fazer um sistema open-source para que todo investidor possa ter acesso a essas informações mínimas gratuitamente.
 
-<p align="center">
-  <img src="https://pbs.twimg.com/media/E3XpA85XIAkkfWD.jpg" height="400">
-</p>
-
 
 ### Features prontas ou desejáveis:
 - [x] Impostos do mês com ações Day trade/Swing trade
