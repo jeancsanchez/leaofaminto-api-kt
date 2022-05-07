@@ -37,7 +37,7 @@ dependencies {
 //    implementation("com.vaadin:vaadin-spring-boot-starter")
 
     implementation("org.apache.poi:poi:5.0.0")
-    runtimeOnly("mysql:mysql-connector-java")
+    runtimeOnly("org.postgresql:postgresql")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testRuntimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
