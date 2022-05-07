@@ -1,3 +1,6 @@
+![CI status](https://github.com/jeancsanchez/leaofaminto-api/actions/workflows/gradle.yml/badge.svg)
+
+
 API que visa consolidar dados referetes às operações na bolsa para ajudar na declaração de imposto de renda (IRPF).
 
 ### Operações suportadas:
