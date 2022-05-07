@@ -82,18 +82,20 @@ class MainController(
      * Sincroniza as operações conforme o arquivo informado.
      */
     @PostMapping("/v2/sync")
-    fun syncOperacoesV2(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
-        val result = ceiXLSImporterServiceV2.execute(arquivo)
-        return ResponseEntity.ok(result)
+    fun syncOperacoesV2(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<OperacoesDTO> {
+        ceiXLSImporterServiceV2.execute(arquivo)
+        val response = listarOperacoes().body
+        return ResponseEntity.ok(response)
     }
 
     /**
      * Sincroniza as operações conforme o arquivo da Passfolio.
      */
     @PostMapping("/passfolio/sync")
-    fun syncOperacoesPassfolio(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<List<Operacao>> {
-        val result = passfolioImporterService.execute(arquivo)
-        return ResponseEntity.ok(result)
+    fun syncOperacoesPassfolio(@RequestParam("arquivo") arquivo: MultipartFile): ResponseEntity<OperacoesDTO> {
+        passfolioImporterService.execute(arquivo)
+        val response = listarOperacoes().body
+        return ResponseEntity.ok(response)
     }
 
 
