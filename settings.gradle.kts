@@ -1,1 +1,1 @@
-rootProject.name = "investments"
+rootProject.name = "leaofaminto-api"
