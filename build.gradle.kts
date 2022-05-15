@@ -40,7 +40,7 @@ dependencies {
     implementation("org.apache.poi:poi:5.1.0")
     implementation("org.apache.poi:poi-ooxml:5.1.0")
     implementation("org.apache.commons:commons-csv:1.9.0")
-    runtimeOnly("mysql:mysql-connector-java")
+    runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation("org.mockito:mockito-inline:2.13.0")
     testRuntimeOnly("com.h2database:h2")
@@ -53,6 +53,10 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
     }
+}
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    this.archiveFileName.set("app.jar")
 }
 
 tasks.withType<Test> {
